@@ -12,6 +12,8 @@ Although we're using this library in production code in our internal projects, t
 
 The primary objectives of this demo is to showcase that MonoGame is indeed able to handle glTF files, and to provide a temporary solution for those that need some glTF support right now. But our hope is that over time, MonoGame will be able to handle glTF files on its own, so this library will no longer be needed.
 
+Special care has been taken to support full animation features of glTF, so animation support is available out of the box.
+
 ### Running the demo:
 
 The project depends on [SharpGLTF.Runtime.MonoGame](src/SharpGLTF.Runtime.MonoGame), which also depends on [SharpGLTF.Core](https://www.nuget.org/packages/SharpGLTF.Core), that's everything you need to load and render glTF models into MonoGame.
