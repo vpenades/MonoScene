@@ -8,7 +8,7 @@ This is an example of loading and rendering glTF files with MonoGame.
 
 This demo is just a stripped down copy of the original example code [which can be found here](https://github.com/vpenades/SharpGLTF/tree/master/examples/MonoGameScene). I've created this repository to showcase the minimum requirements to make this example work.
 
-Although we're using this library in production code in our internal projects, this is a library made out of neccesity, due to the lack of proper glTF support in MonoGame.
+Although we're using this library in production code in our internal projects, this is a library made out of necessity, due to the lack of proper glTF support in MonoGame.
 
 The primary objectives of this demo is to showcase that MonoGame is indeed able to handle glTF files, and to provide a temporary solution for those that need some glTF support right now. But our hope is that over time, MonoGame will be able to handle glTF files on its own, so this library will no longer be needed.
 
