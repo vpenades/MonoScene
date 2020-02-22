@@ -26,12 +26,18 @@ MonoGame typically preprocesses all graphics resources through its content pipel
 
 This is not the case of this demo; the glTF files are loaded at runtime without any preprocessing.
 
-Also for simplicity, the demo uses the default in-built BasicEffect and SkinnedEffect shaders, which date from the years of DirectX9, this limits the capabilities of glTF in these areas:
+The reason to bypass monogame's content pipeline is to allow some glTF features that are simply not possible to be processed by the content pipeline in its current state, but as a consequence of loading glTFs at runtime, there's some other limitations:
+
+In order to keep this example as simple as possible I avoided using custom shaders, the library uses monogame's default BasicEffect and SkinnedEffect objects, which means:
 - PBR materials are not supported, and are converted/downgraded to basic materials.
 - Morphing is not supported.
 - Skinned meshes with more than 72 bones will probably fail.
 
-Since the library depends upon SharpGLTF.Core, which does heavy use of advanced c# features, it is currently aimed for Monogame on Desktop and probably Android, But any project requiring BRUTE, will not be able to use this project.
+Also, textures are loaded at runtime with no preprocessing, so:
+- They might lack mipmapping
+- They might not load at all if they exceed monogame's runtime limits.
+
+Loading at runtime requires using SharpGLTF.Core, which does heavy use of advanced c# features, it is currently aimed for Monogame on Desktop and probably Android, But any project requiring BRUTE, will not be able to use this project.
 
 
 
