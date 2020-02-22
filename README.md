@@ -14,9 +14,11 @@ The primary objectives of this demo is to showcase that MonoGame is indeed able 
 
 ### Running the demo:
 
-The original project
-
 The project depends on [SharpGLTF.Runtime.MonoGame](src/SharpGLTF.Runtime.MonoGame), which also depends on [SharpGLTF.Core](https://www.nuget.org/packages/SharpGLTF.Core), that's everything you need to load and render glTF models into MonoGame.
+
+Currently, the demo is using `MonoGame.Framework.DesktopGL` Version 3.7.1.189 , if you need a different monogame backend/version, you need to download this demo, and manually replace all MonoGame.Framework references with the framework you need.
+
+This example has been tested with `MonoGame.Framework.DesktopGL` and `MonoGame.Framework.WindowsDX`.
 
 ### Demo limitations
 
