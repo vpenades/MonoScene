@@ -21,7 +21,7 @@ namespace SharpGLTF.Runtime
     /// </summary>
     class LoaderContext
     {
-#region lifecycle
+        #region lifecycle
 
         public LoaderContext(GraphicsDevice device)
         {
@@ -29,27 +29,27 @@ namespace SharpGLTF.Runtime
             _MatFactory = new MaterialFactory(device, _Disposables);
         }
 
-#endregion
+        #endregion
 
-#region data
+        #region data
 
         private GraphicsDevice _Device;
 
         private readonly GraphicsResourceTracker _Disposables = new GraphicsResourceTracker();
         private readonly MaterialFactory _MatFactory;        
 
-        private readonly Dictionary<Mesh, MODELMESH> _StaticMeshes = new Dictionary<Mesh, MODELMESH>();
+        private readonly Dictionary<Mesh, MODELMESH> _RigidMeshes = new Dictionary<Mesh, MODELMESH>();
         private readonly Dictionary<Mesh, MODELMESH> _SkinnedMeshes = new Dictionary<Mesh, MODELMESH>();
         
-#endregion
+        #endregion
 
-#region properties
+        #region properties
 
         public IReadOnlyList<GraphicsResource> Disposables => _Disposables.Disposables;
 
-#endregion
+        #endregion
 
-#region Mesh API
+        #region Mesh API
 
         private static IEnumerable<Schema2.MeshPrimitive> GetValidPrimitives(Schema2.Mesh srcMesh)
         {
@@ -95,11 +95,11 @@ namespace SharpGLTF.Runtime
 
             var srcGeometry = new MeshPrimitiveReader(srcPart, doubleSided, normalsFunc);
 
-            var eff = srcGeometry.IsSkinned ? _MatFactory.UseSkinnedEffect(srcPart.Material) : _MatFactory.UseStaticEffect(srcPart.Material);
+            var eff = srcGeometry.IsSkinned ? _MatFactory.UseSkinnedEffect(srcPart.Material) : _MatFactory.UseRigidEffect(srcPart.Material);
 
             dstPart.Effect = eff;            
 
-            var vb = srcGeometry.IsSkinned ? CreateVertexBuffer(srcGeometry.ToXnaSkinned()) : CreateVertexBuffer(srcGeometry.ToXnaStatic());
+            var vb = srcGeometry.IsSkinned ? CreateVertexBuffer(srcGeometry.ToXnaSkinned()) : CreateVertexBuffer(srcGeometry.ToXnaRigid());
 
             dstPart.VertexBuffer = vb;
             dstPart.NumVertices = srcGeometry.VertexCount;
@@ -110,9 +110,9 @@ namespace SharpGLTF.Runtime
             dstPart.StartIndex = 0;
         }
         
-#endregion
+        #endregion
 
-#region resources API
+        #region resources API
 
         private VertexBuffer CreateVertexBuffer<T>(T[] dstVertices) where T:struct, IVertexType
         {
@@ -151,6 +151,6 @@ namespace SharpGLTF.Runtime
             }
         }        
 
-#endregion
+        #endregion
     }    
 }
