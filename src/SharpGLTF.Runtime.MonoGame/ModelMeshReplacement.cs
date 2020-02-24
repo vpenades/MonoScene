@@ -61,11 +61,13 @@ namespace SharpGLTF.Runtime
 
         private IReadOnlyList<Effect> _Effects;
 
-        public IReadOnlyList<Effect> Effects
+        public IReadOnlyCollection<Effect> Effects
         {
             get
             {
                 if (_Effects != null) return _Effects;
+
+                // effects collection has changed since last call, so we reconstruct the collection.
                 _Effects = MeshParts
                     .Select(item => item.Effect)
                     .Distinct()
