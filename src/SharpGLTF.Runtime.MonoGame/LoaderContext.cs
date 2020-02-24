@@ -6,6 +6,14 @@ using Microsoft.Xna.Framework.Graphics;
 
 using SharpGLTF.Schema2;
 
+#if USINGMONOGAMEMODEL
+using MODELMESH = Microsoft.Xna.Framework.Graphics.ModelMesh;
+using MODELMESHPART = Microsoft.Xna.Framework.Graphics.ModelMeshPart;
+#else
+using MODELMESH = SharpGLTF.Runtime.ModelMeshReplacement;
+using MODELMESHPART = SharpGLTF.Runtime.ModelMeshPartReplacement;
+#endif
+
 namespace SharpGLTF.Runtime
 {
     /// <summary>
@@ -13,7 +21,7 @@ namespace SharpGLTF.Runtime
     /// </summary>
     class LoaderContext
     {
-        #region lifecycle
+#region lifecycle
 
         public LoaderContext(GraphicsDevice device)
         {
@@ -21,27 +29,27 @@ namespace SharpGLTF.Runtime
             _MatFactory = new MaterialFactory(device, _Disposables);
         }
 
-        #endregion
+#endregion
 
-        #region data
+#region data
 
         private GraphicsDevice _Device;
 
         private readonly GraphicsResourceTracker _Disposables = new GraphicsResourceTracker();
         private readonly MaterialFactory _MatFactory;        
 
-        private readonly Dictionary<Mesh, ModelMesh> _StaticMeshes = new Dictionary<Mesh, ModelMesh>();
-        private readonly Dictionary<Mesh, ModelMesh> _SkinnedMeshes = new Dictionary<Mesh, ModelMesh>();
+        private readonly Dictionary<Mesh, MODELMESH> _StaticMeshes = new Dictionary<Mesh, MODELMESH>();
+        private readonly Dictionary<Mesh, MODELMESH> _SkinnedMeshes = new Dictionary<Mesh, MODELMESH>();
         
-        #endregion
+#endregion
 
-        #region properties
+#region properties
 
         public IReadOnlyList<GraphicsResource> Disposables => _Disposables.Disposables;
 
-        #endregion                  
+#endregion
 
-        #region Mesh API
+#region Mesh API
 
         private static IEnumerable<Schema2.MeshPrimitive> GetValidPrimitives(Schema2.Mesh srcMesh)
         {
@@ -59,13 +67,13 @@ namespace SharpGLTF.Runtime
             }
         }
 
-        public ModelMesh CreateMesh(Schema2.Mesh srcMesh, int maxBones = 72)
+        public MODELMESH CreateMesh(Schema2.Mesh srcMesh, int maxBones = 72)
         {
             if (_Device == null) throw new InvalidOperationException();            
 
             var srcPrims = GetValidPrimitives(srcMesh).ToList();            
 
-            var dstMesh = new ModelMesh(_Device, Enumerable.Range(0, srcPrims.Count).Select(item => new ModelMeshPart()).ToList());
+            var dstMesh = new MODELMESH(_Device, Enumerable.Range(0, srcPrims.Count).Select(item => new MODELMESHPART()).ToList());
 
             dstMesh.Name = srcMesh.Name;
             dstMesh.BoundingSphere = srcMesh.CreateBoundingSphere();
@@ -81,7 +89,7 @@ namespace SharpGLTF.Runtime
             return dstMesh;
         }
 
-        private void CreateMeshPart(ModelMeshPart dstPart, MeshPrimitive srcPart, MeshNormalsFallback normalsFunc, int maxBones)
+        private void CreateMeshPart(MODELMESHPART dstPart, MeshPrimitive srcPart, MeshNormalsFallback normalsFunc, int maxBones)
         {
             var doubleSided = srcPart.Material?.DoubleSided ?? false;
 
@@ -102,9 +110,9 @@ namespace SharpGLTF.Runtime
             dstPart.StartIndex = 0;
         }
         
-        #endregion
+#endregion
 
-        #region resources API
+#region resources API
 
         private VertexBuffer CreateVertexBuffer<T>(T[] dstVertices) where T:struct, IVertexType
         {
@@ -143,6 +151,6 @@ namespace SharpGLTF.Runtime
             }
         }        
 
-        #endregion
+#endregion
     }    
 }
