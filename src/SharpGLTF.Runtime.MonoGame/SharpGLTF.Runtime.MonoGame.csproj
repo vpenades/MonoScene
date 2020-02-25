@@ -4,11 +4,7 @@
     <TargetFramework>net471</TargetFramework>
     <RootNamespace>SharpGLTF.Runtime</RootNamespace>
     <LangVersion>7.1</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+  </PropertyGroup>  
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.7.1.189" />
