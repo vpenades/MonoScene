@@ -62,6 +62,11 @@ namespace SharpGLTF.Runtime
             _MeshWriter = new MeshPrimitiveWriter();
         }
 
+        public MonoGameDeviceContent<MonoGameModelTemplate> LoadDeviceModel(string modelFilepath)
+        {
+            return MonoGameModelTemplate.LoadDeviceModel(_Device, modelFilepath, this);
+        }
+
         #endregion
 
         #region Mesh API

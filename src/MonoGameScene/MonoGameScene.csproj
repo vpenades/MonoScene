@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpGLTF.Runtime.Monogame\SharpGLTF.Runtime.MonoGame.csproj" />
+    <ProjectReference Include="..\SharpGLTF.Runtime.MonoGame.PBR\SharpGLTF.Runtime.MonoGame.PBR.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,10 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Models\Avocado.glb" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="Models\BrainStem.glb" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="Models\CesiumMan.glb" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="Models\haunted_house.glb" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Models\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

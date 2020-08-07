@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGameScene", "MonoGameSc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpGLTF.Runtime.MonoGame", "SharpGLTF.Runtime.MonoGame\SharpGLTF.Runtime.MonoGame.csproj", "{83A2BD11-5186-4595-8B7E-191B5DE0BEFE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpGLTF.Runtime.MonoGame.PBR", "SharpGLTF.Runtime.MonoGame.PBR\SharpGLTF.Runtime.MonoGame.PBR.csproj", "{B920B65B-65C6-4456-AA2D-6E33DDF87B2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{83A2BD11-5186-4595-8B7E-191B5DE0BEFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83A2BD11-5186-4595-8B7E-191B5DE0BEFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83A2BD11-5186-4595-8B7E-191B5DE0BEFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B920B65B-65C6-4456-AA2D-6E33DDF87B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B920B65B-65C6-4456-AA2D-6E33DDF87B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B920B65B-65C6-4456-AA2D-6E33DDF87B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B920B65B-65C6-4456-AA2D-6E33DDF87B2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

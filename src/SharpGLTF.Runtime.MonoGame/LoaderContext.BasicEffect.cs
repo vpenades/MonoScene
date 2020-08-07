@@ -11,7 +11,7 @@ using GLTFMATERIAL = SharpGLTF.Schema2.Material;
 
 namespace SharpGLTF.Runtime
 {
-    class BasicEffectsLoaderContext : LoaderContext
+    public class BasicEffectsLoaderContext : LoaderContext
     {
         #region lifecycle
 

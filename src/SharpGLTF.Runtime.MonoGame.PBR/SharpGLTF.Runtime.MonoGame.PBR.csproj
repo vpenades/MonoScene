@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>SharpGLTF.Runtime</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpGLTF.Runtime.MonoGame\SharpGLTF.Runtime.MonoGame.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1375-develop" />
+    <PackageReference Include="SharpGLTF.Core" Version="1.0.0-alpha0018" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Effects\Shaders\Resources\*.ogl.mgfxo" />
+    <EmbeddedResource Include="Effects\Shaders\Resources\*.dx11.mgfxo" />
+  </ItemGroup>
+
+</Project>

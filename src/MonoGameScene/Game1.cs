@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using SharpGLTF.Runtime;
+
 namespace MonoGameScene
 {
     /// <summary>
@@ -20,6 +22,7 @@ namespace MonoGameScene
         public Game1()
         {
             _Graphics = new GraphicsDeviceManager(this);
+            _Graphics.GraphicsProfile = GraphicsProfile.HiDef;
 
             Content.RootDirectory = "Content";
         }
@@ -46,23 +49,27 @@ namespace MonoGameScene
 
         private readonly GraphicsDeviceManager _Graphics;
         
-        // these are the actual hardware resources that represent every model's geometry.
+        // these are the actual hardware resources that represent every model's geometry.        
         
         SharpGLTF.Runtime.MonoGameDeviceContent<SharpGLTF.Runtime.MonoGameModelTemplate> _AvodadoTemplate;
         SharpGLTF.Runtime.MonoGameDeviceContent<SharpGLTF.Runtime.MonoGameModelTemplate> _BrainStemTemplate;
         SharpGLTF.Runtime.MonoGameDeviceContent<SharpGLTF.Runtime.MonoGameModelTemplate> _CesiumManTemplate;
         SharpGLTF.Runtime.MonoGameDeviceContent<SharpGLTF.Runtime.MonoGameModelTemplate> _HauntedHouseTemplate;
+        SharpGLTF.Runtime.MonoGameDeviceContent<SharpGLTF.Runtime.MonoGameModelTemplate> _SharkTemplate;
 
         #endregion
 
         #region content loading
-        
+
         protected override void LoadContent()
         {
-            _AvodadoTemplate = SharpGLTF.Runtime.MonoGameModelTemplate.LoadDeviceModel(this.GraphicsDevice, "Models\\Avocado.glb");
-            _BrainStemTemplate = SharpGLTF.Runtime.MonoGameModelTemplate.LoadDeviceModel(this.GraphicsDevice, "Models\\BrainStem.glb");
-            _CesiumManTemplate = SharpGLTF.Runtime.MonoGameModelTemplate.LoadDeviceModel(this.GraphicsDevice, "Models\\CesiumMan.glb");
-            _HauntedHouseTemplate = SharpGLTF.Runtime.MonoGameModelTemplate.LoadDeviceModel(this.GraphicsDevice, "Models\\haunted_house.glb");
+            var loader = PBREffectsLoaderContext.CreateLoaderContext(this.GraphicsDevice);
+
+            _AvodadoTemplate = loader.LoadDeviceModel("Models\\Avocado.glb");
+            _BrainStemTemplate = loader.LoadDeviceModel("Models\\BrainStem.glb");
+            _CesiumManTemplate = loader.LoadDeviceModel( "Models\\CesiumMan.glb");
+            _HauntedHouseTemplate = loader.LoadDeviceModel("Models\\haunted_house.glb");
+            _SharkTemplate = loader.LoadDeviceModel("Models\\shark.glb");
         }
         
         protected override void UnloadContent()
@@ -78,6 +85,9 @@ namespace MonoGameScene
 
             _HauntedHouseTemplate?.Dispose();
             _HauntedHouseTemplate = null;
+
+            _SharkTemplate?.Dispose();
+            _SharkTemplate = null;
         }
 
         #endregion
@@ -93,7 +103,9 @@ namespace MonoGameScene
         private SharpGLTF.Runtime.MonoGameModelInstance _CesiumMan1;
         private SharpGLTF.Runtime.MonoGameModelInstance _CesiumMan2;
         private SharpGLTF.Runtime.MonoGameModelInstance _CesiumMan3;
-        private SharpGLTF.Runtime.MonoGameModelInstance _CesiumMan4;       
+        private SharpGLTF.Runtime.MonoGameModelInstance _CesiumMan4;
+
+        private SharpGLTF.Runtime.MonoGameModelInstance _Shark;
 
 
         protected override void Update(GameTime gameTime)
@@ -115,6 +127,8 @@ namespace MonoGameScene
             if (_CesiumMan3 == null) _CesiumMan3 = _CesiumManTemplate.Instance.CreateInstance();
             if (_CesiumMan4 == null) _CesiumMan4 = _CesiumManTemplate.Instance.CreateInstance();
 
+            if (_Shark == null) _Shark = _SharkTemplate.Instance.CreateInstance();
+
             // animate each instance individually.
 
             var animTime = (float)gameTime.TotalGameTime.TotalSeconds;
@@ -124,6 +138,8 @@ namespace MonoGameScene
             _CesiumMan2.Controller.SetAnimationFrame(0, 0.5f * animTime);
             _CesiumMan3.Controller.SetAnimationFrame(0, 1.0f * animTime);
             _CesiumMan4.Controller.SetAnimationFrame(0, 1.5f * animTime);
+
+            _Shark.Controller.SetAnimationFrame(0, 1.0f * animTime);
 
             base.Update(gameTime);
         }        
@@ -146,7 +162,9 @@ namespace MonoGameScene
 
             var ctx = new ModelDrawContext(_Graphics, camera);
 
-            ctx.DrawModelInstance(_Avocado, Matrix.CreateScale(30) * Matrix.CreateRotationY(animTime*0.3f) * Matrix.CreateTranslation(-5,5,-5));
+            ctx.SetDemoLights(animTime);
+
+            ctx.DrawModelInstance(_Avocado, Matrix.CreateScale(30) * Matrix.CreateRotationY(animTime*0.3f) * Matrix.CreateTranslation(-4,4,1));
 
             ctx.DrawModelInstance(_HauntedHouse, Matrix.CreateScale(20) * Matrix.CreateRotationY(1));
 
@@ -156,6 +174,8 @@ namespace MonoGameScene
             ctx.DrawModelInstance(_CesiumMan2, Matrix.CreateTranslation(-2, 0, 5));
             ctx.DrawModelInstance(_CesiumMan3, Matrix.CreateTranslation( 2, 0, 5));
             ctx.DrawModelInstance(_CesiumMan4, Matrix.CreateTranslation( 3, 0, 5));
+
+            ctx.DrawModelInstance(_Shark, Matrix.CreateTranslation(5, 3, -6));
         }
         
         #endregion

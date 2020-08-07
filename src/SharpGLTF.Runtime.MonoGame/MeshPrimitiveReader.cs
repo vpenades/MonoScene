@@ -155,13 +155,13 @@ namespace SharpGLTF.Runtime
                     {
                         case VertexElementUsage.Position: v.SetValue(element, GetPosition(i)); break;
                         case VertexElementUsage.Normal: v.SetValue(element, GetNormal(i)); break;
-                        case VertexElementUsage.Tangent: v.SetValue(element, GetTangent(i), true); break;
+                        case VertexElementUsage.Tangent: v.SetValue(element, GetTangent(i)); break;
 
                         case VertexElementUsage.TextureCoordinate: v.SetValue(element, GetTextureCoord(i,element.UsageIndex)); break;
-                        case VertexElementUsage.Color: v.SetValue(element, GetColor(i, element.UsageIndex) , true); break;
+                        case VertexElementUsage.Color: v.SetValue(element, GetColor(i, element.UsageIndex)); break;
 
-                        case VertexElementUsage.BlendIndices: v.SetValue(element, GetIndices(i), false); break;
-                        case VertexElementUsage.BlendWeight: v.SetValue(element, GetWeights(i), true); break;
+                        case VertexElementUsage.BlendIndices: v.SetValue(element, GetIndices(i)); break;
+                        case VertexElementUsage.BlendWeight: v.SetValue(element, GetWeights(i)); break;
                     }                            
                 }                
             }
@@ -225,7 +225,7 @@ namespace SharpGLTF.Runtime
                 throw new NotImplementedException();
             }
 
-            public unsafe void SetValue(VertexElement element, XYZW value, bool valueIsUnitLength)
+            public unsafe void SetValue(VertexElement element, XYZW value)
             {
                 var dst = _Vertex.Slice(element.Offset);
 
@@ -235,16 +235,12 @@ namespace SharpGLTF.Runtime
                         System.Runtime.InteropServices.MemoryMarshal.Write(dst, ref value);
                         return;
 
+                    case VertexElementFormat.Color:                        
+                        SetValue(element, new Microsoft.Xna.Framework.Graphics.PackedVector.NormalizedByte4(value.ToXna()));
+                        return;
+
                     case VertexElementFormat.Byte4:
-                        if (valueIsUnitLength)
-                        {
-                            SetValue(element, new Microsoft.Xna.Framework.Graphics.PackedVector.NormalizedByte4(value.ToXna()));
-                        }
-                        else
-                        {
-                            SetValue(element, new Microsoft.Xna.Framework.Graphics.PackedVector.Byte4(value.ToXna()));
-                        }
-                        
+                        SetValue(element, new Microsoft.Xna.Framework.Graphics.PackedVector.Byte4(value.ToXna()));                        
                         return;
                     
                     case VertexElementFormat.Short4:
@@ -269,7 +265,7 @@ namespace SharpGLTF.Runtime
 
             public unsafe void SetValue(VertexElement element, Microsoft.Xna.Framework.Graphics.PackedVector.NormalizedByte4 value)
             {
-                if (element.VertexElementFormat != VertexElementFormat.Byte4) throw new ArgumentException(nameof(element));
+                if (element.VertexElementFormat != VertexElementFormat.Color) throw new ArgumentException(nameof(element));
 
                 var dst = _Vertex.Slice(element.Offset, sizeof(Microsoft.Xna.Framework.Graphics.PackedVector.Byte4));
                 System.Runtime.InteropServices.MemoryMarshal.Write(dst, ref value);
