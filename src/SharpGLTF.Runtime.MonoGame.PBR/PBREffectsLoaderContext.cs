@@ -58,14 +58,14 @@ namespace SharpGLTF.Runtime
                 xeffect.BaseColorScale = GetScaler(srcMaterial, "BaseColor", Vector4.One);
                 xeffect.BaseColorMap = UseTexture(srcMaterial, "BaseColor");
 
-                xeffect.MetalRoughnessScale = GetScaler(srcMaterial, "MetallicRoughness", Vector4.Zero);
+                xeffect.MetalRoughnessScale = GetScaler(srcMaterial, "MetallicRoughness", Vector2.Zero);
                 xeffect.MetalRoughnessMap = UseTexture(srcMaterial, "MetallicRoughness");
             }            
 
-            effect.NormalScale = GetScaler(srcMaterial, "Normal", Vector4.Zero);
+            effect.NormalScale = GetScaler(srcMaterial, "Normal", Vector4.Zero).X;
             effect.NormalMap = UseTexture(srcMaterial, "Normal");            
 
-            effect.OcclusionScale = GetScaler(srcMaterial, "Occlusion", Vector4.Zero);
+            effect.OcclusionScale = GetScaler(srcMaterial, "Occlusion", Vector4.Zero).X;
             effect.OcclusionMap = UseTexture(srcMaterial, "Occlusion");
 
             return effect;
@@ -84,6 +84,16 @@ namespace SharpGLTF.Runtime
         #endregion
 
         #region gltf helpers        
+
+        private Vector2 GetScaler(GLTFMATERIAL srcMaterial, string name, Vector2 defval)
+        {
+            var channel = srcMaterial.FindChannel(name);
+
+            if (!channel.HasValue) return defval;
+            var param = channel.Value.Parameter;
+
+            return new Vector2(param.X, param.Y);
+        }
 
         private Vector4 GetScaler(GLTFMATERIAL srcMaterial, string name, Vector4 defval)
         {

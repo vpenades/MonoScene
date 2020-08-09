@@ -40,13 +40,13 @@ namespace SharpGLTF.Runtime.Effects
         private readonly Vector4[] _LightParams2 = new Vector4[3];
         private readonly Vector4[] _LightParams3 = new Vector4[3];        
 
-        private Vector4 _NormalScale = Vector4.One;
+        private float _NormalScale = 1;
         private Texture2D _NormalMap;
 
-        private Vector4 _EmissiveScale = Vector4.One;
+        private Vector3 _EmissiveScale = Vector3.Zero;
         private Texture2D _EmissiveMap;
 
-        private Vector4 _OcclusionScale = Vector4.One;
+        private float _OcclusionScale = 1;
         private Texture2D _OcclusionMap; // this is the AO map
 
         #endregion
@@ -93,13 +93,13 @@ namespace SharpGLTF.Runtime.Effects
 
         #region properties - material        
 
-        public Vector4 NormalScale { get => _NormalScale; set => _NormalScale = value; }
+        public float NormalScale { get => _NormalScale; set => _NormalScale = value; }
 
         public Texture2D NormalMap { get => _NormalMap; set => _NormalMap = value; }
 
         public Texture2D EmissiveMap { get => _EmissiveMap; set => _EmissiveMap = value; }
 
-        public Vector4 OcclusionScale { get => _OcclusionScale; set => _OcclusionScale = value; }
+        public float OcclusionScale { get => _OcclusionScale; set => _OcclusionScale = value; }
 
         public Texture2D OcclusionMap { get => _OcclusionMap; set => _OcclusionMap = value; }
 

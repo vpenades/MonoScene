@@ -15,9 +15,11 @@
 
 #define SKINNED_EFFECT_MAX_BONES   128
 
-DECLARE_TEXTURE(BaseColorTexture, 0);
-DECLARE_TEXTURE(MetalRoughnessTexture, 1);
-DECLARE_TEXTURE(NormalTexture, 2);
+DECLARE_TEXTURE(NormalTexture, 0);
+
+DECLARE_TEXTURE(PrimaryTexture, 1);     // either BaseColor or Diffuse
+DECLARE_TEXTURE(SecondaryTexture, 2);   // either MetallicRoughness or SpecularGlossiness
+
 DECLARE_TEXTURE(EmissiveTexture, 3);
 DECLARE_TEXTURE(OcclusionTexture, 4);
 
@@ -40,11 +42,14 @@ BEGIN_CONSTANTS
 
     // Metallic Roughness Material.
 
-    float4 BaseColorScale;
-    float4 MetalRoughnessScale;
-    float4 NormalScale;
-    float4 EmissiveScale;
-    float4 OcclusionScale;
+    float NormalScale;
+
+    float4 PrimaryScale;    // either BaseColor or Diffuse
+    float4 SecondaryScale;  // either MetallicRoughness or SpecularGlossiness
+
+    float OcclusionScale;
+
+    float3 EmissiveScale;    
 
 END_CONSTANTS
 
@@ -196,7 +201,7 @@ VsOutTexNorm VsRigidNormal(VsInRigidTangent input)
     output.TangentBasisY = TBN[1];
     output.TangentBasisZ = TBN[2];
 
-    output.Color = input.Color * BaseColorScale;
+    output.Color = input.Color;
     output.TextureCoordinate = input.TextureCoordinate;   
     
     return output;
@@ -236,7 +241,7 @@ VsOutTexNorm VsRigid(VsInRigid input)
     output.TangentBasisY = float3(0, 0, 0);
     output.TangentBasisZ = mul(float4(input.Normal, 0.0), World);
 
-    output.Color = input.Color * BaseColorScale;
+    output.Color = input.Color;
     output.TextureCoordinate = input.TextureCoordinate;
 
     return output;
@@ -264,7 +269,7 @@ VsOutTexNorm VsSkinned(VsInSkinned input)
 // PIXEL SHADERS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "Material.fx"
+
 #include "PBR.Pixel.fx"
 
 
@@ -294,7 +299,7 @@ float3 PsGetFinalNormal(VsOutTexNorm input)
     // Compute pertubed normals:
 
     float3 n = SAMPLE_TEXTURE(NormalTexture, input.TextureCoordinate).xyz * float3(2, 2, 2) - float3(1, 1, 1);
-    n *= float3(NormalScale.x, NormalScale.x, 1.0);
+    n *= float3(NormalScale, NormalScale, 1.0);
     n = mul(n, tangentBasis);
     n = normalize(n);
 
@@ -314,8 +319,8 @@ float4 PsWithPerturbedNormal(VsOutTexNorm input) : COLOR0
 // TECHNIQUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TECHNIQUE(Rigid, VsRigid, PsWithGeometricNormal);
-TECHNIQUE(Skinned, VsSkinned, PsWithGeometricNormal);
+TECHNIQUE(Rigid, VsRigid, PsWithGeometricNormal );
+TECHNIQUE(Skinned, VsSkinned, PsWithGeometricNormal );
 
-TECHNIQUE(RigidNormal, VsRigidNormal, PsWithPerturbedNormal);
-TECHNIQUE(SkinnedNormal, VsSkinnedNormal, PsWithPerturbedNormal);
+TECHNIQUE(RigidNormal, VsRigidNormal, PsWithPerturbedNormal );
+TECHNIQUE(SkinnedNormal, VsSkinnedNormal, PsWithPerturbedNormal );

@@ -82,3 +82,4 @@ float3 getPunctualRadianceSheen(float3 sheenColor, float sheenIntensity, float s
 {
     return NdotL * BRDF_specularSheen(sheenColor, sheenIntensity, sheenRoughness, NdotL, NdotV, NdotH);
 }
+

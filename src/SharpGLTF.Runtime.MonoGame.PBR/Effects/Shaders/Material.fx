@@ -71,20 +71,9 @@ NormalInfo getNormalInfo(VsOutTexNorm input)
 
 float4 getBaseColor(float2 uv, float4 vertexColor)
 {
-    
-#ifdef MATERIAL_SPECULARGLOSSINESS
-    float4 baseColor = DiffuseScale;
-#elif defined(MATERIAL_METALLICROUGHNESS)
-    float4 baseColor = BaseColorScale;
-#else
-    float4 baseColor = 1;
-#endif
+    float4 baseColor = PrimaryScale;
 
-#ifdef MATERIAL_SPECULARGLOSSINESS
-    baseColor *= sRGBToLinear(SAMPLE_TEXTURE(DiffuseTexture, uv));
-#elif MATERIAL_METALLICROUGHNESS
-    baseColor *= sRGBToLinear(SAMPLE_TEXTURE(BaseColorTexture, uv));
-#endif    
+    baseColor *= sRGBToLinear(SAMPLE_TEXTURE(PrimaryTexture, uv));
 
     return baseColor * vertexColor;
 }
@@ -92,13 +81,13 @@ float4 getBaseColor(float2 uv, float4 vertexColor)
 
 MaterialInfo getMetallicRoughnessInfo(MaterialInfo info, float f0_ior, float2 uv)
 {
-    info.metallic = MetalRoughnessScale.x;
-    info.perceptualRoughness = MetalRoughnessScale.y;
+    info.metallic = SecondaryScale.x;
+    info.perceptualRoughness = SecondaryScale.y;
 
 
     // Roughness is stored in the 'g' channel, metallic is stored in the 'b' channel.
     // This layout intentionally reserves the 'r' channel for (optional) occlusion map data
-    float4 mrSample = SAMPLE_TEXTURE(MetalRoughnessTexture, uv);
+    float4 mrSample = SAMPLE_TEXTURE(SecondaryTexture, uv);
     info.perceptualRoughness *= mrSample.g;
     info.metallic *= mrSample.b;
 
@@ -117,3 +106,19 @@ MaterialInfo getMetallicRoughnessInfo(MaterialInfo info, float f0_ior, float2 uv
     return info;
 }
 
+MaterialInfo getSpecularGlossinessInfo(MaterialInfo info, float2 uv)
+{
+    info.f0 = SecondaryScale.xyz;
+    info.perceptualRoughness = SecondaryScale.w;
+
+// #ifdef HAS_SPECULAR_GLOSSINESS_MAP
+    float4 sgSample = sRGBToLinear(SAMPLE_TEXTURE(SecondaryTexture, uv));
+    info.perceptualRoughness *= sgSample.a; // glossiness to roughness
+    info.f0 *= sgSample.rgb; // specular
+// #endif // ! HAS_SPECULAR_GLOSSINESS_MAP
+
+    info.perceptualRoughness = 1.0 - info.perceptualRoughness; // 1 - glossiness
+    info.albedoColor = info.baseColor.rgb * (1.0 - max(max(info.f0.r, info.f0.g), info.f0.b));
+
+    return info;
+}

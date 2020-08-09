@@ -26,7 +26,7 @@ namespace SharpGLTF.Runtime.Effects
         private Vector4 _BaseColorScale = Vector4.One;
         private Texture2D _BaseColorMap;
 
-        private Vector4 _MetalRoughnessScale = Vector4.One;
+        private Vector2 _MetalRoughnessScale = Vector2.One;
         private Texture2D _MetalRoughnessMap;
 
         #endregion
@@ -37,7 +37,7 @@ namespace SharpGLTF.Runtime.Effects
 
         public Texture2D BaseColorMap { get => _BaseColorMap; set => _BaseColorMap = value; }
 
-        public Vector4 MetalRoughnessScale { get => _MetalRoughnessScale; set => _MetalRoughnessScale = value; }
+        public Vector2 MetalRoughnessScale { get => _MetalRoughnessScale; set => _MetalRoughnessScale = value; }
 
         public Texture2D MetalRoughnessMap { get => _MetalRoughnessMap; set => _MetalRoughnessMap = value; }
 
@@ -51,11 +51,11 @@ namespace SharpGLTF.Runtime.Effects
 
             ApplyPBR();
 
-            Parameters["BaseColorScale"].SetValue(_BaseColorScale);
-            Parameters["BaseColorTextureSampler+BaseColorTexture"].SetValue(_BaseColorMap ?? Resources.WhiteDotTexture);
+            Parameters["PrimaryScale"].SetValue(_BaseColorScale);
+            Parameters["PrimaryTextureSampler+PrimaryTexture"].SetValue(_BaseColorMap ?? Resources.WhiteDotTexture);
 
-            Parameters["MetalRoughnessScale"].SetValue(_MetalRoughnessScale);
-            Parameters["MetalRoughnessTextureSampler+MetalRoughnessTexture"].SetValue(_MetalRoughnessMap ?? Resources.WhiteDotTexture);
+            Parameters["SecondaryScale"].SetValue(_MetalRoughnessScale);
+            Parameters["SecondaryTextureSampler+SecondaryTexture"].SetValue(_MetalRoughnessMap ?? Resources.WhiteDotTexture);
 
             var shaderIndex = RecalculateAll();
 

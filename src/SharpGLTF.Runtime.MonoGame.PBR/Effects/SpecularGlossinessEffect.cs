@@ -14,7 +14,7 @@ namespace SharpGLTF.Runtime.Effects
         /// <summary>
         /// Creates a new AlphaTestEffect with default parameter settings.
         /// </summary>
-        public SpecularGlossinessEffect(GraphicsDevice device) : base(device, Resources.GetShaderByteCode("MetallicRoughnessEffect"))
+        public SpecularGlossinessEffect(GraphicsDevice device) : base(device, Resources.GetShaderByteCode("SpecularGlossinessEffect"))
         {
 
         }
@@ -51,11 +51,11 @@ namespace SharpGLTF.Runtime.Effects
 
             ApplyPBR();
 
-            Parameters["BaseColorScale"].SetValue(_DiffuseScale);
-            Parameters["BaseColorTextureSampler+BaseColorTexture"].SetValue(_DiffuseMap ?? Resources.WhiteDotTexture);
+            Parameters["PrimaryScale"].SetValue(_DiffuseScale);
+            Parameters["PrimaryTextureSampler+PrimaryTexture"].SetValue(_DiffuseMap ?? Resources.WhiteDotTexture);
 
-            Parameters["MetalRoughnessScale"].SetValue(_SpecularGlossinessScale);
-            Parameters["MetalRoughnessTextureSampler+MetalRoughnessTexture"].SetValue(_SpecularGlossinessMap ?? Resources.WhiteDotTexture);
+            Parameters["SecondaryScale"].SetValue(_SpecularGlossinessScale);
+            Parameters["SecondaryTextureSampler+SecondaryTexture"].SetValue(_SpecularGlossinessMap ?? Resources.WhiteDotTexture);
 
             var shaderIndex = RecalculateAll();
 

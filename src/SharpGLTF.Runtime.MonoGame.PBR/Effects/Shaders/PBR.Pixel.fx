@@ -1,4 +1,6 @@
 ﻿
+#include "Material.fx"
+#include "PunctualContrib.fx"
 
 // https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L419
 float4 PsWithPBR(float3 positionW, NormalInfo normalInfo, float2 uv)
@@ -12,7 +14,7 @@ float4 PsWithPBR(float3 positionW, NormalInfo normalInfo, float2 uv)
 
     float NdotV = clampedDot(n, v);
     float TdotV = clampedDot(t, v);
-    float BdotV = clampedDot(b, v);
+    float BdotV = clampedDot(b, v);    
 
     MaterialInfo materialInfo;
     materialInfo.baseColor = baseColor.rgb;
@@ -26,7 +28,11 @@ float4 PsWithPBR(float3 positionW, NormalInfo normalInfo, float2 uv)
     float f0_ior = 0.04;
 #endif
 
+#ifdef MATERIAL_SPECULARGLOSSINESS
+    materialInfo = getSpecularGlossinessInfo(materialInfo, uv);
+#elif MATERIAL_METALLICROUGHNESS
     materialInfo = getMetallicRoughnessInfo(materialInfo, f0_ior, uv);
+#endif
 
     materialInfo.thickness = 1;
     materialInfo.absorption = 0;
@@ -48,96 +54,23 @@ float4 PsWithPBR(float3 positionW, NormalInfo normalInfo, float2 uv)
 
     // lighting
 
-    // LIGHTING
-    float3 f_specular = 0;
-    float3 f_diffuse = 0;
-    float3 f_emissive = 0;
-    float3 f_clearcoat = 0;
-    float3 f_sheen = 0;
-    float3 f_subsurface = 0;
-    float3 f_transmission = 0;
+    LightContrib result;
+    result.f_diffuse = 0;
+    result.f_specular = 0;        
 
     for (int i = 0; i < 3; ++i)
     {
-        Light light = getLight(i);
+        LightContrib lres = AggregateLight(getLight(i), positionW, n, v, materialInfo);
 
-        float3 pointToLight = -light.direction;
-        float rangeAttenuation = 1.0;
-        float spotAttenuation = 1.0;
-
-        if (light.type != LightType_Directional)
-        {
-            pointToLight = light.position - positionW;
-        }
-
-        // Compute range and spot light attenuation.
-        if (light.type != LightType_Directional)
-        {
-            rangeAttenuation = getRangeAttenuation(light.range, length(pointToLight));
-        }
-        if (light.type == LightType_Spot)
-        {
-            spotAttenuation = getSpotAttenuation(pointToLight, light.direction, light.outerConeCos, light.innerConeCos);
-        }
-
-        float3 intensity = rangeAttenuation * spotAttenuation * light.intensity * light.color;
-
-        float3 l = normalize(pointToLight);   // Direction from surface point to light
-        float3 h = normalize(l + v);          // Direction of the vector between l and v, called halfway vector
-        float NdotL = clampedDot(n, l);
-        float NdotV = clampedDot(n, v);
-        float NdotH = clampedDot(n, h);
-        float LdotH = clampedDot(l, h);
-        float VdotH = clampedDot(v, h);
-
-        if (NdotL > 0.0 || NdotV > 0.0)
-        {
-            // Calculation of analytical light
-            //https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#acknowledgments AppendixB
-            f_diffuse += intensity * NdotL * BRDF_lambertian(materialInfo.f0, materialInfo.f90, materialInfo.albedoColor, VdotH);
-
-#ifdef MATERIAL_ANISOTROPY
-            float3 h = normalize(l + v);
-            float TdotL = dot(t, l);
-            float BdotL = dot(b, l);
-            float TdotH = dot(t, h);
-            float BdotH = dot(b, h);
-            f_specular += intensity * NdotL * BRDF_specularAnisotropicGGX(materialInfo.f0, materialInfo.f90, materialInfo.alphaRoughness,
-                VdotH, NdotL, NdotV, NdotH,
-                BdotV, TdotV, TdotL, BdotL, TdotH, BdotH, materialInfo.anisotropy);
-#else
-            f_specular += intensity * NdotL * BRDF_specularGGX(materialInfo.f0, materialInfo.f90, materialInfo.alphaRoughness, VdotH, NdotL, NdotV, NdotH);
-#endif
-
-#ifdef MATERIAL_SHEEN
-            f_sheen += intensity * getPunctualRadianceSheen(materialInfo.sheenColor, materialInfo.sheenIntensity, materialInfo.sheenRoughness,
-                NdotL, NdotV, NdotH);
-#endif
-
-#ifdef MATERIAL_CLEARCOAT
-            f_clearcoat += intensity * getPunctualRadianceClearCoat(materialInfo.clearcoatNormal, v, l,
-                h, VdotH,
-                materialInfo.clearcoatF0, materialInfo.clearcoatF90, materialInfo.clearcoatRoughness);
-#endif
-        }
-
-#ifdef MATERIAL_SUBSURFACE
-        f_subsurface += intensity * getPunctualRadianceSubsurface(n, v, l,
-            materialInfo.subsurfaceScale, materialInfo.subsurfaceDistortion, materialInfo.subsurfacePower,
-            materialInfo.subsurfaceColor, materialInfo.subsurfaceThickness);
-#endif
-
-#ifdef MATERIAL_TRANSMISSION
-        f_transmission += intensity * getPunctualRadianceTransmission(n, v, l, materialInfo.alphaRoughness, ior, materialInfo.f0);
-#endif
+        result.Add(lres);
     }
 
     // blending
 
-    float3 color = (f_emissive + f_diffuse + f_specular);
+    float3 color = (result.f_diffuse + result.f_specular);
 
-    float ao = SAMPLE_TEXTURE(OcclusionTexture, uv).x;
-    color = lerp(color, color * ao, OcclusionScale.x);
+    float ao = SAMPLE_TEXTURE(OcclusionTexture, uv).r;
+    color = lerp(color, color * ao, OcclusionScale);
 
     return float4(toneMap(color), 1);
 }
