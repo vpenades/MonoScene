@@ -3,9 +3,9 @@
 #include "PunctualContrib.fx"
 
 // https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L419
-float4 PsWithPBR(float3 positionW, NormalInfo normalInfo, float2 uv)
+float4 PsWithPBR(float3 positionW, float4 vertexColor, NormalInfo normalInfo, float2 uv)
 {
-    float4 baseColor = getBaseColor(uv, 1);
+    float4 baseColor = getBaseColor(uv, 1) * vertexColor;
 
     float3 v = normalize(CameraPosition - positionW);
     float3 n = normalInfo.n;
@@ -65,9 +65,16 @@ float4 PsWithPBR(float3 positionW, NormalInfo normalInfo, float2 uv)
         result.Add(lres);
     }
 
+    // 
+
+    float3 f_emissive = EmissiveScale;
+// #ifdef HAS_EMISSIVE_MAP
+    f_emissive *= SAMPLE_TEXTURE(EmissiveTexture, uv).rgb;
+// #endif
+
     // blending
 
-    float3 color = (result.f_diffuse + result.f_specular);
+    float3 color = (f_emissive + result.f_diffuse + result.f_specular);
 
     float ao = SAMPLE_TEXTURE(OcclusionTexture, uv).r;
     color = lerp(color, color * ao, OcclusionScale);

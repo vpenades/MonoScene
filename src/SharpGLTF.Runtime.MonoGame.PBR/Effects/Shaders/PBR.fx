@@ -272,8 +272,6 @@ VsOutTexNorm VsSkinned(VsInSkinned input)
 
 #include "PBR.Pixel.fx"
 
-
-
 float4 PsWithGeometricNormal(VsOutTexNorm input) : COLOR0
 {
     NormalInfo ninfo;
@@ -282,35 +280,14 @@ float4 PsWithGeometricNormal(VsOutTexNorm input) : COLOR0
     ninfo.t = 0; // should generate some random T & b ?
     ninfo.b = 0;
 
-    return PsWithPBR(input.PositionWS, ninfo, input.TextureCoordinate);
-}
-
-
-// https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L136
-float3 PsGetFinalNormal(VsOutTexNorm input)
-{
-    // create tangent basis:
-
-    float3 t = normalize(input.TangentBasisX);
-    float3 b = normalize(input.TangentBasisY);
-    float3 ng = normalize(input.TangentBasisZ);
-    float3x3 tangentBasis = float3x3(t, b, ng);
-
-    // Compute pertubed normals:
-
-    float3 n = SAMPLE_TEXTURE(NormalTexture, input.TextureCoordinate).xyz * float3(2, 2, 2) - float3(1, 1, 1);
-    n *= float3(NormalScale, NormalScale, 1.0);
-    n = mul(n, tangentBasis);
-    n = normalize(n);
-
-    return n;
+    return PsWithPBR(input.PositionWS, input.Color, ninfo, input.TextureCoordinate);
 }
 
 float4 PsWithPerturbedNormal(VsOutTexNorm input) : COLOR0
 {
     NormalInfo ninfo = getNormalInfo(input);
 
-    return PsWithPBR(input.PositionWS, ninfo, input.TextureCoordinate);
+    return PsWithPBR(input.PositionWS, input.Color, ninfo, input.TextureCoordinate);
 }
 
 

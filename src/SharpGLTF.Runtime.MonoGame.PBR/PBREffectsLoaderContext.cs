@@ -68,6 +68,9 @@ namespace SharpGLTF.Runtime
             effect.OcclusionScale = GetScaler(srcMaterial, "Occlusion", Vector4.Zero).X;
             effect.OcclusionMap = UseTexture(srcMaterial, "Occlusion");
 
+            effect.EmissiveScale = GetScaler(srcMaterial, "Emissive", Vector3.Zero);
+            effect.EmissiveMap = UseTexture(srcMaterial, "Emissive");
+
             return effect;
         }
 
@@ -93,6 +96,16 @@ namespace SharpGLTF.Runtime
             var param = channel.Value.Parameter;
 
             return new Vector2(param.X, param.Y);
+        }
+
+        private Vector3 GetScaler(GLTFMATERIAL srcMaterial, string name, Vector3 defval)
+        {
+            var channel = srcMaterial.FindChannel(name);
+
+            if (!channel.HasValue) return defval;
+            var param = channel.Value.Parameter;
+
+            return new Vector3(param.X, param.Y, param.Z);
         }
 
         private Vector4 GetScaler(GLTFMATERIAL srcMaterial, string name, Vector4 defval)

@@ -52,10 +52,10 @@ namespace SharpGLTF.Runtime.Effects
             ApplyPBR();
 
             Parameters["PrimaryScale"].SetValue(_BaseColorScale);
-            Parameters["PrimaryTextureSampler+PrimaryTexture"].SetValue(_BaseColorMap ?? Resources.WhiteDotTexture);
+            UseTexture("PrimaryTexture", _BaseColorMap ?? Resources.WhiteDotTexture);
 
             Parameters["SecondaryScale"].SetValue(_MetalRoughnessScale);
-            Parameters["SecondaryTextureSampler+SecondaryTexture"].SetValue(_MetalRoughnessMap ?? Resources.WhiteDotTexture);
+            UseTexture("SecondaryTexture", _MetalRoughnessMap ?? Resources.WhiteDotTexture);
 
             var shaderIndex = RecalculateAll();
 

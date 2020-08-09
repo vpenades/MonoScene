@@ -49,17 +49,17 @@ namespace SharpGLTF.Runtime.Effects
         {
             base.OnApply();
 
-            ApplyPBR();
-
-            Parameters["PrimaryScale"].SetValue(_DiffuseScale);
-            Parameters["PrimaryTextureSampler+PrimaryTexture"].SetValue(_DiffuseMap ?? Resources.WhiteDotTexture);
-
-            Parameters["SecondaryScale"].SetValue(_SpecularGlossinessScale);
-            Parameters["SecondaryTextureSampler+SecondaryTexture"].SetValue(_SpecularGlossinessMap ?? Resources.WhiteDotTexture);
-
             var shaderIndex = RecalculateAll();
 
             CurrentTechnique = Techniques[shaderIndex];
+
+            ApplyPBR();
+
+            Parameters["PrimaryScale"].SetValue(_DiffuseScale);
+            UseTexture("PrimaryTexture", _DiffuseMap ?? Resources.WhiteDotTexture);
+
+            Parameters["SecondaryScale"].SetValue(_SpecularGlossinessScale);
+            UseTexture("SecondaryTexture", _SpecularGlossinessMap ?? Resources.WhiteDotTexture);            
         }
 
         private int RecalculateAll()

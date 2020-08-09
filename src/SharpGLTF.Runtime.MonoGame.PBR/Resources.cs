@@ -21,7 +21,7 @@ namespace SharpGLTF.Runtime
 
             var resources = assembly.GetManifestResourceNames();
 
-            var resName = resources.FirstOrDefault(item => item.EndsWith(name + ".ogl.mgfxo"));
+            var resName = resources.FirstOrDefault(item => item.EndsWith(name + $".{GetShaderProfile()}.mgfxo"));
 
             using (var stream = assembly.GetManifestResourceStream(resName))
             {
@@ -34,6 +34,15 @@ namespace SharpGLTF.Runtime
                     return data;
                 }
             }
+        }
+
+        internal static string GetShaderProfile()
+        {
+            var mgAssembly = typeof(Effect).Assembly;
+            var shaderType = mgAssembly.GetType("Microsoft.Xna.Framework.Graphics.Shader");
+            var profileProperty = shaderType.GetProperty("Profile");
+            var value = (int)profileProperty.GetValue(null);
+            return value == 1 ? "dx11" : "ogl";
         }
 
         private static Texture2D whiteDotTexture;

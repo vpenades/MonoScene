@@ -15,6 +15,13 @@ namespace SharpGLTF.Runtime.Effects
     {
         #region lifecycle
 
+        static PBREffect()
+        {
+            _IsOpenGL = Resources.GetShaderProfile() == "ogl";
+        }
+
+        private static readonly bool _IsOpenGL;
+
         /// <summary>
         /// Creates a new AlphaTestEffect with default parameter settings.
         /// </summary>
@@ -97,6 +104,8 @@ namespace SharpGLTF.Runtime.Effects
 
         public Texture2D NormalMap { get => _NormalMap; set => _NormalMap = value; }
 
+        public Vector3 EmissiveScale { get => _EmissiveScale; set => _EmissiveScale = value; }
+
         public Texture2D EmissiveMap { get => _EmissiveMap; set => _EmissiveMap = value; }
 
         public float OcclusionScale { get => _OcclusionScale; set => _OcclusionScale = value; }
@@ -114,6 +123,14 @@ namespace SharpGLTF.Runtime.Effects
         {
             _BoneCount = boneCount; if (_BoneCount == 0) return;
             Array.Copy(boneTransforms, boneStart, _Bones, 0, boneCount);
+        }
+
+
+        protected void UseTexture(string name, Texture2D tex)
+        {
+            if (_IsOpenGL) name = name + "Sampler+" + name;
+
+            Parameters[name].SetValue(tex);
         }
 
         protected void ApplyPBR()
@@ -138,13 +155,20 @@ namespace SharpGLTF.Runtime.Effects
             if (_NormalMap != null)
             {
                 Parameters["NormalScale"].SetValue(_NormalScale);
-                Parameters["NormalTextureSampler+NormalTexture"].SetValue(_NormalMap ?? Resources.WhiteDotTexture);
+                UseTexture("NormalTexture", _NormalMap ?? Resources.WhiteDotTexture);
             }
 
             if (_OcclusionMap != null)
             {
                 Parameters["OcclusionScale"].SetValue(_OcclusionScale);
-                Parameters["OcclusionTextureSampler+OcclusionTexture"].SetValue(_OcclusionMap ?? Resources.WhiteDotTexture);
+                UseTexture("OcclusionTexture", _OcclusionMap ?? Resources.WhiteDotTexture);
+            }
+
+            Parameters["EmissiveScale"].SetValue(_EmissiveScale);
+
+            if (_EmissiveMap != null)
+            {
+                UseTexture("EmissiveTexture", _EmissiveMap ?? Resources.BlackTransparentDotTexture);
             }
         }        
 
