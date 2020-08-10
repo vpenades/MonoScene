@@ -156,7 +156,7 @@ namespace SharpGLTF.Runtime
 
         private Material GetDefaultMaterial()
         {
-            if (_DummyModel != null)
+            if (_DummyModel == null)  // !=
             {
                 _DummyModel = ModelRoot.CreateModel();
                 _DummyModel.CreateMaterial("Default");
