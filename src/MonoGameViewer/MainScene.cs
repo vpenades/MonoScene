@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Windows.Controls;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using MonoGame.WpfCore.MonoGameControls;
 
+using SharpGLTF.Validation;
+
 namespace MonoGameViewer
 {
     public class MainScene : MonoGameViewModel
     {
         SharpGLTF.Runtime.MonoGameDeviceContent<SharpGLTF.Runtime.MonoGameModelTemplate> _ModelTemplate;
+        BoundingSphere _ModelBounds;
 
         private SharpGLTF.Runtime.MonoGameModelInstance _ModelInstance;
 
@@ -21,8 +26,22 @@ namespace MonoGameViewer
         {
             if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
 
+            var model = SharpGLTF.Schema2.ModelRoot.Load(filePath, ValidationMode.TryFix);
+
+            
+
             var loader = SharpGLTF.Runtime.PBREffectsLoaderContext.CreateLoaderContext(this.GraphicsDevice);
-            _ModelTemplate = loader.LoadDeviceModel(filePath);
+            _ModelTemplate = loader.CreateDeviceModel(model);
+            _ModelBounds = _ModelTemplate.Instance.Bounds;
+
+
+            var points = SharpGLTF.Schema2.Schema2Toolkit.EvaluateTriangles(model.DefaultScene)
+                .SelectMany(item => new[] { item.A.GetGeometry().GetPosition(), item.B.GetGeometry().GetPosition(), item.C.GetGeometry().GetPosition() })
+                .Distinct()
+                .Select(item => new Vector3(item.X, item.Y, item.Z))
+                .ToList();
+
+            _ModelBounds = BoundingSphere.CreateFromPoints(points);
 
             _ModelInstance = null;
         }
@@ -52,14 +71,18 @@ namespace MonoGameViewer
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            var lookAt = new Vector3(0, 2, 0);
-            var camPos = new Vector3(0, 2, 12);
+            if (_ModelInstance == null) return;
+
+            var bounds = _ModelBounds;
+
+            var lookAt = bounds.Center;
+            var camPos = bounds.Center + new Vector3(0, 0, bounds.Radius * 3);
 
             var camera = Matrix.CreateWorld(camPos, lookAt - camPos, Vector3.UnitY);
 
             var ctx = new ModelDrawContext(this.GraphicsDevice, camera);
 
-            var xform = Matrix.CreateFromQuaternion(_Rotation) * Matrix.CreateTranslation(0, 0, -5);
+            var xform = Matrix.CreateFromQuaternion(_Rotation);
 
             if (_ModelInstance != null) ctx.DrawModelInstance(_ModelInstance, xform);
         }

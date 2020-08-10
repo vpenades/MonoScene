@@ -5,13 +5,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-#if USINGMONOGAMEMODEL
-using MODELMESH = Microsoft.Xna.Framework.Graphics.ModelMesh;
-using MODELMESHPART = Microsoft.Xna.Framework.Graphics.ModelMeshPart;
-#else
 using MODELMESH = SharpGLTF.Runtime.RuntimeModelMesh;
 using MODELMESHPART = SharpGLTF.Runtime.RuntimeModelMeshPart;
-#endif
 
 namespace SharpGLTF.Runtime
 {

@@ -93,7 +93,16 @@ namespace SharpGLTF.Runtime
 
         public bool IsSkinned => _Joints0 != null;
         public int VertexCount => _Positions?.Count ?? 0;
-        public (int A, int B, int C)[] TriangleIndices => _Triangles;        
+        public (int A, int B, int C)[] TriangleIndices => _Triangles;      
+        
+        public BoundingSphere BoundingSphere
+        {
+            get
+            {
+                var points = _Positions.Select(item => item.ToXna());
+                return BoundingSphere.CreateFromPoints(points);
+            }
+        }
 
         #endregion
 
@@ -370,6 +379,7 @@ namespace SharpGLTF.Runtime
 
                     var dstPart = dstMesh.CreateMeshPart();
                     dstPart.Effect = srcPart.PrimitiveEffect;
+                    dstPart.BoundingSphere = srcPart.BoundingSphere;
                     dstPart.SetVertexBuffer(vb, srcPart.VertexOffset, srcPart.VertexCount);
                     dstPart.SetIndexBuffer(ib, srcPart.TriangleOffset * 3, srcPart.TriangleCount);                    
                 }
@@ -421,7 +431,9 @@ namespace SharpGLTF.Runtime
                     VertexOffset = _Vertices.Count,
                     VertexCount = partVertices.Length,
                     TriangleOffset = _Triangles.Count,
-                    TriangleCount = partTriangles.Length
+                    TriangleCount = partTriangles.Length,
+                    BoundingSphere = primitive.BoundingSphere
+
                 };
 
                 _Vertices.AddRange(partVertices);
@@ -483,6 +495,8 @@ namespace SharpGLTF.Runtime
             public int VertexCount;
             public int TriangleOffset;
             public int TriangleCount;
+
+            public BoundingSphere BoundingSphere;
         }
 
         #endregion

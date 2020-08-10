@@ -151,25 +151,15 @@ namespace SharpGLTF.Runtime.Effects
             Parameters["LightParam1"].SetValue(_LightParams1);
             Parameters["LightParam2"].SetValue(_LightParams2);
             Parameters["LightParam3"].SetValue(_LightParams3);
+            
+            Parameters["NormalScale"].SetValue(_NormalScale);
+            UseTexture("NormalTexture", _NormalMap ?? Resources.WhiteDotTexture);
+            
+            Parameters["OcclusionScale"].SetValue(_OcclusionScale);
+            UseTexture("OcclusionTexture", _OcclusionMap ?? Resources.WhiteDotTexture);            
 
-            if (_NormalMap != null)
-            {
-                Parameters["NormalScale"].SetValue(_NormalScale);
-                UseTexture("NormalTexture", _NormalMap ?? Resources.WhiteDotTexture);
-            }
-
-            if (_OcclusionMap != null)
-            {
-                Parameters["OcclusionScale"].SetValue(_OcclusionScale);
-                UseTexture("OcclusionTexture", _OcclusionMap ?? Resources.WhiteDotTexture);
-            }
-
-            Parameters["EmissiveScale"].SetValue(_EmissiveScale);
-
-            if (_EmissiveMap != null)
-            {
-                UseTexture("EmissiveTexture", _EmissiveMap ?? Resources.BlackTransparentDotTexture);
-            }
+            Parameters["EmissiveScale"].SetValue(_EmissiveScale);            
+            UseTexture("EmissiveTexture", _EmissiveMap ?? Resources.BlackTransparentDotTexture);            
         }        
 
         #endregion

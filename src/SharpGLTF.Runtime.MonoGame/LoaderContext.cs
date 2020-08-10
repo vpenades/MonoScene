@@ -67,6 +67,11 @@ namespace SharpGLTF.Runtime
             return MonoGameModelTemplate.LoadDeviceModel(_Device, modelFilepath, this);
         }
 
+        public MonoGameDeviceContent<MonoGameModelTemplate> CreateDeviceModel(ModelRoot model)
+        {
+            return MonoGameModelTemplate.CreateDeviceModel(_Device, model, this);
+        }
+
         #endregion
 
         #region Mesh API

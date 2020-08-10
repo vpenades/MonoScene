@@ -35,6 +35,8 @@ namespace SharpGLTF.Runtime
         private int _VertexOffset;
         private int _VertexCount;
 
+        private Microsoft.Xna.Framework.BoundingSphere _Bounds;
+
         public object Tag { get; set; }
 
         #endregion
@@ -53,6 +55,12 @@ namespace SharpGLTF.Runtime
         }
 
         public GraphicsDevice Device => _Parent._GraphicsDevice;
+
+        public Microsoft.Xna.Framework.BoundingSphere BoundingSphere
+        {
+            get => _Bounds;
+            internal set => _Bounds = value;
+        }
 
         #endregion
 
@@ -143,7 +151,13 @@ namespace SharpGLTF.Runtime
             {
                 if (_Sphere.HasValue) return _Sphere.Value;
 
-                return default;
+                foreach(var part in _Primitives)
+                {
+                    if (_Sphere.HasValue) _Sphere = Microsoft.Xna.Framework.BoundingSphere.CreateMerged(_Sphere.Value, part.BoundingSphere);
+                    else _Sphere = part.BoundingSphere;
+                }
+
+                return _Sphere.Value;
             }
             
         }
