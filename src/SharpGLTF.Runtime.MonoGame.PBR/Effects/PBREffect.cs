@@ -159,7 +159,7 @@ namespace SharpGLTF.Runtime.Effects
             UseTexture("OcclusionTexture", _OcclusionMap ?? Resources.WhiteDotTexture);            
 
             Parameters["EmissiveScale"].SetValue(_EmissiveScale);            
-            UseTexture("EmissiveTexture", _EmissiveMap ?? Resources.BlackTransparentDotTexture);            
+            UseTexture("EmissiveTexture", _EmissiveMap ?? Resources.WhiteDotTexture);            
         }        
 
         #endregion

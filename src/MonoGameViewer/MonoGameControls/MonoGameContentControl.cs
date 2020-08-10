@@ -201,7 +201,7 @@ namespace MonoGame.WpfCore.MonoGameControls
                 return null;
 
             var renderTarget = new RenderTarget2D(GraphicsDevice, actualWidth, actualHeight,
-                false, SurfaceFormat.Bgra32, DepthFormat.Depth24Stencil8, 1,
+                false, SurfaceFormat.Bgra32, DepthFormat.Depth24Stencil8, 4,
                 RenderTargetUsage.PlatformContents, true);
 
             var handle = renderTarget.GetSharedHandle();

@@ -24,11 +24,21 @@ namespace MonoGameViewer
 
         public void LoadModel(string filePath)
         {
-            if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
+            SharpGLTF.Schema2.ModelRoot model = null;
 
-            var model = SharpGLTF.Schema2.ModelRoot.Load(filePath, ValidationMode.TryFix);
+            if (filePath.ToLower().EndsWith(".zip"))
+            {
+                model = SharpGLTF.IO.ZipReader.LoadSchema2(filePath, ValidationMode.TryFix);
+            }
+            else
+            {
+                model = SharpGLTF.Schema2.ModelRoot.Load(filePath, ValidationMode.TryFix);
+            }
 
-            
+
+
+
+            if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }            
 
             var loader = SharpGLTF.Runtime.PBREffectsLoaderContext.CreateLoaderContext(this.GraphicsDevice);
             _ModelTemplate = loader.CreateDeviceModel(model);
