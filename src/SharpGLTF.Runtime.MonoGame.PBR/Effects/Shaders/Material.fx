@@ -78,6 +78,15 @@ float4 getBaseColor(float2 uv, float4 vertexColor)
     return baseColor * vertexColor;
 }
 
+float3 getEmissiveColor(float2 uv)
+{
+    float3 color = EmissiveScale;
+
+    color *= sRGBToLinear(SAMPLE_TEXTURE(EmissiveTexture, uv));
+
+    return color;
+}
+
 
 MaterialInfo getMetallicRoughnessInfo(MaterialInfo info, float f0_ior, float2 uv)
 {

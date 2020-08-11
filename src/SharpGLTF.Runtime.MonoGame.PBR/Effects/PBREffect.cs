@@ -101,15 +101,12 @@ namespace SharpGLTF.Runtime.Effects
         #region properties - material        
 
         public float NormalScale { get => _NormalScale; set => _NormalScale = value; }
-
         public Texture2D NormalMap { get => _NormalMap; set => _NormalMap = value; }
 
         public Vector3 EmissiveScale { get => _EmissiveScale; set => _EmissiveScale = value; }
-
         public Texture2D EmissiveMap { get => _EmissiveMap; set => _EmissiveMap = value; }
 
         public float OcclusionScale { get => _OcclusionScale; set => _OcclusionScale = value; }
-
         public Texture2D OcclusionMap { get => _OcclusionMap; set => _OcclusionMap = value; }
 
         #endregion

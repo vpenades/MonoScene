@@ -69,7 +69,7 @@ float4 PsWithPBR(float3 positionW, float4 vertexColor, NormalInfo normalInfo, fl
 
     float3 f_emissive = EmissiveScale;
 // #ifdef HAS_EMISSIVE_MAP
-    f_emissive *= SAMPLE_TEXTURE(EmissiveTexture, uv).rgb;
+    f_emissive *= getEmissiveColor(uv);
 // #endif
 
     // blending

@@ -43,6 +43,8 @@ namespace MonoGame.WpfCore.MonoGameControls
         private bool _isFirstLoad = true;
         private bool _isInitialized;
 
+        private int _Multisampling = 2;
+
         public MonoGameContentControl()
         {
             if (DesignerProperties.GetIsInDesignMode(this))
@@ -201,7 +203,7 @@ namespace MonoGame.WpfCore.MonoGameControls
                 return null;
 
             var renderTarget = new RenderTarget2D(GraphicsDevice, actualWidth, actualHeight,
-                false, SurfaceFormat.Bgra32, DepthFormat.Depth24Stencil8, 4,
+                false, SurfaceFormat.Bgra32, DepthFormat.Depth24Stencil8, _Multisampling,
                 RenderTargetUsage.PlatformContents, true);
 
             var handle = renderTarget.GetSharedHandle();
