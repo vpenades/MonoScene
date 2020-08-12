@@ -88,18 +88,13 @@ float3 getEmissiveColor(float2 uv)
 }
 
 
-MaterialInfo getMetallicRoughnessInfo(MaterialInfo info, float f0_ior, float2 uv)
+MaterialInfo getMetallicRoughnessInfo(MaterialInfo info, float f0_ior, float4 secondaryColor)
 {
-    info.metallic = SecondaryScale.x;
-    info.perceptualRoughness = SecondaryScale.y;
-
-
     // Roughness is stored in the 'g' channel, metallic is stored in the 'b' channel.
     // This layout intentionally reserves the 'r' channel for (optional) occlusion map data
-    float4 mrSample = SAMPLE_TEXTURE(SecondaryTexture, uv);
-    info.perceptualRoughness *= mrSample.g;
-    info.metallic *= mrSample.b;
 
+    info.metallic = SecondaryScale.x * secondaryColor.b;
+    info.perceptualRoughness = SecondaryScale.y * secondaryColor.g;
 
 #ifdef MATERIAL_METALLICROUGHNESS_SPECULAROVERRIDE
     // Overriding the f0 creates unrealistic materials if the IOR does not match up.
@@ -115,16 +110,10 @@ MaterialInfo getMetallicRoughnessInfo(MaterialInfo info, float f0_ior, float2 uv
     return info;
 }
 
-MaterialInfo getSpecularGlossinessInfo(MaterialInfo info, float2 uv)
+MaterialInfo getSpecularGlossinessInfo(MaterialInfo info, float4 secondaryColor)
 {
-    info.f0 = SecondaryScale.xyz;
-    info.perceptualRoughness = SecondaryScale.w;
-
-// #ifdef HAS_SPECULAR_GLOSSINESS_MAP
-    float4 sgSample = sRGBToLinear(SAMPLE_TEXTURE(SecondaryTexture, uv));
-    info.perceptualRoughness *= sgSample.a; // glossiness to roughness
-    info.f0 *= sgSample.rgb; // specular
-// #endif // ! HAS_SPECULAR_GLOSSINESS_MAP
+    info.f0 = SecondaryScale.xyz * secondaryColor.rgb;// specular
+    info.perceptualRoughness = SecondaryScale.w * secondaryColor.a; // glossiness to roughness    
 
     info.perceptualRoughness = 1.0 - info.perceptualRoughness; // 1 - glossiness
     info.albedoColor = info.baseColor.rgb * (1.0 - max(max(info.f0.r, info.f0.g), info.f0.b));

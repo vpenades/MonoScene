@@ -83,6 +83,8 @@ namespace MonoGameViewer
 
             if (_ModelInstance == null) return;
 
+            _ModelInstance.Controller.SetAnimationFrame(0, (float)gameTime.TotalGameTime.TotalSeconds);
+
             var bounds = _ModelBounds;
 
             var lookAt = bounds.Center;

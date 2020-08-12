@@ -95,19 +95,28 @@ namespace SharpGLTF.Runtime
                 matrices.World = worldXform;
             }
 
-            if (effect is SkinnedEffect skin && skinTransforms != null)
+            if (skinTransforms != null)
             {
-                var xposed = skinTransforms.Select(item => Matrix.Transpose(item)).ToArray();
+                if (effect is SkinnedEffect skin)
+                {
+                    var xposed = skinTransforms.Select(item => Matrix.Transpose(item)).ToArray();
 
-                skin.SetBoneTransforms(skinTransforms);
+                    skin.SetBoneTransforms(skinTransforms);
+                }
+                else if (effect is IEffectBones iskin)
+                {
+                    var xposed = skinTransforms.Select(item => Matrix.Transpose(item)).ToArray();
+
+                    iskin.SetBoneTransforms(skinTransforms, 0, skinTransforms.Length);
+                }
             }
-
-            if (effect is IEffectBones iskin && skinTransforms != null)
+            else
             {
-                var xposed = skinTransforms.Select(item => Matrix.Transpose(item)).ToArray();
-
-                iskin.SetBoneTransforms(skinTransforms, 0, skinTransforms.Length);
-            }            
+                if (effect is IEffectBones iskin)
+                {
+                    iskin.SetBoneTransforms(null, 0, 0);
+                }
+            }
         }
 
         #endregion

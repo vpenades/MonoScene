@@ -34,7 +34,7 @@ namespace MonoGameViewer
                 if (fe.DataContext is MainScene scene)
                 {
                     var dlg = new OpenFileDialog();
-                    dlg.Filter = "glTF Files|*.gltf;*.glb;*.gltf.zip";
+                    dlg.Filter = "glTF Files|*.gltf;*.glb;*.gltf.zip;*.vrm";
                     dlg.RestoreDirectory = true;
                     if (!dlg.ShowDialog().Value) return;
 

@@ -67,8 +67,11 @@ namespace SharpGLTF.Runtime.Effects
             int techniqueIndex = 0;
             if (BoneCount != 0) techniqueIndex += 1;
 
-            if (NormalMap != null)
-                techniqueIndex += 2;
+            if (NormalMap != null) techniqueIndex += 2;
+            if (_BaseColorMap != null) techniqueIndex += 4;
+            if (_MetalRoughnessMap != null) techniqueIndex += 8;
+            if (EmissiveMap != null) techniqueIndex += 16;
+            if (OcclusionMap != null) techniqueIndex += 32;
 
             return techniqueIndex;
         }

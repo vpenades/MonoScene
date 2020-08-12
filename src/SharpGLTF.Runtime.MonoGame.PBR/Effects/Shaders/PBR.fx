@@ -184,7 +184,7 @@ float3x3 GetTangentBasis(VsInRigidTangent input)
     return float3x3(tangentW, bitangentW, normalW);
 }
 
-VsOutTexNorm VsRigidNormal(VsInRigidTangent input)
+VsOutTexNorm VsRigidBasis(VsInRigidTangent input)
 {
     VsOutTexNorm output;    
 
@@ -207,7 +207,7 @@ VsOutTexNorm VsRigidNormal(VsInRigidTangent input)
     return output;
 }
 
-VsOutTexNorm VsSkinnedNormal(VsInSkinnedTangent input)
+VsOutTexNorm VsSkinnedBasis(VsInSkinnedTangent input)
 {
     
     float4x3 mbones = FunctionBoneMatrixCalculation(input.BlendIndices, input.BlendWeights);
@@ -223,7 +223,7 @@ VsOutTexNorm VsSkinnedNormal(VsInSkinnedTangent input)
     output.Color = input.Color;
     output.TextureCoordinate = input.TextureCoordinate;
 
-    return VsRigidNormal(output);
+    return VsRigidBasis(output);
 }
 
 VsOutTexNorm VsRigid(VsInRigid input)
@@ -272,32 +272,43 @@ VsOutTexNorm VsSkinned(VsInSkinned input)
 
 #include "PBR.Pixel.fx"
 
-float4 PsWithGeometricNormal(VsOutTexNorm input) : COLOR0
+
+float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, bool hasSecondary, bool hasEmissive, bool hasOcclusion)
 {
     NormalInfo ninfo;
-    ninfo.ng = normalize(input.TangentBasisZ);
-    ninfo.n = ninfo.ng;
-    ninfo.t = 0; // should generate some random T & b ?
-    ninfo.b = 0;
 
-    return PsWithPBR(input.PositionWS, input.Color, ninfo, input.TextureCoordinate);
+    if (hasPerturbedNormals)
+    {
+        ninfo = getNormalInfo(input);
+    }
+    else
+    {        
+        ninfo.ng = normalize(input.TangentBasisZ);
+        ninfo.n = ninfo.ng;
+        ninfo.t = 0; // should generate some random T & b ?
+        ninfo.b = 0;        
+    }
+
+    float4 f_primary = input.Color * PrimaryScale;
+    if (hasPrimary) f_primary *= getBaseColor(input.TextureCoordinate, 1);
+
+    float4 f_secondary = 1;
+    if (hasSecondary) f_secondary *= SAMPLE_TEXTURE(SecondaryTexture, input.TextureCoordinate);
+
+    float3 f_emissive = EmissiveScale;
+    if (hasEmissive) f_emissive *= getEmissiveColor(input.TextureCoordinate);
+
+    float f_occlusion = 1;
+    if (hasOcclusion) f_occlusion *= SAMPLE_TEXTURE(OcclusionTexture, input.TextureCoordinate).r;
+
+    return PsWithPBR(input.PositionWS, ninfo, f_primary, f_secondary, f_emissive, f_occlusion);
 }
-
-float4 PsWithPerturbedNormal(VsOutTexNorm input) : COLOR0
-{
-    NormalInfo ninfo = getNormalInfo(input);
-
-    return PsWithPBR(input.PositionWS, input.Color, ninfo, input.TextureCoordinate);
-}
-
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TECHNIQUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TECHNIQUE(Rigid, VsRigid, PsWithGeometricNormal );
-TECHNIQUE(Skinned, VsSkinned, PsWithGeometricNormal );
+#include "Permutations.fx"
 
-TECHNIQUE(RigidNormal, VsRigidNormal, PsWithPerturbedNormal );
-TECHNIQUE(SkinnedNormal, VsSkinnedNormal, PsWithPerturbedNormal );
+// EOF (do not remove this line, as it causes a Null Exception in MGFXC)

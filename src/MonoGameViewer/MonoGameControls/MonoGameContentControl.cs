@@ -43,7 +43,7 @@ namespace MonoGame.WpfCore.MonoGameControls
         private bool _isFirstLoad = true;
         private bool _isInitialized;
 
-        private int _Multisampling = 2;
+        private int _Multisampling = 8;
 
         public MonoGameContentControl()
         {
@@ -200,7 +200,7 @@ namespace MonoGame.WpfCore.MonoGameControls
                 return null;
 
             if (GraphicsDevice == null)
-                return null;
+                return null;            
 
             var renderTarget = new RenderTarget2D(GraphicsDevice, actualWidth, actualHeight,
                 false, SurfaceFormat.Bgra32, DepthFormat.Depth24Stencil8, _Multisampling,

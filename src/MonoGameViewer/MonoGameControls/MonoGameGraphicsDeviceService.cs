@@ -51,7 +51,7 @@ namespace MonoGame.WpfCore.MonoGameControls
             // we will make sure the back buffer is large enough for the window we're rendering into.
             // Also, the handle doesn't matter because we call GraphicsDevice.Present(...) with the
             // actual window handle to render into.
-            GraphicsDevice = CreateGraphicsDevice(new WindowInteropHelper(window).Handle, 1, 1);
+            GraphicsDevice = CreateGraphicsDevice(new WindowInteropHelper(window).Handle, 1, 1, 8);
             DeviceCreated?.Invoke(this, EventArgs.Empty);
         }
 
@@ -60,7 +60,7 @@ namespace MonoGame.WpfCore.MonoGameControls
 
         public GraphicsDevice GraphicsDevice { get; private set; }
 
-        public GraphicsDevice CreateGraphicsDevice(IntPtr windowHandle, int width, int height)
+        public GraphicsDevice CreateGraphicsDevice(IntPtr windowHandle, int width, int height, int multisampling = 1)
         {
             _parameters = new PresentationParameters
             {
@@ -69,6 +69,7 @@ namespace MonoGame.WpfCore.MonoGameControls
                 BackBufferFormat = SurfaceFormat.Color,
                 DepthStencilFormat = DepthFormat.Depth24,
                 DeviceWindowHandle = windowHandle,
+                MultiSampleCount = multisampling,
                 PresentationInterval = Microsoft.Xna.Framework.Graphics.PresentInterval.Immediate,
                 IsFullScreen = false
             };

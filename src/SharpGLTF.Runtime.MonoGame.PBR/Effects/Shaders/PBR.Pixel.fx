@@ -3,10 +3,8 @@
 #include "PunctualContrib.fx"
 
 // https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L419
-float4 PsWithPBR(float3 positionW, float4 vertexColor, NormalInfo normalInfo, float2 uv)
+float4 PsWithPBR(float3 positionW, NormalInfo normalInfo, float4 primaryColor, float4 secondaryColor, float3 f_emissive, float f_occlusion)
 {
-    float4 baseColor = getBaseColor(uv, 1) * vertexColor;
-
     float3 v = normalize(CameraPosition - positionW);
     float3 n = normalInfo.n;
     float3 t = normalInfo.t;
@@ -17,7 +15,7 @@ float4 PsWithPBR(float3 positionW, float4 vertexColor, NormalInfo normalInfo, fl
     float BdotV = clampedDot(b, v);    
 
     MaterialInfo materialInfo;
-    materialInfo.baseColor = baseColor.rgb;
+    materialInfo.baseColor = primaryColor.rgb;
 
 #ifdef MATERIAL_IOR
     float ior = u_IOR_and_f0.x;
@@ -29,9 +27,9 @@ float4 PsWithPBR(float3 positionW, float4 vertexColor, NormalInfo normalInfo, fl
 #endif
 
 #ifdef MATERIAL_SPECULARGLOSSINESS
-    materialInfo = getSpecularGlossinessInfo(materialInfo, uv);
+    materialInfo = getSpecularGlossinessInfo(materialInfo, secondaryColor);
 #elif MATERIAL_METALLICROUGHNESS
-    materialInfo = getMetallicRoughnessInfo(materialInfo, f0_ior, uv);
+    materialInfo = getMetallicRoughnessInfo(materialInfo, f0_ior, secondaryColor);
 #endif
 
     materialInfo.thickness = 1;
@@ -63,21 +61,13 @@ float4 PsWithPBR(float3 positionW, float4 vertexColor, NormalInfo normalInfo, fl
         LightContrib lres = AggregateLight(getLight(i), positionW, n, v, materialInfo);
 
         result.Add(lres);
-    }
-
-    // 
-
-    float3 f_emissive = EmissiveScale;
-// #ifdef HAS_EMISSIVE_MAP
-    f_emissive *= getEmissiveColor(uv);
-// #endif
+    }    
 
     // blending
 
     float3 color = (f_emissive + result.f_diffuse + result.f_specular);
-
-    float ao = SAMPLE_TEXTURE(OcclusionTexture, uv).r;
-    color = lerp(color, color * ao, OcclusionScale);
+    
+    color = lerp(color, color * f_occlusion, OcclusionScale);
 
     return float4(toneMap(color), 1);
 }

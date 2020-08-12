@@ -151,6 +151,8 @@ namespace SharpGLTF.Runtime.Effects
             
             Parameters["NormalScale"].SetValue(_NormalScale);
             UseTexture("NormalTexture", _NormalMap ?? Resources.WhiteDotTexture);
+
+            
             
             Parameters["OcclusionScale"].SetValue(_OcclusionScale);
             UseTexture("OcclusionTexture", _OcclusionMap ?? Resources.WhiteDotTexture);            

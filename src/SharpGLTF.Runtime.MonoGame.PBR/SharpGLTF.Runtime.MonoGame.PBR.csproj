@@ -21,4 +21,20 @@
     <EmbeddedResource Include="Effects\Shaders\Resources\*.dx11.mgfxo" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Effects\Shaders\Permutations.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Permutations.fx</LastGenOutput>
+    </None>
+    <None Update="Effects\Shaders\Permutations.fx">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Permutations.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
 </Project>
