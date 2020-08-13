@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
+    <RootNamespace>Microsoft.Xna.Framework.Graphics</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Effects\Shaders\Resources\*.mgfxo" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Effects\Shaders\Resources\*.mgfxo" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1375-develop" PrivateAssets="all" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Effects\Shaders\Permutations.fx">
+      <DependentUpon>Permutations.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </None>
+    <None Update="Effects\Shaders\Permutations.tt">
+      <LastGenOutput>Permutations.fx</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+</Project>

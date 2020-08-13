@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace SharpGLTF.Runtime
+namespace Microsoft.Xna.Framework.Graphics
 {
-    static class Resources
+    public static class Resources
     {
         private static readonly Dictionary<string, Byte[]> _Shaders = new Dictionary<string, byte[]>();
 
@@ -48,6 +45,7 @@ namespace SharpGLTF.Runtime
         private static Texture2D whiteDotTexture;
         private static Texture2D blackTransparentDotTexture;
         private static Texture2D aoRoughMetalDefaltDotTexture;
+
         public static Texture2D WhiteDotTexture { get { if (whiteDotTexture != null) return whiteDotTexture; else { throw new NullReferenceException("SharpGLTF.Runtime.Generated.WhiteDotTexture()  ... The Generated dot texture was requested but never created. Make sure you have called Initialize(,,) on gltf in monogames load function first."); } } }
         public static Texture2D BlackTransparentDotTexture { get { if (blackTransparentDotTexture != null) return blackTransparentDotTexture; else { throw new NullReferenceException("SharpGLTF.Runtime.Generated.BlackTransparentDotTexture()  ... The Generated dot texture was requested but never created. Make sure you have called Initialize(,,) on gltf in monogames load function first."); } } }
         public static Texture2D AoRoughMetalDefaltDotTexture { get { if (aoRoughMetalDefaltDotTexture != null) return aoRoughMetalDefaltDotTexture; else { throw new NullReferenceException("SharpGLTF.Runtime.Generated.BlackTransparentDotTexture()  ... The Generated dot texture was requested but never created. Make sure you have called Initialize(,,) on gltf in monogames load function first."); } } }

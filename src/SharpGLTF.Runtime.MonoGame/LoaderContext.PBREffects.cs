@@ -7,10 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using SharpGLTF.Runtime;
-using SharpGLTF.Runtime.Effects;
-using SharpGLTF.Schema2;
-
 using GLTFMATERIAL = SharpGLTF.Schema2.Material;
 
 namespace SharpGLTF.Runtime
@@ -37,11 +33,11 @@ namespace SharpGLTF.Runtime
 
         protected override Effect CreateEffect(GLTFMATERIAL srcMaterial, bool isSkinned)
         {
-            Effects.PBREffect effect = null;
+            PBREffect effect = null;
 
             if (srcMaterial.FindChannel("SpecularGlossiness") != null)
             {
-                var xeffect = new Effects.SpecularGlossinessEffect(this.Device);
+                var xeffect = new SpecularGlossinessEffect(this.Device);
                 effect = xeffect;
 
                 xeffect.DiffuseScale = GetScaler(srcMaterial, "Diffuse", Vector4.One);
@@ -52,7 +48,7 @@ namespace SharpGLTF.Runtime
             }
             else
             {
-                var xeffect = new Effects.MetallicRoughnessEffect(this.Device);
+                var xeffect = new MetallicRoughnessEffect(this.Device);
                 effect = xeffect;
 
                 xeffect.BaseColorScale = GetScaler(srcMaterial, "BaseColor", Vector4.One);

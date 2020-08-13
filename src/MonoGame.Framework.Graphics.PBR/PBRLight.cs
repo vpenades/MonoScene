@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace SharpGLTF.Runtime
+namespace Microsoft.Xna.Framework.Graphics
 {
     public struct PBRLight
     {

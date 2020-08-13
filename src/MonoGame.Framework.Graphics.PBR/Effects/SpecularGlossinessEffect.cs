@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace SharpGLTF.Runtime.Effects
+namespace Microsoft.Xna.Framework.Graphics
 {
     public class SpecularGlossinessEffect : PBREffect
     {
@@ -57,9 +54,11 @@ namespace SharpGLTF.Runtime.Effects
 
             Parameters["PrimaryScale"].SetValue(_DiffuseScale);
             UseTexture("PrimaryTexture", _DiffuseMap ?? Resources.WhiteDotTexture);
+            GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
 
             Parameters["SecondaryScale"].SetValue(_SpecularGlossinessScale);
-            UseTexture("SecondaryTexture", _SpecularGlossinessMap ?? Resources.WhiteDotTexture);            
+            UseTexture("SecondaryTexture", _SpecularGlossinessMap ?? Resources.WhiteDotTexture);
+            GraphicsDevice.SamplerStates[2] = SamplerState.LinearWrap;
         }
 
         private int RecalculateAll()

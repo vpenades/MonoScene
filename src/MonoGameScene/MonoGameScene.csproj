@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpGLTF.Runtime.MonoGame.PBR\SharpGLTF.Runtime.MonoGame.PBR.csproj" />
+    <ProjectReference Include="..\SharpGLTF.Runtime.MonoGame\SharpGLTF.Runtime.MonoGame.csproj" />
   </ItemGroup>
 
   <ItemGroup>

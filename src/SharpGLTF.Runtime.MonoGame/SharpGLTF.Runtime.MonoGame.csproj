@@ -12,4 +12,8 @@
     <PackageReference Include="SharpGLTF.Core" Version="1.0.0-alpha0018" />    
   </ItemGroup>  
 
+  <ItemGroup>
+    <ProjectReference Include="..\MonoGame.Framework.Graphics.PBR\MonoGame.Framework.Graphics.PBR.csproj" />
+  </ItemGroup>  
+
 </Project>

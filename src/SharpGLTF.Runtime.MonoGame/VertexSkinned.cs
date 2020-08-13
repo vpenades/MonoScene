@@ -49,10 +49,5 @@ namespace SharpGLTF.Runtime
         public Vector4 BlendWeight;
         
         #endregion
-    }
-
-    public interface IEffectBones // it could be great if SkinnedEffect implemented this.
-    {
-        void SetBoneTransforms(Matrix[] boneTransforms, int boneStart, int boneCount);
-    }
+    }    
 }

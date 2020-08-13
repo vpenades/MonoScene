@@ -4,12 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-using SharpGLTF.Runtime;
-
-namespace SharpGLTF.Runtime.Effects
+namespace Microsoft.Xna.Framework.Graphics
 {
     public abstract class PBREffect : Effect, IEffectMatrices, IEffectBones, PBRLight.IEffect
     {
@@ -27,7 +22,7 @@ namespace SharpGLTF.Runtime.Effects
         /// </summary>
         public PBREffect(GraphicsDevice device, byte[] effectCode) : base(device, effectCode)
         {
-
+            // _NormalSampler = SamplerState.LinearWrap;
         }        
 
         #endregion        
@@ -49,6 +44,7 @@ namespace SharpGLTF.Runtime.Effects
 
         private float _NormalScale = 1;
         private Texture2D _NormalMap;
+        private SamplerState _NormalSampler;
 
         private Vector3 _EmissiveScale = Vector3.Zero;
         private Texture2D _EmissiveMap;
@@ -103,6 +99,8 @@ namespace SharpGLTF.Runtime.Effects
         public float NormalScale { get => _NormalScale; set => _NormalScale = value; }
         public Texture2D NormalMap { get => _NormalMap; set => _NormalMap = value; }
 
+        public SamplerState NormalSampler { get => _NormalSampler; set => _NormalSampler = value; }
+
         public Vector3 EmissiveScale { get => _EmissiveScale; set => _EmissiveScale = value; }
         public Texture2D EmissiveMap { get => _EmissiveMap; set => _EmissiveMap = value; }
 
@@ -151,14 +149,17 @@ namespace SharpGLTF.Runtime.Effects
             
             Parameters["NormalScale"].SetValue(_NormalScale);
             UseTexture("NormalTexture", _NormalMap ?? Resources.WhiteDotTexture);
-
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
             
-            
-            Parameters["OcclusionScale"].SetValue(_OcclusionScale);
-            UseTexture("OcclusionTexture", _OcclusionMap ?? Resources.WhiteDotTexture);            
+            Parameters["OcclusionScale"].SetValue(_OcclusionMap == null ? 0f : _OcclusionScale);
+            UseTexture("OcclusionTexture", _OcclusionMap ?? Resources.WhiteDotTexture);
+            GraphicsDevice.SamplerStates[3] = SamplerState.LinearWrap;
 
             Parameters["EmissiveScale"].SetValue(_EmissiveScale);            
-            UseTexture("EmissiveTexture", _EmissiveMap ?? Resources.WhiteDotTexture);            
+            UseTexture("EmissiveTexture", _EmissiveMap ?? Resources.WhiteDotTexture);
+            GraphicsDevice.SamplerStates[4] = SamplerState.LinearWrap;
+
+            GraphicsDevice.BlendState = BlendState.Opaque;
         }        
 
         #endregion

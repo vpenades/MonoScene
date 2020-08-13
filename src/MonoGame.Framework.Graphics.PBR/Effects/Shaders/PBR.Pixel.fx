@@ -3,7 +3,7 @@
 #include "PunctualContrib.fx"
 
 // https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L419
-float4 PsWithPBR(float3 positionW, NormalInfo normalInfo, float4 primaryColor, float4 secondaryColor, float3 f_emissive, float f_occlusion)
+float3 PsWithPBR(float3 positionW, NormalInfo normalInfo, float3 primaryColor, float4 secondaryColor, float3 f_emissive, float f_occlusion)
 {
     float3 v = normalize(CameraPosition - positionW);
     float3 n = normalInfo.n;
@@ -15,7 +15,7 @@ float4 PsWithPBR(float3 positionW, NormalInfo normalInfo, float4 primaryColor, f
     float BdotV = clampedDot(b, v);    
 
     MaterialInfo materialInfo;
-    materialInfo.baseColor = primaryColor.rgb;
+    materialInfo.baseColor = primaryColor;
 
 #ifdef MATERIAL_IOR
     float ior = u_IOR_and_f0.x;
@@ -69,5 +69,5 @@ float4 PsWithPBR(float3 positionW, NormalInfo normalInfo, float4 primaryColor, f
     
     color = lerp(color, color * f_occlusion, OcclusionScale);
 
-    return float4(toneMap(color), 1);
+    return toneMap(color);
 }

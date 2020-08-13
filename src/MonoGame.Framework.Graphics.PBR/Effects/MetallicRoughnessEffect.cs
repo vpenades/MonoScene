@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace SharpGLTF.Runtime.Effects
+namespace Microsoft.Xna.Framework.Graphics
 {
     public class MetallicRoughnessEffect : PBREffect
     {
@@ -53,9 +50,11 @@ namespace SharpGLTF.Runtime.Effects
 
             Parameters["PrimaryScale"].SetValue(_BaseColorScale);
             UseTexture("PrimaryTexture", _BaseColorMap ?? Resources.WhiteDotTexture);
+            GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
 
             Parameters["SecondaryScale"].SetValue(_MetalRoughnessScale);
             UseTexture("SecondaryTexture", _MetalRoughnessMap ?? Resources.WhiteDotTexture);
+            GraphicsDevice.SamplerStates[2] = SamplerState.LinearWrap;
 
             var shaderIndex = RecalculateAll();
 
@@ -71,7 +70,7 @@ namespace SharpGLTF.Runtime.Effects
             if (_BaseColorMap != null) techniqueIndex += 4;
             if (_MetalRoughnessMap != null) techniqueIndex += 8;
             if (EmissiveMap != null) techniqueIndex += 16;
-            if (OcclusionMap != null) techniqueIndex += 32;
+            if (OcclusionMap != null && OcclusionMap != _MetalRoughnessMap) techniqueIndex += 32;
 
             return techniqueIndex;
         }

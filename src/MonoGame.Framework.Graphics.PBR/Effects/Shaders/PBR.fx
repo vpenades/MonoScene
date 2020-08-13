@@ -298,10 +298,18 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
     float3 f_emissive = EmissiveScale;
     if (hasEmissive) f_emissive *= getEmissiveColor(input.TextureCoordinate);
 
+
+#ifdef MATERIAL_METALLICROUGHNESS
+    float f_occlusion = f_secondary.r;
+#else
     float f_occlusion = 1;
+#endif
+    
     if (hasOcclusion) f_occlusion *= SAMPLE_TEXTURE(OcclusionTexture, input.TextureCoordinate).r;
 
-    return PsWithPBR(input.PositionWS, ninfo, f_primary, f_secondary, f_emissive, f_occlusion);
+    float3 color = PsWithPBR(input.PositionWS, ninfo, f_primary.rgb, f_secondary, f_emissive, f_occlusion);
+
+    return float4(color,f_primary.a)
 }
 
 
