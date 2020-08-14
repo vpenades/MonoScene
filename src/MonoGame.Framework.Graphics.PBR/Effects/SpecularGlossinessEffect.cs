@@ -66,11 +66,11 @@ namespace Microsoft.Xna.Framework.Graphics
             int techniqueIndex = 0;
             if (BoneCount != 0) techniqueIndex += 1;
 
-            if (NormalMap != null) techniqueIndex += 2;
-            if (_DiffuseMap != null) techniqueIndex += 4;
-            if (_SpecularGlossinessMap != null) techniqueIndex += 8;
-            if (EmissiveMap != null) techniqueIndex += 16;
-            if (OcclusionMap != null) techniqueIndex += 32;
+            if (NormalMap != null) techniqueIndex += 4;
+            if (_DiffuseMap != null) techniqueIndex += 8;
+            if (_SpecularGlossinessMap != null) techniqueIndex += 16;
+            if (EmissiveMap != null) techniqueIndex += 32;
+            if (OcclusionMap != null) techniqueIndex += 64;
 
             return techniqueIndex;
         }

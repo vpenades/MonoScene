@@ -306,7 +306,15 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
 
     if (hasOcclusion) f_occlusion *= SAMPLE_TEXTURE(OcclusionTexture, input.TextureCoordinate).r;
 
-    return PsWithPBR(input.PositionWS, ninfo, f_primary, f_secondary, f_emissive, f_occlusion);
+    float3 color = PsWithPBR(input.PositionWS, ninfo, f_primary.rgb, f_secondary);
+
+    color += f_emissive;
+
+    color = lerp(color, color * f_occlusion, OcclusionScale);
+
+    color = toneMap(color);
+
+    return float4(color.xyz, 1);    
 }
 
 

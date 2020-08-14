@@ -26,6 +26,7 @@ namespace SharpGLTF.Runtime
 
         private readonly MonoGameModelTemplate _Template;
         private readonly SceneInstance _Controller;
+        private Matrix _WorldMatrix;
 
         #endregion
 
@@ -41,6 +42,12 @@ namespace SharpGLTF.Runtime
         /// </summary>
         public SceneInstance Controller => _Controller;
 
+        public Matrix WorldMatrix
+        {
+            get => _WorldMatrix;
+            set => _WorldMatrix = value;
+        }
+
         #endregion
 
         #region API
@@ -53,9 +60,20 @@ namespace SharpGLTF.Runtime
         /// <param name="world">The world matrix.</param>
         public void Draw(Matrix projection, Matrix view, Matrix world)
         {
+            _WorldMatrix = world;
+            Draw(projection, view);
+        }
+
+        /// <summary>
+        /// Draws this <see cref="MonoGameModelInstance"/> into the current <see cref="GraphicsDevice"/>.
+        /// </summary>
+        /// <param name="projection">The projection matrix.</param>
+        /// <param name="view">The view matrix.</param>        
+        public void Draw(Matrix projection, Matrix view)
+        {
             foreach (var d in _Controller.DrawableInstances)
             {
-                Draw(_Template._Meshes[d.Template.LogicalMeshIndex], projection, view, world, d.Transform);
+                Draw(_Template._Meshes[d.Template.LogicalMeshIndex], projection, view, _WorldMatrix, d.Transform);
             }
         }
 

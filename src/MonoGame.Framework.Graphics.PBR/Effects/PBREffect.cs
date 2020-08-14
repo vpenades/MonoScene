@@ -125,6 +125,8 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             if (_IsOpenGL) name = name + "Sampler+" + name;
 
+            if (!Parameters.Any(item => item.Name == name)) return;
+
             Parameters[name].SetValue(tex);
         }
 
@@ -159,7 +161,7 @@ namespace Microsoft.Xna.Framework.Graphics
             UseTexture("EmissiveTexture", _EmissiveMap ?? Resources.WhiteDotTexture);
             GraphicsDevice.SamplerStates[4] = SamplerState.LinearWrap;
 
-            GraphicsDevice.BlendState = BlendState.Opaque;
+            // GraphicsDevice.BlendState = BlendState.Opaque;
         }        
 
         #endregion
