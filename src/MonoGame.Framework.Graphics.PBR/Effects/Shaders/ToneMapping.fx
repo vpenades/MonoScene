@@ -7,16 +7,20 @@ static const float INV_GAMMA = 1.0 / GAMMA;
 
 // linear to sRGB approximation
 // see http://chilliant.blogspot.com/2012/08/srgb-approximations-for-hlsl.html
-float3 linearTosRGB(float3 color)
+float3 linearTosRGB(float3 lrgbIn)
 {
-    return pow(color, INV_GAMMA);
+    lrgbIn = max(lrgbIn, 0);
+
+    return pow(lrgbIn, INV_GAMMA);
 }
 
 // sRGB to linear approximation
 // see http://chilliant.blogspot.com/2012/08/srgb-approximations-for-hlsl.html
 float3 sRGBToLinear(float3 srgbIn)
 {
-    return float3(pow(srgbIn.xyz, GAMMA));
+    srgbIn = max(srgbIn, 0);
+
+    return pow(srgbIn, GAMMA);
 }
 
 float4 sRGBToLinear(float4 srgbIn)

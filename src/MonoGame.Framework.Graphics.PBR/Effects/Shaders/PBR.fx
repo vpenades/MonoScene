@@ -173,8 +173,8 @@ float3x3 GetTangentBasis(VsInRigidTangent input)
 {
     // https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/35df3ff146e88cc585401db546fb9ee3366607d2/src/shaders/primitive.vert#L103
 
-    float3 normalW = mul(float4(input.Normal, 0.0), World);
-    float3 tangentW = mul(float4(input.Tangent.xyz, 0.0), World);
+    float3 normalW = mul(float4(input.Normal, 0.0), World).xyz;
+    float3 tangentW = mul(float4(input.Tangent.xyz, 0.0), World).xyz;
 
     normalW = normalize(normalW);
     tangentW = normalize(tangentW);    
@@ -213,8 +213,8 @@ VsOutTexNorm VsSkinnedBasis(VsInSkinnedTangent input)
     float4x3 mbones = FunctionBoneMatrixCalculation(input.BlendIndices, input.BlendWeights);
 
     VsInRigidTangent output;
-    output.Position = mul(float4(input.Position, 1.0f), mbones);
 
+    output.Position = mul(float4(input.Position, 1.0f), mbones).xyz;
     output.Normal = mul(float4(input.Normal,0), mbones).xyz;
 
     float3 tgt = mul(float4(input.Tangent.xyz,0), mbones).xyz;
@@ -239,7 +239,7 @@ VsOutTexNorm VsRigid(VsInRigid input)
 
     output.TangentBasisX = float3(0, 0, 0);
     output.TangentBasisY = float3(0, 0, 0);
-    output.TangentBasisZ = mul(float4(input.Normal, 0.0), World);
+    output.TangentBasisZ = mul(float4(input.Normal, 0.0), World).xyz;
 
     output.Color = input.Color;
     output.TextureCoordinate = input.TextureCoordinate;
@@ -252,8 +252,8 @@ VsOutTexNorm VsSkinned(VsInSkinned input)
     float4x3 mbones = FunctionBoneMatrixCalculation(input.BlendIndices, input.BlendWeights);
 
     VsInRigid output;
-    output.Position = mul(float4(input.Position, 1.0f), mbones);
 
+    output.Position = mul(float4(input.Position, 1.0f), mbones).xyz;
     output.Normal = mul(float4(input.Normal, 0), mbones).xyz;
 
     output.Color = input.Color;
