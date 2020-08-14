@@ -19,9 +19,9 @@
 
   <ItemGroup>
     <None Update="Effects\Shaders\Permutations.fx">
-      <DependentUpon>Permutations.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DependentUpon>Permutations.tt</DependentUpon>
     </None>
     <None Update="Effects\Shaders\Permutations.tt">
       <LastGenOutput>Permutations.fx</LastGenOutput>
