@@ -6,35 +6,62 @@ namespace Microsoft.Xna.Framework.Graphics
 {
     public struct PBRLight
     {
-        public interface IEffect
-        {
-            float Exposure { get; set; }
-            void SetLight(int index, PBRLight light);
-        }
-
-        public static PBRLight Directional(Vector3 dir, float range, Vector3 color, float intensity)
+        #region constructors
+        public static PBRLight Directional(Vector3 dir, Vector3 color, float intensity)
         {
             return new PBRLight
             {
-                Direction = dir,
-                Range = range,
+                Direction = dir,                
                 Color = color,
                 Intensity = intensity,
+                Range = 0,
                 Type = 0
             };
         }
 
+        #endregion
+
+        #region data
+
+        /// <summary>
+        /// Light Type
+        /// 0 - Directional
+        /// 1 - Point
+        /// 2 - Spot
+        /// </summary>
+        public int Type;
+
+        /// <summary>
+        /// Light direction (Only Directional and Spot lights)
+        /// </summary>
         public Vector3 Direction;
+
+        /// <summary>
+        /// Range (Spot and Point lights)
+        /// </summary>
         public float Range;
 
         public Vector3 Color;
         public float Intensity;
 
+        /// <summary>
+        /// Light source position (Spot and Point lights)
+        /// </summary>
         public Vector3 Position;
+        
+        /// <summary>
+        /// Spot light inner angle
+        /// </summary>
         public float InnerConeCos;
 
-        public float OuterConeCos;
-        public int Type;
+        /// <summary>
+        /// Spot light outer angle
+        /// </summary>
+        public float OuterConeCos;        
+
+        #endregion
+
+        #region API
 
         internal static void Encode(PBRLight[] src, Vector4[] p0, Vector4[] p1, Vector4[] p2, Vector4[] p3)
         {
@@ -60,9 +87,22 @@ namespace Microsoft.Xna.Framework.Graphics
             else
             {
                 dlight.Enabled = false;
-            }
-
-            
+            }            
         }
+
+        #endregion
+
+        #region nested types
+
+        /// <summary>
+        /// To be implemented by effects using <see cref="PBRLight"/> sources.
+        /// </summary>
+        public interface IEffect
+        {
+            float Exposure { get; set; }
+            void SetLight(int index, PBRLight light);
+        }
+
+        #endregion
     };
 }

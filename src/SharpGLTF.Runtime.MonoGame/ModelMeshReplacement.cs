@@ -26,6 +26,7 @@ namespace SharpGLTF.Runtime
         private readonly RuntimeModelMesh _Parent;
 
         private Effect _Effect;
+        private BlendState _Blend;
 
         private IndexBuffer _IndexBuffer;
         private int _IndexOffset;
@@ -52,6 +53,12 @@ namespace SharpGLTF.Runtime
                 _Effect = value;
                 _Parent.InvalidateEffectCollection(); // if we change this property, we need to invalidate the parent's effect collection.
             }
+        }
+
+        public BlendState Blending
+        {
+            get => _Blend;
+            set => _Blend = value;
         }
 
         public GraphicsDevice Device => _Parent._GraphicsDevice;
@@ -87,6 +94,8 @@ namespace SharpGLTF.Runtime
                 device.SetVertexBuffer(_VertexBuffer);
                 device.Indices = _IndexBuffer;
 
+                device.BlendState = _Blend;
+
                 for (int j = 0; j < _Effect.CurrentTechnique.Passes.Count; j++)
                 {
                     _Effect.CurrentTechnique.Passes[j].Apply();
@@ -119,6 +128,8 @@ namespace SharpGLTF.Runtime
         private readonly List<RuntimeModelMeshPart> _Primitives = new List<RuntimeModelMeshPart>();
 
         private IReadOnlyList<Effect> _Effects;
+        private IReadOnlyList<RuntimeModelMeshPart> _OpaquePrimitives;
+        private IReadOnlyList<RuntimeModelMeshPart> _TranslucidPrimitives;
 
         private Microsoft.Xna.Framework.BoundingSphere? _Sphere;
 
@@ -174,7 +185,26 @@ namespace SharpGLTF.Runtime
 
         #region API
 
-        internal void InvalidateEffectCollection() { _Effects = null; }
+        internal void InvalidateEffectCollection()
+        {
+            _Effects = null;
+            _OpaquePrimitives = null;
+            _TranslucidPrimitives = null;
+        }
+
+        internal IReadOnlyList<RuntimeModelMeshPart> GetOpaqueParts()
+        {
+            if (_OpaquePrimitives != null) return _OpaquePrimitives;
+            _OpaquePrimitives = _Primitives.Where(item => item.Blending == BlendState.Opaque).ToArray();
+            return _OpaquePrimitives;
+        }
+
+        internal IReadOnlyList<RuntimeModelMeshPart> GetTranslucidParts()
+        {
+            if (_TranslucidPrimitives != null) return _TranslucidPrimitives;
+            _TranslucidPrimitives = _Primitives.Where(item => item.Blending != BlendState.Opaque).ToArray();
+            return _TranslucidPrimitives;
+        }
 
         public RuntimeModelMeshPart CreateMeshPart()
         {
@@ -190,10 +220,18 @@ namespace SharpGLTF.Runtime
 
         public void Draw()
         {
-            for (int i = 0; i < _Primitives.Count; i++)
-            {
-                _Primitives[i].Draw(_GraphicsDevice);
-            }
+            DrawOpaque();
+            DrawTranslucid();
+        }
+
+        public void DrawTranslucid()
+        {
+            foreach (var part in GetTranslucidParts()) part.Draw(_GraphicsDevice);
+        }
+
+        public void DrawOpaque()
+        {
+            foreach (var part in GetOpaqueParts()) part.Draw(_GraphicsDevice);
         }
 
         #endregion

@@ -62,7 +62,7 @@ float4 PsShader(VsOutTexNorm input, bool hasPrimary, bool hasEmissive, bool hasO
     if (hasEmissive) f_emissive *= getEmissiveColor(input.TextureCoordinate);
 
     float f_occlusion = 1;
-    if (hasOcclusion) f_occlusion *= getAmbientOcclusion(input.TextureCoordinate);
+    if (hasOcclusion) f_occlusion = getAmbientOcclusion(input.TextureCoordinate);
 
     float3 color = f_primary.rgb;
 

@@ -343,7 +343,7 @@ namespace SharpGLTF.Runtime
 
         #region API
 
-        public void WriteMeshPrimitive<TVertex>(int logicalMeshIndex, Effect effect, MeshPrimitiveReader primitive)
+        public void WriteMeshPrimitive<TVertex>(int logicalMeshIndex, Effect effect,BlendState blending, MeshPrimitiveReader primitive)
             where TVertex : unmanaged, IVertexType
         {
             if (!_Buffers.TryGetValue(typeof(TVertex), out IPrimitivesBuffers pb))
@@ -351,7 +351,7 @@ namespace SharpGLTF.Runtime
                 _Buffers[typeof(TVertex)] = pb = new _PrimitivesBuffers<TVertex>();
             }
 
-            var part = (pb as _PrimitivesBuffers<TVertex>).Append(logicalMeshIndex, effect, primitive);
+            var part = (pb as _PrimitivesBuffers<TVertex>).Append(logicalMeshIndex, effect, blending, primitive);
 
             _MeshPrimitives.Add(part);
         }
@@ -378,7 +378,8 @@ namespace SharpGLTF.Runtime
                     var ib = ibuffers[srcPart.PrimitiveBuffers];
 
                     var dstPart = dstMesh.CreateMeshPart();
-                    dstPart.Effect = srcPart.PrimitiveEffect;
+                    dstPart.Effect = srcPart.Material.PrimitiveEffect;
+                    dstPart.Blending = srcPart.Material.PrimitiveBlending;
                     dstPart.BoundingSphere = srcPart.BoundingSphere;
                     dstPart.SetVertexBuffer(vb, srcPart.VertexOffset, srcPart.VertexCount);
                     dstPart.SetIndexBuffer(ib, srcPart.TriangleOffset * 3, srcPart.TriangleCount);                    
@@ -418,15 +419,21 @@ namespace SharpGLTF.Runtime
 
             #region API
 
-            public _MeshPrimitive Append(int meshKey, Effect effect, MeshPrimitiveReader primitive)
+            public _MeshPrimitive Append(int meshKey, Effect effect, BlendState blending, MeshPrimitiveReader primitive)
             {
                 var partVertices = primitive.ToXnaVertices<TVertex>();
                 var partTriangles = primitive.TriangleIndices;
 
+                var material = new _Material
+                {
+                    PrimitiveEffect = effect,
+                    PrimitiveBlending = blending
+                };
+
                 var part = new _MeshPrimitive
                 {
                     LogicalMeshIndex = meshKey,
-                    PrimitiveEffect = effect,
+                    Material = material,
                     PrimitiveBuffers = this,
                     VertexOffset = _Vertices.Count,
                     VertexCount = partVertices.Length,
@@ -489,7 +496,7 @@ namespace SharpGLTF.Runtime
         struct _MeshPrimitive
         {
             public int LogicalMeshIndex;
-            public Effect PrimitiveEffect;
+            public _Material Material;
             public IPrimitivesBuffers PrimitiveBuffers;
             public int VertexOffset;
             public int VertexCount;
@@ -497,6 +504,12 @@ namespace SharpGLTF.Runtime
             public int TriangleCount;
 
             public BoundingSphere BoundingSphere;
+        }
+
+        struct _Material
+        {
+            public Effect PrimitiveEffect;
+            public BlendState PrimitiveBlending;
         }
 
         #endregion

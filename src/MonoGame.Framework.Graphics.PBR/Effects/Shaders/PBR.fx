@@ -133,7 +133,7 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
 #else
     float f_occlusion = 1; // we could use f_primary.a if it's opaque
 #endif
-    if (hasOcclusion) f_occlusion *= getAmbientOcclusion(input.TextureCoordinate);
+    if (hasOcclusion) f_occlusion = getAmbientOcclusion(input.TextureCoordinate);
 
     float3 color = PsWithPBR(input.PositionWS, ninfo, f_primary.rgb, f_secondary);    
 

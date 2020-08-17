@@ -49,10 +49,17 @@ NormalInfo getNormalInfo(VsOutTexNorm input)
 {
     // create tangent basis:
 
+    float3 v = normalize(CameraPosition - input.PositionWS);
     float3 t = normalize(input.TangentBasisX);
     float3 b = normalize(input.TangentBasisY);
     float3 ng = normalize(input.TangentBasisZ);
     float3x3 tangentBasis = float3x3(t, b, ng);
+
+    // For a back-facing surface, the tangential basis vectors are negated.
+    float facing = step(0.0, dot(v, ng)) * 2.0 - 1.0;
+    t *= facing;
+    b *= facing;
+    ng *= facing;
 
     // Compute pertubed normals:
 

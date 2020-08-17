@@ -39,7 +39,7 @@ namespace Microsoft.Xna.Framework.Graphics
             ApplyPBR();
 
             _DiffuseMap.Apply();
-            _SpecularGlossinessMap.Apply();
+            _SpecularGlossinessMap.Apply();            
 
             var shaderIndex = RecalculateAll();
             CurrentTechnique = Techniques[shaderIndex];

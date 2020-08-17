@@ -122,15 +122,21 @@ namespace SharpGLTF.Runtime
                 _MatFactory.Register(srcMaterial, srcPrim.IsSkinned, effect);
             }
 
-            WriteMeshPrimitive(srcPrim, effect);
+            var blending = srcMaterial.Alpha == AlphaMode.BLEND ? BlendState.AlphaBlend : BlendState.Opaque;
+
+            blending = BlendState.Opaque;
+
+            
+
+            WriteMeshPrimitive(srcPrim, effect, blending);
         }        
 
-        protected abstract void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect);
+        protected abstract void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect, BlendState blending);
 
-        protected void WriteMeshPrimitive<TVertex>(Effect effect, MeshPrimitiveReader primitive)
+        protected void WriteMeshPrimitive<TVertex>(Effect effect, BlendState blending, MeshPrimitiveReader primitive)
             where TVertex : unmanaged, IVertexType
         {
-            _MeshWriter.WriteMeshPrimitive<TVertex>(_CurrentMeshIndex, effect, primitive);
+            _MeshWriter.WriteMeshPrimitive<TVertex>(_CurrentMeshIndex, effect, blending, primitive);
         }
 
         #endregion

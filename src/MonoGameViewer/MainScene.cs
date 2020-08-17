@@ -15,12 +15,18 @@ namespace MonoGameViewer
 {
     public class MainScene : MonoGameViewModel
     {
+        #region data
+
         SharpGLTF.Runtime.MonoGameDeviceContent<SharpGLTF.Runtime.MonoGameModelTemplate> _ModelTemplate;
         BoundingSphere _ModelBounds;
 
         private SharpGLTF.Runtime.MonoGameModelInstance _ModelInstance;
 
         private Quaternion _Rotation = Quaternion.Identity;
+
+        #endregion
+
+        #region API
 
         public void LoadModel(string filePath)
         {
@@ -34,8 +40,6 @@ namespace MonoGameViewer
             {
                 model = SharpGLTF.Schema2.ModelRoot.Load(filePath, ValidationMode.TryFix);
             }
-
-
 
 
             if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }            
@@ -98,5 +102,7 @@ namespace MonoGameViewer
 
             if (_ModelInstance != null) ctx.DrawModelInstance(_ModelInstance, xform);
         }
+
+        #endregion
     }
 }

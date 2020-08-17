@@ -67,8 +67,7 @@ namespace SharpGLTF.Runtime
 
             TransferChannel(effect.NormalMap, srcMaterial, "Normal", 1);
             TransferChannel(effect.EmissiveMap, srcMaterial, "Emissive", Vector3.Zero);
-            TransferChannel(effect.OcclusionMap, srcMaterial, "Occlusion", 0);
-
+            TransferChannel(effect.OcclusionMap, srcMaterial, "Occlusion", 0);            
             if (effect.OcclusionMap.Texture == null) effect.OcclusionMap.Scale = 0;
 
             // effect.AlphaMode = srcMaterial.Alpha;
@@ -82,10 +81,10 @@ namespace SharpGLTF.Runtime
 
         #region meshes creation
 
-        protected override void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect)
+        protected override void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect, BlendState blending)
         {
-            if (srcPrimitive.IsSkinned) WriteMeshPrimitive<VertexSkinned>(effect, srcPrimitive);
-            else WriteMeshPrimitive<VertexRigid>(effect, srcPrimitive);
+            if (srcPrimitive.IsSkinned) WriteMeshPrimitive<VertexSkinned>(effect, blending, srcPrimitive);
+            else WriteMeshPrimitive<VertexRigid>(effect, blending, srcPrimitive);
         }
 
         #endregion

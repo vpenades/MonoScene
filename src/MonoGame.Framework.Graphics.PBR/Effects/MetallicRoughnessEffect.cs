@@ -39,7 +39,7 @@ namespace Microsoft.Xna.Framework.Graphics
             ApplyPBR();
 
             _BaseColorMap.Apply();
-            _MetalRoughnessMap.Apply();
+            _MetalRoughnessMap.Apply();            
 
             var shaderIndex = RecalculateAll();
             CurrentTechnique = Techniques[shaderIndex];

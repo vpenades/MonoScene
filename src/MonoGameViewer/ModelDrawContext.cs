@@ -51,15 +51,15 @@ namespace MonoGameViewer
 
         public void SetDefaultLights()
         {
-            _Lights[0] = PBRLight.Directional(new Vector3(1, -1, -1), 0, Vector3.One, 3);
-            _Lights[1] = PBRLight.Directional(new Vector3(-1, 0, -1), 0, new Vector3(0.7f, 0.5f, 0.3f), 2);
+            _Lights[0] = PBRLight.Directional(new Vector3(1, -1, -1), Vector3.One, 3);
+            _Lights[1] = PBRLight.Directional(new Vector3(-1, 0, -1), new Vector3(0.7f, 0.5f, 0.3f), 2);
         }
 
         public void SetDemoLights(float t)
         {
             var dir = new Vector3((float)Math.Cos(t), 0, -(float)Math.Sin(t));
 
-            _Lights[0] = PBRLight.Directional(dir, 0, Vector3.One, 1);
+            _Lights[0] = PBRLight.Directional(dir, Vector3.One, 1);
 
             // _Lights[0] = PBRLight.Directional(new Vector3(1, -1, -1), 0, Vector3.One, 9);
             // _Lights[1] = PBRLight.Directional(dir, 0, new Vector3(0.2f, 0.5f, 1f), 5);

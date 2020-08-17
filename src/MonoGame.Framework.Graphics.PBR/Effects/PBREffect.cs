@@ -72,6 +72,9 @@ namespace Microsoft.Xna.Framework.Graphics
             Parameters["CameraPosition"].SetValue(-View.Translation);
             Parameters["Exposure"].SetValue(this.Exposure);
 
+            // Parameters["AlphaScale"].SetValue(0);
+            // Parameters["AlphaCutoff"].SetValue(1);
+
             Resources.GenerateDotTextures(this.GraphicsDevice);
             _NormalMap.Apply();
             _EmissiveMap.Apply();
