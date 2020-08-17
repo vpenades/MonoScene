@@ -11,21 +11,32 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Effects\Shaders\Resources\*.mgfxo" />
-  </ItemGroup>
+  </ItemGroup>  
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1375-develop" PrivateAssets="all" />    
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Effects\Shaders\Permutations.fx">
+    <None Update="Effects\Shaders\PBR.Permutations.tt">
+      <LastGenOutput>PBR.Permutations.fx</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Effects\Shaders\PBR.Permutations.fx">
+      <DependentUpon>PBR.Permutations.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Permutations.tt</DependentUpon>
-    </None>
-    <None Update="Effects\Shaders\Permutations.tt">
-      <LastGenOutput>Permutations.fx</LastGenOutput>
+    </None>    
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Effects\Shaders\Unlit.Permutations.tt">
+      <LastGenOutput>Unlit.Permutations.fx</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
+    </None>    
+    <None Update="Effects\Shaders\Unlit.Permutations.fx">
+      <DependentUpon>Unlit.Permutations.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </None>
   </ItemGroup>
 

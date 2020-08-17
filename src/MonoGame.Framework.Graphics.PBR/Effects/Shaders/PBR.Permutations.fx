@@ -3,7 +3,8 @@
 //           Edit Permutations.tt and save.
 //-----------------------------------------------------
 
-
+#include "PBR.fx"
+#include "VertexShaders.fx"
 
 float4 PsNormals(VsOutTexNorm input) : COLOR0
 {

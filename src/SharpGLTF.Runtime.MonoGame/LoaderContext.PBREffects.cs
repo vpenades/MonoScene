@@ -35,6 +35,11 @@ namespace SharpGLTF.Runtime
         {
             PBREffect effect = null;
 
+            if (srcMaterial.Unlit)
+            {
+                // TODO: create unlit material
+            }
+
             if (srcMaterial.FindChannel("SpecularGlossiness") != null)
             {
                 var xeffect = new SpecularGlossinessEffect(this.Device);
@@ -56,7 +61,11 @@ namespace SharpGLTF.Runtime
 
                 xeffect.MetalRoughnessScale = GetScaler(srcMaterial, "MetallicRoughness", Vector2.Zero);
                 xeffect.MetalRoughnessMap = UseTexture(srcMaterial, "MetallicRoughness");
-            }            
+            }
+
+            // effect.AlphaMode = srcMaterial.Alpha;
+            // effect.AlphaCutoff = srcMaterial.AlphaCutoff;
+            // effect.DoubleSided = srcMaterial.DoubleSided;
 
             effect.NormalScale = GetScaler(srcMaterial, "Normal", Vector4.Zero).X;
             effect.NormalMap = UseTexture(srcMaterial, "Normal");            

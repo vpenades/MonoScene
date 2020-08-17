@@ -69,24 +69,6 @@ NormalInfo getNormalInfo(VsOutTexNorm input)
     return info;
 }
 
-float4 getBaseColor(float2 uv, float4 vertexColor)
-{
-    float4 baseColor = PrimaryScale;
-
-    baseColor *= sRGBToLinear(SAMPLE_TEXTURE(PrimaryTexture, uv));
-
-    return baseColor * vertexColor;
-}
-
-float3 getEmissiveColor(float2 uv)
-{
-    float3 color = EmissiveScale;
-
-    color *= sRGBToLinear(SAMPLE_TEXTURE(EmissiveTexture, uv)).rgb;
-
-    return color;
-}
-
 
 MaterialInfo getMetallicRoughnessInfo(MaterialInfo info, float f0_ior, float4 secondaryColor)
 {
