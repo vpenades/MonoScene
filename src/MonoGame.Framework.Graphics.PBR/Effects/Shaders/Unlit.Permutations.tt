@@ -48,6 +48,6 @@ for(int vsIdx =0; vsIdx < 4; ++vsIdx) {
 var VSSHADER = vsIdx == 0 || vsIdx == 2 ? "VsRigid" : "VsSkinned";  // 1 & 3 are reserved for morphing
 
 #>
-TECHNIQUE(<#=VSSHADER#><#=PSSHADER#>, <#=VSSHADER#>, <#=PSSHADER#> );
+TECHNIQUE(<#=VSSHADER#>_<#=PSSHADER#>, <#=VSSHADER#>, <#=PSSHADER#> );
 
 <# } } #>

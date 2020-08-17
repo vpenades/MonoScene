@@ -73,6 +73,10 @@ float3x3 GetTangentBasis(VsInRigidTangent input)
     return float3x3(tangentW, bitangentW, normalW);
 }
 
+
+
+
+
 VsOutTexNorm VsRigidBasis(VsInRigidTangent input)
 {
     VsOutTexNorm output;

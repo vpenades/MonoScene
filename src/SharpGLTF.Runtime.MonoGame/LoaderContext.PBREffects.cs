@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.Effects;
 
 using GLTFMATERIAL = SharpGLTF.Schema2.Material;
 
@@ -33,48 +34,46 @@ namespace SharpGLTF.Runtime
 
         protected override Effect CreateEffect(GLTFMATERIAL srcMaterial, bool isSkinned)
         {
-            PBREffect effect = null;
-
             if (srcMaterial.Unlit)
             {
-                // TODO: create unlit material
+                var ueffect = new UnlitEffect(this.Device);
+
+                TransferChannel(ueffect.BaseColorMap, srcMaterial, "BaseColor", Vector4.One);
+                TransferChannel(ueffect.EmissiveMap, srcMaterial, "Emissive", Vector3.Zero);
+                TransferChannel(ueffect.OcclusionMap, srcMaterial, "Occlusion", 0);
+                if (ueffect.OcclusionMap.Texture == null) ueffect.OcclusionMap.Scale = 0;
+
+                return ueffect;
             }
+
+            PBREffect effect = null;
 
             if (srcMaterial.FindChannel("SpecularGlossiness") != null)
             {
                 var xeffect = new SpecularGlossinessEffect(this.Device);
                 effect = xeffect;
 
-                xeffect.DiffuseScale = GetScaler(srcMaterial, "Diffuse", Vector4.One);
-                xeffect.DiffuseMap = UseTexture(srcMaterial, "Diffuse");
-
-                xeffect.SpecularGlossinessScale = GetScaler(srcMaterial, "SpecularGlossiness", Vector4.Zero);
-                xeffect.SpecularGlossinessMap = UseTexture(srcMaterial, "SpecularGlossiness");
+                TransferChannel(xeffect.DiffuseMap, srcMaterial, "Diffuse", Vector4.One);
+                TransferChannel(xeffect.SpecularGlossinessMap, srcMaterial, "SpecularGlossiness", Vector4.Zero);
             }
             else
             {
                 var xeffect = new MetallicRoughnessEffect(this.Device);
                 effect = xeffect;
 
-                xeffect.BaseColorScale = GetScaler(srcMaterial, "BaseColor", Vector4.One);
-                xeffect.BaseColorMap = UseTexture(srcMaterial, "BaseColor");
+                TransferChannel(xeffect.BaseColorMap, srcMaterial, "BaseColor", Vector4.One);
+                TransferChannel(xeffect.MetalRoughnessMap, srcMaterial, "MetallicRoughness", Vector2.One);
+            }            
 
-                xeffect.MetalRoughnessScale = GetScaler(srcMaterial, "MetallicRoughness", Vector2.Zero);
-                xeffect.MetalRoughnessMap = UseTexture(srcMaterial, "MetallicRoughness");
-            }
+            TransferChannel(effect.NormalMap, srcMaterial, "Normal", 1);
+            TransferChannel(effect.EmissiveMap, srcMaterial, "Emissive", Vector3.Zero);
+            TransferChannel(effect.OcclusionMap, srcMaterial, "Occlusion", 0);
+
+            if (effect.OcclusionMap.Texture == null) effect.OcclusionMap.Scale = 0;
 
             // effect.AlphaMode = srcMaterial.Alpha;
             // effect.AlphaCutoff = srcMaterial.AlphaCutoff;
             // effect.DoubleSided = srcMaterial.DoubleSided;
-
-            effect.NormalScale = GetScaler(srcMaterial, "Normal", Vector4.Zero).X;
-            effect.NormalMap = UseTexture(srcMaterial, "Normal");            
-
-            effect.OcclusionScale = GetScaler(srcMaterial, "Occlusion", Vector4.Zero).X;
-            effect.OcclusionMap = UseTexture(srcMaterial, "Occlusion");
-
-            effect.EmissiveScale = GetScaler(srcMaterial, "Emissive", Vector3.Zero);
-            effect.EmissiveMap = UseTexture(srcMaterial, "Emissive");
 
             return effect;
         }
@@ -91,7 +90,41 @@ namespace SharpGLTF.Runtime
 
         #endregion
 
-        #region gltf helpers        
+        #region gltf helpers
+        
+        private void TransferChannel(EffectTexture2D.ScalarX dst, GLTFMATERIAL src, string name, float defval)
+        {
+            dst.Texture = UseTexture(src, name);
+            dst.Scale = GetScaler(src, name, defval);
+        }
+
+        private void TransferChannel(EffectTexture2D.ScalarXY dst, GLTFMATERIAL src, string name, Vector2 defval)
+        {
+            dst.Texture = UseTexture(src, name);
+            dst.Scale = GetScaler(src, name, defval);
+        }
+
+        private void TransferChannel(EffectTexture2D.ScalarXYZ dst, GLTFMATERIAL src, string name, Vector3 defval)
+        {
+            dst.Texture = UseTexture(src, name);
+            dst.Scale = GetScaler(src, name, defval);
+        }
+
+        private void TransferChannel(EffectTexture2D.ScalarXYZW dst, GLTFMATERIAL src, string name, Vector4 defval)
+        {
+            dst.Texture = UseTexture(src, name);
+            dst.Scale = GetScaler(src, name, defval);
+        }
+
+        private float GetScaler(GLTFMATERIAL srcMaterial, string name, float defval)
+        {
+            var channel = srcMaterial.FindChannel(name);
+
+            if (!channel.HasValue) return defval;
+            var param = channel.Value.Parameter;
+
+            return param.X;
+        }
 
         private Vector2 GetScaler(GLTFMATERIAL srcMaterial, string name, Vector2 defval)
         {

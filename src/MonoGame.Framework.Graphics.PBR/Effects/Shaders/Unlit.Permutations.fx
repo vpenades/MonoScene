@@ -78,67 +78,67 @@ float4 PsPrimaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 	);
 }
 
-TECHNIQUE(VsRigidPs, VsRigid, Ps );
+TECHNIQUE(VsRigid_Ps, VsRigid, Ps );
 
-TECHNIQUE(VsSkinnedPs, VsSkinned, Ps );
+TECHNIQUE(VsSkinned_Ps, VsSkinned, Ps );
 
-TECHNIQUE(VsRigidPs, VsRigid, Ps );
+TECHNIQUE(VsRigid_Ps, VsRigid, Ps );
 
-TECHNIQUE(VsSkinnedPs, VsSkinned, Ps );
+TECHNIQUE(VsSkinned_Ps, VsSkinned, Ps );
 
-TECHNIQUE(VsRigidPsPrimary, VsRigid, PsPrimary );
+TECHNIQUE(VsRigid_PsPrimary, VsRigid, PsPrimary );
 
-TECHNIQUE(VsSkinnedPsPrimary, VsSkinned, PsPrimary );
+TECHNIQUE(VsSkinned_PsPrimary, VsSkinned, PsPrimary );
 
-TECHNIQUE(VsRigidPsPrimary, VsRigid, PsPrimary );
+TECHNIQUE(VsRigid_PsPrimary, VsRigid, PsPrimary );
 
-TECHNIQUE(VsSkinnedPsPrimary, VsSkinned, PsPrimary );
+TECHNIQUE(VsSkinned_PsPrimary, VsSkinned, PsPrimary );
 
-TECHNIQUE(VsRigidPsEmissive, VsRigid, PsEmissive );
+TECHNIQUE(VsRigid_PsEmissive, VsRigid, PsEmissive );
 
-TECHNIQUE(VsSkinnedPsEmissive, VsSkinned, PsEmissive );
+TECHNIQUE(VsSkinned_PsEmissive, VsSkinned, PsEmissive );
 
-TECHNIQUE(VsRigidPsEmissive, VsRigid, PsEmissive );
+TECHNIQUE(VsRigid_PsEmissive, VsRigid, PsEmissive );
 
-TECHNIQUE(VsSkinnedPsEmissive, VsSkinned, PsEmissive );
+TECHNIQUE(VsSkinned_PsEmissive, VsSkinned, PsEmissive );
 
-TECHNIQUE(VsRigidPsPrimaryEmissive, VsRigid, PsPrimaryEmissive );
+TECHNIQUE(VsRigid_PsPrimaryEmissive, VsRigid, PsPrimaryEmissive );
 
-TECHNIQUE(VsSkinnedPsPrimaryEmissive, VsSkinned, PsPrimaryEmissive );
+TECHNIQUE(VsSkinned_PsPrimaryEmissive, VsSkinned, PsPrimaryEmissive );
 
-TECHNIQUE(VsRigidPsPrimaryEmissive, VsRigid, PsPrimaryEmissive );
+TECHNIQUE(VsRigid_PsPrimaryEmissive, VsRigid, PsPrimaryEmissive );
 
-TECHNIQUE(VsSkinnedPsPrimaryEmissive, VsSkinned, PsPrimaryEmissive );
+TECHNIQUE(VsSkinned_PsPrimaryEmissive, VsSkinned, PsPrimaryEmissive );
 
-TECHNIQUE(VsRigidPsOpacity, VsRigid, PsOpacity );
+TECHNIQUE(VsRigid_PsOpacity, VsRigid, PsOpacity );
 
-TECHNIQUE(VsSkinnedPsOpacity, VsSkinned, PsOpacity );
+TECHNIQUE(VsSkinned_PsOpacity, VsSkinned, PsOpacity );
 
-TECHNIQUE(VsRigidPsOpacity, VsRigid, PsOpacity );
+TECHNIQUE(VsRigid_PsOpacity, VsRigid, PsOpacity );
 
-TECHNIQUE(VsSkinnedPsOpacity, VsSkinned, PsOpacity );
+TECHNIQUE(VsSkinned_PsOpacity, VsSkinned, PsOpacity );
 
-TECHNIQUE(VsRigidPsPrimaryOpacity, VsRigid, PsPrimaryOpacity );
+TECHNIQUE(VsRigid_PsPrimaryOpacity, VsRigid, PsPrimaryOpacity );
 
-TECHNIQUE(VsSkinnedPsPrimaryOpacity, VsSkinned, PsPrimaryOpacity );
+TECHNIQUE(VsSkinned_PsPrimaryOpacity, VsSkinned, PsPrimaryOpacity );
 
-TECHNIQUE(VsRigidPsPrimaryOpacity, VsRigid, PsPrimaryOpacity );
+TECHNIQUE(VsRigid_PsPrimaryOpacity, VsRigid, PsPrimaryOpacity );
 
-TECHNIQUE(VsSkinnedPsPrimaryOpacity, VsSkinned, PsPrimaryOpacity );
+TECHNIQUE(VsSkinned_PsPrimaryOpacity, VsSkinned, PsPrimaryOpacity );
 
-TECHNIQUE(VsRigidPsEmissiveOpacity, VsRigid, PsEmissiveOpacity );
+TECHNIQUE(VsRigid_PsEmissiveOpacity, VsRigid, PsEmissiveOpacity );
 
-TECHNIQUE(VsSkinnedPsEmissiveOpacity, VsSkinned, PsEmissiveOpacity );
+TECHNIQUE(VsSkinned_PsEmissiveOpacity, VsSkinned, PsEmissiveOpacity );
 
-TECHNIQUE(VsRigidPsEmissiveOpacity, VsRigid, PsEmissiveOpacity );
+TECHNIQUE(VsRigid_PsEmissiveOpacity, VsRigid, PsEmissiveOpacity );
 
-TECHNIQUE(VsSkinnedPsEmissiveOpacity, VsSkinned, PsEmissiveOpacity );
+TECHNIQUE(VsSkinned_PsEmissiveOpacity, VsSkinned, PsEmissiveOpacity );
 
-TECHNIQUE(VsRigidPsPrimaryEmissiveOpacity, VsRigid, PsPrimaryEmissiveOpacity );
+TECHNIQUE(VsRigid_PsPrimaryEmissiveOpacity, VsRigid, PsPrimaryEmissiveOpacity );
 
-TECHNIQUE(VsSkinnedPsPrimaryEmissiveOpacity, VsSkinned, PsPrimaryEmissiveOpacity );
+TECHNIQUE(VsSkinned_PsPrimaryEmissiveOpacity, VsSkinned, PsPrimaryEmissiveOpacity );
 
-TECHNIQUE(VsRigidPsPrimaryEmissiveOpacity, VsRigid, PsPrimaryEmissiveOpacity );
+TECHNIQUE(VsRigid_PsPrimaryEmissiveOpacity, VsRigid, PsPrimaryEmissiveOpacity );
 
-TECHNIQUE(VsSkinnedPsPrimaryEmissiveOpacity, VsSkinned, PsPrimaryEmissiveOpacity );
+TECHNIQUE(VsSkinned_PsPrimaryEmissiveOpacity, VsSkinned, PsPrimaryEmissiveOpacity );
 

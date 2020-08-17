@@ -7,36 +7,26 @@ namespace Microsoft.Xna.Framework.Graphics
     public class MetallicRoughnessEffect : PBREffect
     {
         #region lifecycle
-
-        /// <summary>
-        /// Creates a new AlphaTestEffect with default parameter settings.
-        /// </summary>
+        
         public MetallicRoughnessEffect(GraphicsDevice device) : base(device, Resources.GetShaderByteCode("MetallicRoughnessEffect"))
         {
-
+            _BaseColorMap = new EffectTexture2D.ScalarXYZW(this.Parameters, "Primary");
+            _MetalRoughnessMap = new EffectTexture2D.ScalarXY(this.Parameters, "Secondary");
         }
 
         #endregion
 
-        #region data       
+        #region data
 
-        private Vector4 _BaseColorScale = Vector4.One;
-        private Texture2D _BaseColorMap;
-
-        private Vector2 _MetalRoughnessScale = Vector2.One;
-        private Texture2D _MetalRoughnessMap;
+        private readonly EffectTexture2D.ScalarXYZW _BaseColorMap;
+        private readonly EffectTexture2D.ScalarXY _MetalRoughnessMap;
 
         #endregion
 
         #region properties - material
 
-        public Vector4 BaseColorScale { get => _BaseColorScale; set => _BaseColorScale = value; }
-
-        public Texture2D BaseColorMap { get => _BaseColorMap; set => _BaseColorMap = value; }
-
-        public Vector2 MetalRoughnessScale { get => _MetalRoughnessScale; set => _MetalRoughnessScale = value; }
-
-        public Texture2D MetalRoughnessMap { get => _MetalRoughnessMap; set => _MetalRoughnessMap = value; }
+        public EffectTexture2D.ScalarXYZW BaseColorMap => _BaseColorMap;
+        public EffectTexture2D.ScalarXY MetalRoughnessMap => _MetalRoughnessMap;
 
         #endregion
 
@@ -48,16 +38,10 @@ namespace Microsoft.Xna.Framework.Graphics
 
             ApplyPBR();
 
-            Parameters["PrimaryScale"].SetValue(_BaseColorScale);
-            UseTexture("PrimaryTexture", _BaseColorMap ?? Resources.WhiteDotTexture);
-            GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-
-            Parameters["SecondaryScale"].SetValue(_MetalRoughnessScale);
-            UseTexture("SecondaryTexture", _MetalRoughnessMap ?? Resources.WhiteDotTexture);
-            GraphicsDevice.SamplerStates[2] = SamplerState.LinearWrap;
+            _BaseColorMap.Apply();
+            _MetalRoughnessMap.Apply();
 
             var shaderIndex = RecalculateAll();
-
             CurrentTechnique = Techniques[shaderIndex];
         }
 
@@ -66,11 +50,11 @@ namespace Microsoft.Xna.Framework.Graphics
             int techniqueIndex = 0;
             if (BoneCount != 0) techniqueIndex += 1;
 
-            if (NormalMap != null) techniqueIndex += 4;
-            if (_BaseColorMap != null) techniqueIndex += 8;
-            if (_MetalRoughnessMap != null) techniqueIndex += 16;
-            if (EmissiveMap != null) techniqueIndex += 32;
-            if (OcclusionMap != null && OcclusionMap != _MetalRoughnessMap) techniqueIndex += 64;
+            if (NormalMap.Texture != null) techniqueIndex += 4;
+            if (BaseColorMap.Texture != null) techniqueIndex += 8;
+            if (MetalRoughnessMap.Texture != null) techniqueIndex += 16;
+            if (EmissiveMap.Texture != null) techniqueIndex += 32;
+            if (OcclusionMap.Texture != null && OcclusionMap.Texture != MetalRoughnessMap.Texture) techniqueIndex += 64;
 
             return techniqueIndex;
         }

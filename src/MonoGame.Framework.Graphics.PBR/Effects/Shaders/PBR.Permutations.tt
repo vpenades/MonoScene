@@ -54,9 +54,9 @@ float4 <#=PSSHADER#>(VsOutTexNorm input) : COLOR0
 
 for(int psIdx=0; psIdx < psShaders.Count; ++psIdx) { var PSSHADER = psShaders[psIdx]; var hasTangents =(psIdx & 1) != 0;
 for(int vsIdx =0; vsIdx < 4; ++vsIdx) {
-var VSSHADER = vsIdx == 0 || vsIdx == 2 ? "VsRigid" : "VsSkinned";  // 1 & 3 are reserved for morphing
+var VSSHADER = vsIdx == 0 || vsIdx == 2 ? "VsRigid" : "VsSkinned";
 if (hasTangents) VSSHADER +="Basis";
 #>
-TECHNIQUE(<#=VSSHADER#><#=PSSHADER#>, <#=VSSHADER#>, <#=PSSHADER#> );
+TECHNIQUE(<#=VSSHADER#>_<#=PSSHADER#>, <#=VSSHADER#>, <#=PSSHADER#> );
 
 <# } } #>

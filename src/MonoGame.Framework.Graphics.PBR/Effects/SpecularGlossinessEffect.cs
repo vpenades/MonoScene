@@ -7,36 +7,26 @@ namespace Microsoft.Xna.Framework.Graphics
     public class SpecularGlossinessEffect : PBREffect
     {
         #region lifecycle
-
-        /// <summary>
-        /// Creates a new AlphaTestEffect with default parameter settings.
-        /// </summary>
+        
         public SpecularGlossinessEffect(GraphicsDevice device) : base(device, Resources.GetShaderByteCode("SpecularGlossinessEffect"))
         {
-
+            _DiffuseMap = new EffectTexture2D.ScalarXYZW(this.Parameters, "Primary");
+            _SpecularGlossinessMap = new EffectTexture2D.ScalarXYZW(this.Parameters, "Secondary");
         }
 
         #endregion
 
-        #region data       
+        #region data
 
-        private Vector4 _DiffuseScale = Vector4.One;
-        private Texture2D _DiffuseMap;
-
-        private Vector4 _SpecularGlossinessScale = Vector4.One;
-        private Texture2D _SpecularGlossinessMap;
+        private readonly EffectTexture2D.ScalarXYZW _DiffuseMap;
+        private readonly EffectTexture2D.ScalarXYZW _SpecularGlossinessMap;
 
         #endregion
 
         #region properties - material
 
-        public Vector4 DiffuseScale { get => _DiffuseScale; set => _DiffuseScale = value; }
-
-        public Texture2D DiffuseMap { get => _DiffuseMap; set => _DiffuseMap = value; }
-
-        public Vector4 SpecularGlossinessScale { get => _SpecularGlossinessScale; set => _SpecularGlossinessScale = value; }
-
-        public Texture2D SpecularGlossinessMap { get => _SpecularGlossinessMap; set => _SpecularGlossinessMap = value; }
+        public EffectTexture2D.ScalarXYZW DiffuseMap => _DiffuseMap;
+        public EffectTexture2D.ScalarXYZW SpecularGlossinessMap => _SpecularGlossinessMap;
 
         #endregion
 
@@ -44,21 +34,15 @@ namespace Microsoft.Xna.Framework.Graphics
 
         protected override void OnApply()
         {
-            base.OnApply();
-
-            var shaderIndex = RecalculateAll();
-
-            CurrentTechnique = Techniques[shaderIndex];
+            base.OnApply();            
 
             ApplyPBR();
 
-            Parameters["PrimaryScale"].SetValue(_DiffuseScale);
-            UseTexture("PrimaryTexture", _DiffuseMap ?? Resources.WhiteDotTexture);
-            GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+            _DiffuseMap.Apply();
+            _SpecularGlossinessMap.Apply();
 
-            Parameters["SecondaryScale"].SetValue(_SpecularGlossinessScale);
-            UseTexture("SecondaryTexture", _SpecularGlossinessMap ?? Resources.WhiteDotTexture);
-            GraphicsDevice.SamplerStates[2] = SamplerState.LinearWrap;
+            var shaderIndex = RecalculateAll();
+            CurrentTechnique = Techniques[shaderIndex];
         }
 
         private int RecalculateAll()
@@ -66,11 +50,11 @@ namespace Microsoft.Xna.Framework.Graphics
             int techniqueIndex = 0;
             if (BoneCount != 0) techniqueIndex += 1;
 
-            if (NormalMap != null) techniqueIndex += 4;
-            if (_DiffuseMap != null) techniqueIndex += 8;
-            if (_SpecularGlossinessMap != null) techniqueIndex += 16;
-            if (EmissiveMap != null) techniqueIndex += 32;
-            if (OcclusionMap != null) techniqueIndex += 64;
+            if (NormalMap.Texture != null) techniqueIndex += 4;
+            if (DiffuseMap.Texture != null) techniqueIndex += 8;
+            if (SpecularGlossinessMap.Texture != null) techniqueIndex += 16;
+            if (EmissiveMap.Texture != null) techniqueIndex += 32;
+            if (OcclusionMap.Texture != null) techniqueIndex += 64;
 
             return techniqueIndex;
         }
