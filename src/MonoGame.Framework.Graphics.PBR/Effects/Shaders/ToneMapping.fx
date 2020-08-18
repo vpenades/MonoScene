@@ -25,7 +25,7 @@ float3 sRGBToLinear(float3 srgbIn)
 
 float4 sRGBToLinear(float4 srgbIn)
 {
-    return float4(sRGBToLinear(srgbIn.xyz), srgbIn.w);
+    return float4(sRGBToLinear(srgbIn.rgb), srgbIn.a);
 }
 
 // Uncharted 2 tone map

@@ -73,7 +73,9 @@ namespace SharpGLTF.Runtime
         {
             foreach (var d in _Controller.DrawableInstances)
             {
-                Draw(_Template._Meshes[d.Template.LogicalMeshIndex], projection, view, _WorldMatrix, d.Transform);
+                var mesh = _Template._Meshes[d.Template.LogicalMeshIndex];
+
+                Draw(mesh, projection, view, _WorldMatrix, d.Transform);
             }
         }
 

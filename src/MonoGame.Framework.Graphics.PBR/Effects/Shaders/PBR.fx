@@ -29,6 +29,9 @@ BEGIN_CONSTANTS
 
     float3 CameraPosition;
 
+    float2 AlphaTransform;
+    float AlphaCutoff;
+
     float Exposure; // parameter for ToneMapping.toneMap
 
     int NumberOfLights;
@@ -105,6 +108,21 @@ struct VsOutTexNorm
 
 float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, bool hasSecondary, bool hasEmissive, bool hasOcclusion)
 {
+    // get primary color
+
+    float4 f_primary = PrimaryScale;
+    if (hasPrimary) f_primary *= GetPrimaryColor(input.TextureCoordinate);
+
+    // alpha blend/cutoff
+
+    clip((f_primary.a < AlphaCutoff) ? -1 : 1);
+
+    f_primary *= input.Color;
+
+    f_primary.a = mad(f_primary.a, AlphaTransform.x, AlphaTransform.y);    
+
+    // normals
+
     NormalInfo ninfo;
 
     if (hasPerturbedNormals)
@@ -118,9 +136,7 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
         ninfo.t = 0; // should generate some random T & b ?
         ninfo.b = 0;        
     }
-
-    float4 f_primary = input.Color * PrimaryScale;
-    if (hasPrimary) f_primary *= getBaseColor(input.TextureCoordinate, 1);
+    
 
     float4 f_secondary = 1;
     if (hasSecondary) f_secondary *= SAMPLE_TEXTURE(SecondaryTexture, input.TextureCoordinate);
@@ -143,5 +159,5 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
 
     color = toneMap(color);    
 
-    return float4(color.xyz, 1);    
+    return float4(color.xyz, f_primary.a);
 }

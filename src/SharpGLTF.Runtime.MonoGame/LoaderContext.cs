@@ -122,12 +122,24 @@ namespace SharpGLTF.Runtime
                 _MatFactory.Register(srcMaterial, srcPrim.IsSkinned, effect);
             }
 
-            var blending = srcMaterial.Alpha == AlphaMode.BLEND ? BlendState.AlphaBlend : BlendState.Opaque;
+            var blending = BlendState.Opaque;
 
-            blending = BlendState.Opaque;
+            if (effect is PBREffect pbrEffect)            
+            {
+                pbrEffect.AlphaCutoff = -1;
 
+                if (srcMaterial.Alpha == AlphaMode.BLEND)
+                {
+                    blending = BlendState.AlphaBlend;
+                    pbrEffect.AlphaBlend = true;
+                }
+                if (srcMaterial.Alpha == AlphaMode.MASK)
+                {
+                    pbrEffect.AlphaBlend = true;
+                    pbrEffect.AlphaCutoff = srcMaterial.AlphaCutoff;
+                }
+            }
             
-
             WriteMeshPrimitive(srcPrim, effect, blending);
         }        
 

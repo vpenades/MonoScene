@@ -56,7 +56,7 @@ struct VsOutTexNorm
 float4 PsShader(VsOutTexNorm input, bool hasPrimary, bool hasEmissive, bool hasOcclusion)
 {
     float4 f_primary = input.Color * PrimaryScale;
-    if (hasPrimary) f_primary *= getBaseColor(input.TextureCoordinate, 1);    
+    if (hasPrimary) f_primary *= GetPrimaryColor(input.TextureCoordinate);
 
     float3 f_emissive = EmissiveScale;
     if (hasEmissive) f_emissive *= getEmissiveColor(input.TextureCoordinate);

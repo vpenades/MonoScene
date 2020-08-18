@@ -34,7 +34,7 @@ namespace Microsoft.Xna.Framework.Graphics
         #endregion
 
         #region properties - lights
-
+        
         public float Exposure { get; set; } = 1;
 
         public bool LightingEnabled { get; set; }
@@ -47,7 +47,9 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #endregion
 
-        #region properties - material        
+        #region properties - material
+        public bool AlphaBlend { get; set; }
+        public float AlphaCutoff { get; set; }
 
         public EffectTexture2D.ScalarX NormalMap => _NormalMap;
         public EffectTexture2D.ScalarXYZ EmissiveMap => _EmissiveMap;
@@ -72,8 +74,8 @@ namespace Microsoft.Xna.Framework.Graphics
             Parameters["CameraPosition"].SetValue(-View.Translation);
             Parameters["Exposure"].SetValue(this.Exposure);
 
-            // Parameters["AlphaScale"].SetValue(0);
-            // Parameters["AlphaCutoff"].SetValue(1);
+            Parameters["AlphaTransform"].SetValue(AlphaBlend ? Vector2.UnitX : Vector2.UnitY);
+            Parameters["AlphaCutoff"].SetValue(AlphaCutoff);
 
             Resources.GenerateDotTextures(this.GraphicsDevice);
             _NormalMap.Apply();
