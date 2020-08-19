@@ -73,42 +73,54 @@ namespace SharpGLTF.Runtime
         /// <param name="view">The view matrix.</param>        
         public void Draw(Matrix projection, Matrix view)
         {
+            // first we draw all the opaque meshes
             foreach (var d in _Controller.DrawableInstances)
             {
                 var mesh = _Template._Meshes[d.Template.LogicalMeshIndex];
                 if (mesh.OpaqueEffects.Count == 0) continue;
 
-                SetupEffects(mesh.OpaqueEffects, projection, view, _WorldMatrix, d.Transform);
+                SetEffectsTransforms(mesh.OpaqueEffects, projection, view, _WorldMatrix, d.Transform);
 
                 mesh.DrawOpaque();
             }
 
+            // next, we draw all the translucid meshes
             foreach (var d in _Controller.DrawableInstances)
             {
                 var mesh = _Template._Meshes[d.Template.LogicalMeshIndex];
                 if (mesh.TranslucidEffects.Count == 0) continue;
 
-                SetupEffects(mesh.TranslucidEffects, projection, view, _WorldMatrix, d.Transform);
+                SetEffectsTransforms(mesh.TranslucidEffects, projection, view, _WorldMatrix, d.Transform);
 
                 mesh.DrawTranslucid();
             }
         }
 
-        private void SetupEffects(IReadOnlyCollection<Effect> effects, Matrix projectionXform, Matrix viewXform, Matrix worldXform, Transforms.IGeometryTransform modelXform)
-        {
-            if (modelXform is Transforms.SkinnedTransform skinXform)
+        /// <summary>
+        /// Sets the effects transforms.
+        /// </summary>
+        /// <param name="effects">The target effects</param>
+        /// <param name="projectionXform">The current projection matrix</param>
+        /// <param name="viewXform">The current view matrix</param>
+        /// <param name="worldXform">The current world matrix</param>
+        /// <param name="meshXform">The mesh local transform provided by the runtime</param>
+        private void SetEffectsTransforms(IReadOnlyCollection<Effect> effects, Matrix projectionXform, Matrix viewXform, Matrix worldXform, Transforms.IGeometryTransform meshXform)
+        {            
+            if (meshXform is Transforms.SkinnedTransform skinnedXform)
             {
-                var skinTransforms = skinXform.SkinMatrices.Select(item => item.ToXna()).ToArray();
+                // skinned transforms don't have a single "local transform" instead, they deform the mesh using multiple meshes.
+
+                var skinTransforms = skinnedXform.SkinMatrices.Select(item => item.ToXna()).ToArray();
 
                 foreach (var effect in effects)
                 {
                     UpdateTransforms(effect, projectionXform, viewXform, worldXform, skinTransforms);
                 }
             }
-
-            if (modelXform is Transforms.RigidTransform statXform)
+            
+            if (meshXform is Transforms.RigidTransform rigidXform)
             {
-                var statTransform = statXform.WorldMatrix.ToXna();
+                var statTransform = rigidXform.WorldMatrix.ToXna();
 
                 worldXform = Matrix.Multiply(statTransform, worldXform);
 
@@ -132,14 +144,10 @@ namespace SharpGLTF.Runtime
             {
                 if (effect is SkinnedEffect skin)
                 {
-                    var xposed = skinTransforms.Select(item => Matrix.Transpose(item)).ToArray();
-
                     skin.SetBoneTransforms(skinTransforms);
                 }
                 else if (effect is IEffectBones iskin)
                 {
-                    var xposed = skinTransforms.Select(item => Matrix.Transpose(item)).ToArray();
-
                     iskin.SetBoneTransforms(skinTransforms, 0, skinTransforms.Length);
                 }
             }
