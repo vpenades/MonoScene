@@ -14,9 +14,10 @@ namespace SharpGLTF.Runtime
     {
         #region lifecycle
 
-        internal MonoGameModelInstance(MonoGameModelTemplate template, SceneInstance instance)
+        internal MonoGameModelInstance(MonoGameModelTemplate template,int sceneIndex, SceneInstance instance)
         {
             _Template = template;
+            _SceneIndex = sceneIndex;
             _Controller = instance;
         }
 
@@ -25,6 +26,7 @@ namespace SharpGLTF.Runtime
         #region data
 
         private readonly MonoGameModelTemplate _Template;
+        private readonly int _SceneIndex;
         private readonly SceneInstance _Controller;
         private Matrix _WorldMatrix;
 
@@ -74,18 +76,31 @@ namespace SharpGLTF.Runtime
             foreach (var d in _Controller.DrawableInstances)
             {
                 var mesh = _Template._Meshes[d.Template.LogicalMeshIndex];
+                if (mesh.OpaqueEffects.Count == 0) continue;
 
-                Draw(mesh, projection, view, _WorldMatrix, d.Transform);
+                SetupEffects(mesh.OpaqueEffects, projection, view, _WorldMatrix, d.Transform);
+
+                mesh.DrawOpaque();
+            }
+
+            foreach (var d in _Controller.DrawableInstances)
+            {
+                var mesh = _Template._Meshes[d.Template.LogicalMeshIndex];
+                if (mesh.TranslucidEffects.Count == 0) continue;
+
+                SetupEffects(mesh.TranslucidEffects, projection, view, _WorldMatrix, d.Transform);
+
+                mesh.DrawTranslucid();
             }
         }
 
-        private void Draw(MODELMESH mesh, Matrix projectionXform, Matrix viewXform, Matrix worldXform, Transforms.IGeometryTransform modelXform)
+        private void SetupEffects(IReadOnlyCollection<Effect> effects, Matrix projectionXform, Matrix viewXform, Matrix worldXform, Transforms.IGeometryTransform modelXform)
         {
             if (modelXform is Transforms.SkinnedTransform skinXform)
             {
                 var skinTransforms = skinXform.SkinMatrices.Select(item => item.ToXna()).ToArray();
 
-                foreach (var effect in mesh.Effects)
+                foreach (var effect in effects)
                 {
                     UpdateTransforms(effect, projectionXform, viewXform, worldXform, skinTransforms);
                 }
@@ -97,13 +112,11 @@ namespace SharpGLTF.Runtime
 
                 worldXform = Matrix.Multiply(statTransform, worldXform);
 
-                foreach (var effect in mesh.Effects)
+                foreach (var effect in effects)
                 {
                     UpdateTransforms(effect, projectionXform, viewXform, worldXform);
                 }
-            }
-
-            mesh.Draw();
+            }            
         }
 
         private static void UpdateTransforms(Effect effect, Matrix projectionXform, Matrix viewXform, Matrix worldXform, Matrix[] skinTransforms = null)

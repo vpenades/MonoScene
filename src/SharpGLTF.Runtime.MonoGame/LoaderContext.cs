@@ -130,7 +130,7 @@ namespace SharpGLTF.Runtime
 
                 if (srcMaterial.Alpha == AlphaMode.BLEND)
                 {
-                    blending = BlendState.AlphaBlend;
+                    blending = BlendState.NonPremultiplied;
                     pbrEffect.AlphaBlend = true;
                 }
                 if (srcMaterial.Alpha == AlphaMode.MASK)

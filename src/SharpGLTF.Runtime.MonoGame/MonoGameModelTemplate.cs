@@ -52,7 +52,7 @@ namespace SharpGLTF.Runtime
         {
             _Meshes = meshes;
             _Effects = _Meshes.Values
-                .SelectMany(item => item.Effects)
+                .SelectMany(item => item.OpaqueEffects.Concat(item.TranslucidEffects))
                 .Distinct()
                 .ToArray();
 
@@ -110,7 +110,7 @@ namespace SharpGLTF.Runtime
 
         public MonoGameModelInstance CreateInstance(int sceneIndex)
         {
-            return new MonoGameModelInstance(this, _Scenes[sceneIndex].CreateInstance());
+            return new MonoGameModelInstance(this, sceneIndex, _Scenes[sceneIndex].CreateInstance());
         }
 
         private BoundingSphere CalculateBounds(SceneTemplate scene)
