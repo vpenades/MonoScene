@@ -134,8 +134,7 @@ namespace SharpGLTF.Runtime
                     pbrEffect.AlphaBlend = true;
                 }
                 if (srcMaterial.Alpha == AlphaMode.MASK)
-                {
-                    pbrEffect.AlphaBlend = true;
+                {                    
                     pbrEffect.AlphaCutoff = srcMaterial.AlphaCutoff;
                 }
             }
