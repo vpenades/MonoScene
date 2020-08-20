@@ -234,17 +234,21 @@ namespace SharpGLTF.Runtime
             if (_TranslucidPrimitives != null) return _TranslucidPrimitives;
             _TranslucidPrimitives = _Primitives.Where(item => item.Blending != BlendState.Opaque).ToArray();
             return _TranslucidPrimitives;
-        }        
-
-        public void DrawTranslucid()
-        {
-            foreach (var part in GetTranslucidParts()) part.Draw(_GraphicsDevice);
         }
 
         public void DrawOpaque()
-        {
+        {            
+            _GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+
             foreach (var part in GetOpaqueParts()) part.Draw(_GraphicsDevice);
         }
+
+        public void DrawTranslucid()
+        {
+            _GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
+
+            foreach (var part in GetTranslucidParts()) part.Draw(_GraphicsDevice);
+        }        
 
         #endregion
     }    

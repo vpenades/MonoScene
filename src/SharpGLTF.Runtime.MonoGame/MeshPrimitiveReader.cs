@@ -245,7 +245,7 @@ namespace SharpGLTF.Runtime
                         return;
 
                     case VertexElementFormat.Color:                        
-                        SetValue(element, new Microsoft.Xna.Framework.Graphics.PackedVector.NormalizedByte4(value.ToXna()));
+                        SetValue(element, new Color(value.ToXna()));
                         return;
 
                     case VertexElementFormat.Byte4:
@@ -267,12 +267,12 @@ namespace SharpGLTF.Runtime
             public unsafe void SetValue(VertexElement element, Microsoft.Xna.Framework.Graphics.PackedVector.Byte4 value)
             {
                 if (element.VertexElementFormat != VertexElementFormat.Byte4) throw new ArgumentException(nameof(element));
-                
+
                 var dst = _Vertex.Slice(element.Offset, sizeof(Microsoft.Xna.Framework.Graphics.PackedVector.Byte4));
-                System.Runtime.InteropServices.MemoryMarshal.Write(dst, ref value);                
+                System.Runtime.InteropServices.MemoryMarshal.Write(dst, ref value);
             }
 
-            public unsafe void SetValue(VertexElement element, Microsoft.Xna.Framework.Graphics.PackedVector.NormalizedByte4 value)
+            public unsafe void SetValue(VertexElement element, Color value)
             {
                 if (element.VertexElementFormat != VertexElementFormat.Color) throw new ArgumentException(nameof(element));
 

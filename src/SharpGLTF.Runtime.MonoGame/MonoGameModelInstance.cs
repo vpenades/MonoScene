@@ -77,7 +77,7 @@ namespace SharpGLTF.Runtime
             foreach (var d in _Controller.DrawableInstances)
             {
                 var mesh = _Template._Meshes[d.Template.LogicalMeshIndex];
-                if (mesh.OpaqueEffects.Count == 0) continue;
+                if (mesh.OpaqueEffects.Count == 0) continue;                
 
                 SetEffectsTransforms(mesh.OpaqueEffects, projection, view, _WorldMatrix, d.Transform);
 

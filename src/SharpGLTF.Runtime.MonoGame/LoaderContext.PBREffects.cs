@@ -166,13 +166,28 @@ namespace SharpGLTF.Runtime
 
             return UseTexture(channel.Value, null);
         }
-        
+
         #endregion
 
         #region vertex types
 
+        [System.Diagnostics.DebuggerDisplay("{_ToDebugString(),nq}")]
         struct VertexRigid : IVertexType
         {
+            #region debug
+
+            private string _ToDebugString()
+            {
+                var p = $"{Position.X:N5} {Position.Y:N5} {Position.Z:N5}";
+                var n = $"{Normal.X:N2} {Normal.Y:N2} {Normal.Z:N2}";
+                var t = $"{Tangent.X:N2} {Tangent.Y:N2} {Tangent.Z:N2} {Tangent.W:N1}";
+                var uv0 = $"{TextureCoordinate.X:N3} {TextureCoordinate.Y:N3}";                                
+
+                return $"𝐏:{p}   𝚴:{n}   𝚻:{t}   𝐂:{Color.PackedValue:X}   𝐔𝐕₀:{uv0}   𝐔𝐕₁:-";
+            }
+
+            #endregion
+
             #region static
 
             private static VertexDeclaration _VDecl = CreateVertexDeclaration();
@@ -208,14 +223,31 @@ namespace SharpGLTF.Runtime
             public Vector3 Position;
             public Vector3 Normal;
             public Vector4 Tangent;
-            public Microsoft.Xna.Framework.Graphics.PackedVector.NormalizedByte4 Color;
+            public Color Color;
             public Vector2 TextureCoordinate;            
 
             #endregion
         }
 
+        [System.Diagnostics.DebuggerDisplay("{_ToDebugString(),nq}")]
         struct VertexSkinned : IVertexType
         {
+            #region debug
+
+            private string _ToDebugString()
+            {
+                var p = $"{Position.X:N5} {Position.Y:N5} {Position.Z:N5}";
+                var n = $"{Normal.X:N2} {Normal.Y:N2} {Normal.Z:N2}";
+                var t = $"{Tangent.X:N2} {Tangent.Y:N2} {Tangent.Z:N2} {Tangent.W:N1}";
+                var uv0 = $"{TextureCoordinate.X:N3} {TextureCoordinate.Y:N3}";
+                var jv = BlendIndices.ToVector4();
+                var j = $"{jv.X:N3} {jv.Y:N3} {jv.Z:N3} {jv.W:N3}";
+
+                return $"𝐏:{p}   𝚴:{n}   𝚻:{t}   𝐂:{Color.PackedValue:X}   𝐔𝐕₀:{uv0}   𝐔𝐕₁:-   𝐉𝐖:{j}";
+            }
+
+            #endregion
+
             #region static
 
             private static VertexDeclaration _VDecl = CreateVertexDeclaration();
@@ -257,7 +289,7 @@ namespace SharpGLTF.Runtime
             public Vector3 Position;
             public Vector3 Normal;
             public Vector4 Tangent;
-            public Microsoft.Xna.Framework.Graphics.PackedVector.NormalizedByte4 Color;
+            public Color Color;
             public Vector2 TextureCoordinate;
             public Microsoft.Xna.Framework.Graphics.PackedVector.Byte4 BlendIndices;
             public Vector4 BlendWeight;

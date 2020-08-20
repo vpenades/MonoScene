@@ -110,16 +110,14 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
 {
     // get primary color
 
-    float4 f_primary = PrimaryScale;
+    float4 f_primary = PrimaryScale * input.Color;
     if (hasPrimary) f_primary *= GetPrimaryColor(input.TextureCoordinate);
 
-    // alpha blend/cutoff
+    // alpha cutoff
+    clip((f_primary.a < AlphaCutoff) ? -1 : 1);
 
-    clip((f_primary.a < AlphaCutoff) ? -1 : 1);    
-
-    f_primary.a = mad(f_primary.a, AlphaTransform.x, AlphaTransform.y);    
-
-    f_primary.rgb *= input.Color.rgb;
+    // alpha blend
+    f_primary.a = mad(f_primary.a, AlphaTransform.x, AlphaTransform.y);        
 
     // normals
 
