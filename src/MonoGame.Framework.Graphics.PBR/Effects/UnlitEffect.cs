@@ -76,9 +76,9 @@ namespace Microsoft.Xna.Framework.Graphics.Effects
             int techniqueIndex = 0;
             if (BoneCount != 0) techniqueIndex += 1;
             
-            if (_BaseColorMap != null) techniqueIndex += 4;            
-            if (EmissiveMap != null) techniqueIndex += 8;
-            if (OcclusionMap != null) techniqueIndex += 16;
+            if (_BaseColorMap.Texture != null) techniqueIndex += 4;            
+            if (EmissiveMap.Texture != null) techniqueIndex += 8;
+            if (OcclusionMap.Texture != null) techniqueIndex += 16;
 
             return techniqueIndex;
         }
