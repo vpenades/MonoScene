@@ -113,7 +113,27 @@ namespace SharpGLTF.Runtime
 
         private readonly Dictionary<Object, Effect> _RigidEffects = new Dictionary<Object, Effect>();
         private readonly Dictionary<Object, SkinnedEffect> _SkinnedEffects = new Dictionary<Object, SkinnedEffect>();
-        
+
+        private readonly Dictionary<TextureSampler, SamplerState> _TextureSamplers = new Dictionary<TextureSampler, SamplerState>(new TextureSamplerComparer());
+
+        private class TextureSamplerComparer : IEqualityComparer<TextureSampler>
+        {
+            public bool Equals(TextureSampler x, TextureSampler y)
+            {
+                if (x.MinFilter != x.MinFilter) return false;
+                if (x.MagFilter != x.MagFilter) return false;
+                if (x.WrapS != x.WrapS) return false;
+                if (x.WrapT != x.WrapT) return false;
+
+                return true;
+            }
+
+            public int GetHashCode(TextureSampler obj)
+            {
+                return obj.MinFilter.GetHashCode() ^ obj.MagFilter.GetHashCode() ^ obj.WrapS.GetHashCode() ^ obj.WrapT.GetHashCode();
+            }
+        }
+
         #endregion
 
         #region API - Schema
@@ -153,6 +173,30 @@ namespace SharpGLTF.Runtime
             }            
 
             return _TexFactory.UseTexture(channel.Value.Texture?.PrimaryImage?.Content ?? default, name);
+        }
+
+        internal SamplerState UseSampler(Schema2.TextureSampler gltfSampler)
+        {
+            var dstSampler = new SamplerState();
+            _TextureSamplers[gltfSampler] = dstSampler;
+            _Disposables.AddDisposable(dstSampler);
+
+            dstSampler.AddressU = GetAddressMode(gltfSampler.WrapS);
+            dstSampler.AddressV = GetAddressMode(gltfSampler.WrapT);
+
+            // ToDo: we also need to set magnification and minification filters.
+
+            return dstSampler;
+        }
+
+        private TextureAddressMode GetAddressMode(Schema2.TextureWrapMode mode)
+        {
+            switch (mode)
+            {
+                case TextureWrapMode.CLAMP_TO_EDGE: return TextureAddressMode.Clamp;
+                case TextureWrapMode.MIRRORED_REPEAT: return TextureAddressMode.Mirror;
+                default: return TextureAddressMode.Wrap;
+            }
         }
 
         #endregion

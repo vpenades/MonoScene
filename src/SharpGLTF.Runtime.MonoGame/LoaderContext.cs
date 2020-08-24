@@ -167,6 +167,31 @@ namespace SharpGLTF.Runtime
             return _MatFactory.UseTexture(channel, name);
         }
 
+        protected virtual SamplerState UseSampler(Schema2.TextureSampler gltfSampler)
+        {
+            // glTF default is LinearWrap
+            if (gltfSampler == null) return SamplerState.LinearWrap;
+
+            // First we check if we can use one of the SamplerState predefined values.
+            if (gltfSampler.MinFilter == TextureMipMapFilter.DEFAULT && gltfSampler.MagFilter == TextureInterpolationFilter.DEFAULT)
+            {
+                if (gltfSampler.WrapS == TextureWrapMode.CLAMP_TO_EDGE && gltfSampler.WrapT == TextureWrapMode.CLAMP_TO_EDGE)
+                {
+                    return SamplerState.LinearClamp;
+                }
+
+                if (gltfSampler.WrapS == TextureWrapMode.REPEAT && gltfSampler.WrapT == TextureWrapMode.REPEAT)
+                {
+                    return SamplerState.LinearWrap;
+                }                
+            }
+
+            // if we cannot use a predefined value, we have to create a new SamplerState.
+            return _MatFactory.UseSampler(gltfSampler);
+        }
+
+        
+
         #endregion
 
         #region resources API

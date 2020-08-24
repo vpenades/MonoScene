@@ -12,9 +12,9 @@ namespace Microsoft.Xna.Framework.Graphics
         
         public PBREffect(GraphicsDevice device, byte[] effectCode) : base(device, effectCode)
         {
-            _NormalMap = new EffectTexture2D.ScalarX(this.Parameters, "Normal");
-            _EmissiveMap = new EffectTexture2D.ScalarXYZ(this.Parameters, "Emissive");
-            _OcclusionMap = new EffectTexture2D.ScalarX(this.Parameters, "Occlusion");
+            _NormalMap = new EffectTexture2D.ScalarX(device, this.Parameters, "Normal", 0);
+            _EmissiveMap = new EffectTexture2D.ScalarXYZ(device, this.Parameters, "Emissive", 3);
+            _OcclusionMap = new EffectTexture2D.ScalarX(device, this.Parameters, "Occlusion", 4);
         }
 
         #endregion

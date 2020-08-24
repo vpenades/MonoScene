@@ -10,8 +10,8 @@ namespace Microsoft.Xna.Framework.Graphics
         
         public MetallicRoughnessEffect(GraphicsDevice device) : base(device, Resources.GetShaderByteCode("MetallicRoughnessEffect"))
         {
-            _BaseColorMap = new EffectTexture2D.ScalarXYZW(this.Parameters, "Primary");
-            _MetalRoughnessMap = new EffectTexture2D.ScalarXY(this.Parameters, "Secondary");
+            _BaseColorMap = new EffectTexture2D.ScalarXYZW(device, this.Parameters, "Primary", 1);
+            _MetalRoughnessMap = new EffectTexture2D.ScalarXY(device, this.Parameters, "Secondary", 2);
         }
 
         #endregion

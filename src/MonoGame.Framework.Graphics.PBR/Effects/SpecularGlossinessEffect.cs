@@ -10,8 +10,8 @@ namespace Microsoft.Xna.Framework.Graphics
         
         public SpecularGlossinessEffect(GraphicsDevice device) : base(device, Resources.GetShaderByteCode("SpecularGlossinessEffect"))
         {
-            _DiffuseMap = new EffectTexture2D.ScalarXYZW(this.Parameters, "Primary");
-            _SpecularGlossinessMap = new EffectTexture2D.ScalarXYZW(this.Parameters, "Secondary");
+            _DiffuseMap = new EffectTexture2D.ScalarXYZW(device, this.Parameters, "Primary", 1);
+            _SpecularGlossinessMap = new EffectTexture2D.ScalarXYZW(device, this.Parameters, "Secondary", 2);
         }
 
         #endregion

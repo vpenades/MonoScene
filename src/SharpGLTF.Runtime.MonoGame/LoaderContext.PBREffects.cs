@@ -92,26 +92,30 @@ namespace SharpGLTF.Runtime
         #region gltf helpers
         
         private void TransferChannel(EffectTexture2D.ScalarX dst, GLTFMATERIAL src, string name, float defval)
-        {
+        {            
             dst.Texture = UseTexture(src, name);
+            dst.Sampler = UseSampler(src, name);
             dst.Scale = GetScaler(src, name, defval);
         }
 
         private void TransferChannel(EffectTexture2D.ScalarXY dst, GLTFMATERIAL src, string name, Vector2 defval)
         {
             dst.Texture = UseTexture(src, name);
+            dst.Sampler = UseSampler(src, name);
             dst.Scale = GetScaler(src, name, defval);
         }
 
         private void TransferChannel(EffectTexture2D.ScalarXYZ dst, GLTFMATERIAL src, string name, Vector3 defval)
         {
             dst.Texture = UseTexture(src, name);
+            dst.Sampler = UseSampler(src, name);
             dst.Scale = GetScaler(src, name, defval);
         }
 
         private void TransferChannel(EffectTexture2D.ScalarXYZW dst, GLTFMATERIAL src, string name, Vector4 defval)
         {
             dst.Texture = UseTexture(src, name);
+            dst.Sampler = UseSampler(src, name);
             dst.Scale = GetScaler(src, name, defval);
         }
 
@@ -165,6 +169,16 @@ namespace SharpGLTF.Runtime
             if (channel.Value.Texture.PrimaryImage.Content.IsEmpty) return null;
 
             return UseTexture(channel.Value, null);
+        }
+
+        private SamplerState UseSampler(GLTFMATERIAL srcMaterial, string name)
+        {
+            var channel = srcMaterial.FindChannel(name);
+
+            if (!channel.HasValue) return null;
+            if (channel.Value.Texture == null) return null;
+
+            return UseSampler(channel.Value.TextureSampler);
         }
 
         #endregion
