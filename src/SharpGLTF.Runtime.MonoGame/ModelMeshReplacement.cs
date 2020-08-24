@@ -27,7 +27,8 @@ namespace SharpGLTF.Runtime
         private readonly RuntimeModelMesh _Parent;
 
         private Effect _Effect;
-        private BlendState _Blend;
+        private BlendState _Blend = BlendState.Opaque;
+        private RasterizerState _Rasterizer = RasterizerState.CullCounterClockwise;
 
         private IndexBuffer _IndexBuffer;
         private int _IndexOffset;
@@ -44,6 +45,8 @@ namespace SharpGLTF.Runtime
         #endregion
 
         #region properties
+
+        public GraphicsDevice Device => _Parent._GraphicsDevice;
 
         public Effect Effect
         {
@@ -62,7 +65,11 @@ namespace SharpGLTF.Runtime
             set => _Blend = value;
         }
 
-        public GraphicsDevice Device => _Parent._GraphicsDevice;
+        public RasterizerState Rasterizer
+        {
+            get => _Rasterizer;
+            set => _Rasterizer = value;
+        }        
 
         public Microsoft.Xna.Framework.BoundingSphere BoundingSphere
         {
@@ -96,6 +103,7 @@ namespace SharpGLTF.Runtime
                 device.Indices = _IndexBuffer;
 
                 device.BlendState = _Blend;
+                device.RasterizerState = _Rasterizer;
 
                 for (int j = 0; j < _Effect.CurrentTechnique.Passes.Count; j++)
                 {
@@ -239,6 +247,8 @@ namespace SharpGLTF.Runtime
         public void DrawOpaque()
         {            
             _GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+
+            
 
             foreach (var part in GetOpaqueParts()) part.Draw(_GraphicsDevice);
         }

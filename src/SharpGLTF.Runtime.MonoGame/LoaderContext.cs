@@ -81,7 +81,7 @@ namespace SharpGLTF.Runtime
             if (_Device == null) throw new InvalidOperationException();            
 
             var srcPrims = _GetValidPrimitives(srcMesh)
-                .ToDictionary(item => item, item => new MeshPrimitiveReader(item, item.Material?.DoubleSided ?? false));
+                .ToDictionary(item => item, item => new MeshPrimitiveReader(item));
 
             VertexNormalsFactory.CalculateSmoothNormals(srcPrims.Values.ToList());
             VertexTangentsFactory.CalculateTangents(srcPrims.Values.ToList());
@@ -139,15 +139,15 @@ namespace SharpGLTF.Runtime
                 }
             }
             
-            WriteMeshPrimitive(srcPrim, effect, blending);
+            WriteMeshPrimitive(srcPrim, effect, blending, srcMaterial.DoubleSided ? RasterizerState.CullNone : RasterizerState.CullCounterClockwise);
         }        
 
-        protected abstract void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect, BlendState blending);
+        protected abstract void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect, BlendState blending, RasterizerState fc);
 
-        protected void WriteMeshPrimitive<TVertex>(Effect effect, BlendState blending, MeshPrimitiveReader primitive)
+        protected void WriteMeshPrimitive<TVertex>(Effect effect, BlendState blending, RasterizerState fc, MeshPrimitiveReader primitive)
             where TVertex : unmanaged, IVertexType
         {
-            _MeshWriter.WriteMeshPrimitive<TVertex>(_CurrentMeshIndex, effect, blending, primitive);
+            _MeshWriter.WriteMeshPrimitive<TVertex>(_CurrentMeshIndex, effect, blending, fc, primitive);
         }
 
         #endregion

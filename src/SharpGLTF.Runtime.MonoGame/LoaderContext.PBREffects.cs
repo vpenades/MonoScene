@@ -81,10 +81,10 @@ namespace SharpGLTF.Runtime
 
         #region meshes creation
 
-        protected override void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect, BlendState blending)
+        protected override void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect, BlendState blending, RasterizerState fc)
         {
-            if (srcPrimitive.IsSkinned) WriteMeshPrimitive<VertexSkinned>(effect, blending, srcPrimitive);
-            else WriteMeshPrimitive<VertexRigid>(effect, blending, srcPrimitive);
+            if (srcPrimitive.IsSkinned) WriteMeshPrimitive<VertexSkinned>(effect, blending, fc, srcPrimitive);
+            else WriteMeshPrimitive<VertexRigid>(effect, blending, fc, srcPrimitive);
         }
 
         #endregion
