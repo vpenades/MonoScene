@@ -19,9 +19,17 @@ BEGIN_CONSTANTS
     float4x4 Projection;
     float4x3 Bones[SKINNED_EFFECT_MAX_BONES]; // 4x3 is enough, and saves constants            
 
-    float4 PrimaryScale;    // either BaseColor or Diffuse
+    float4 PrimaryScale;
+    float3 PrimaryTransformU;
+    float3 PrimaryTransformV;    
+
     float OcclusionScale;
-    float3 EmissiveScale;    
+    float3 OcclusionTransformU;
+    float3 OcclusionTransformV;
+
+    float3 EmissiveScale;
+    float3 EmissiveTransformU;
+    float3 EmissiveTransformV;
 
     float Exposure; // parameter for ToneMapping.toneMap
 

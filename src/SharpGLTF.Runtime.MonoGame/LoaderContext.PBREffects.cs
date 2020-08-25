@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -96,6 +97,7 @@ namespace SharpGLTF.Runtime
             dst.Texture = UseTexture(src, name);
             dst.Sampler = UseSampler(src, name);
             dst.Scale = GetScaler(src, name, defval);
+            dst.Transform = GetTransform(src, name);
         }
 
         private void TransferChannel(EffectTexture2D.ScalarXY dst, GLTFMATERIAL src, string name, Vector2 defval)
@@ -103,6 +105,7 @@ namespace SharpGLTF.Runtime
             dst.Texture = UseTexture(src, name);
             dst.Sampler = UseSampler(src, name);
             dst.Scale = GetScaler(src, name, defval);
+            dst.Transform = GetTransform(src, name);
         }
 
         private void TransferChannel(EffectTexture2D.ScalarXYZ dst, GLTFMATERIAL src, string name, Vector3 defval)
@@ -110,6 +113,7 @@ namespace SharpGLTF.Runtime
             dst.Texture = UseTexture(src, name);
             dst.Sampler = UseSampler(src, name);
             dst.Scale = GetScaler(src, name, defval);
+            dst.Transform = GetTransform(src, name);
         }
 
         private void TransferChannel(EffectTexture2D.ScalarXYZW dst, GLTFMATERIAL src, string name, Vector4 defval)
@@ -117,6 +121,7 @@ namespace SharpGLTF.Runtime
             dst.Texture = UseTexture(src, name);
             dst.Sampler = UseSampler(src, name);
             dst.Scale = GetScaler(src, name, defval);
+            dst.Transform = GetTransform(src, name);
         }
 
         private float GetScaler(GLTFMATERIAL srcMaterial, string name, float defval)
@@ -127,6 +132,23 @@ namespace SharpGLTF.Runtime
             var param = channel.Value.Parameter;
 
             return param.X;
+        }
+
+        private (Vector3 u, Vector3 v) GetTransform(GLTFMATERIAL srcMaterial, string name)
+        {
+            var channel = srcMaterial.FindChannel(name);
+
+            if (!channel.HasValue) return (Vector3.UnitX,Vector3.UnitY);
+
+            if (channel.Value.TextureTransform == null) return (Vector3.UnitX, Vector3.UnitY);
+
+            var S = System.Numerics.Matrix3x2.CreateScale(channel.Value.TextureTransform.Scale);
+            var R = System.Numerics.Matrix3x2.CreateRotation(-channel.Value.TextureTransform.Rotation);
+            var T = System.Numerics.Matrix3x2.CreateTranslation(channel.Value.TextureTransform.Offset);
+            
+            var X = S * R * T;
+
+            return (new Vector3(X.M11, X.M21, X.M31), new Vector3(X.M12, X.M22, X.M32));
         }
 
         private Vector2 GetScaler(GLTFMATERIAL srcMaterial, string name, Vector2 defval)

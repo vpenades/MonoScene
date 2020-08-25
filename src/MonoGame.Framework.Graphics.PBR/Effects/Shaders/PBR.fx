@@ -43,13 +43,24 @@ BEGIN_CONSTANTS
     // Metallic Roughness Material.
 
     float NormalScale;
+    float3 NormalTransformU;
+    float3 NormalTransformV;
 
     float4 PrimaryScale;    // either BaseColor or Diffuse
+    float3 PrimaryTransformU;
+    float3 PrimaryTransformV;
+
     float4 SecondaryScale;  // either MetallicRoughness or SpecularGlossiness
+    float3 SecondaryTransformU;
+    float3 SecondaryTransformV;
 
     float OcclusionScale;
+    float3 OcclusionTransformU;
+    float3 OcclusionTransformV;
 
-    float3 EmissiveScale;    
+    float3 EmissiveScale;
+    float3 EmissiveTransformU;
+    float3 EmissiveTransformV;
 
 END_CONSTANTS
 
@@ -102,7 +113,9 @@ struct VsOutTexNorm
 
 #include "PBR.Pixel.fx"
 
+#include "Sampler.Normal.fx"
 #include "Sampler.Primary.fx"
+#include "Sampler.Secondary.fx"
 #include "Sampler.Emissive.fx"
 #include "Sampler.Occlusion.fx"
 
@@ -125,7 +138,7 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
 
     if (hasPerturbedNormals)
     {
-        ninfo = getNormalInfo(input);
+        ninfo = GetNormalInfo(input);
     }
     else
     {        
@@ -137,7 +150,7 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
     
 
     float4 f_secondary = 1;
-    if (hasSecondary) f_secondary *= SAMPLE_TEXTURE(SecondaryTexture, input.TextureCoordinate);
+    if (hasSecondary) f_secondary = GetSecondaryColor(input.TextureCoordinate);
 
     float3 f_emissive = EmissiveScale;
     if (hasEmissive) f_emissive *= getEmissiveColor(input.TextureCoordinate);

@@ -17,6 +17,10 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1375-develop" PrivateAssets="all" />    
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Update="Effects\Shaders\PBR.Permutations.tt">
       <LastGenOutput>PBR.Permutations.fx</LastGenOutput>
