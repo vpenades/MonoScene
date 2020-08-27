@@ -127,12 +127,12 @@ struct VsOutTexNorm
 #include "Sampler.Emissive.fx"
 #include "Sampler.Occlusion.fx"
 
-float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, bool hasSecondary, bool hasEmissive, bool hasOcclusion)
+float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, bool hasSecondary, bool hasEmissive, bool hasOcclusionMap)
 {
     // get primary color
 
     float4 f_primary = PrimaryScale * input.Color;
-    if (hasPrimary) f_primary *= GetPrimaryColor(input.TextureCoordinate0, input.TextureCoordinate1);
+    if (hasPrimary) f_primary *= GetPrimarySample(input.TextureCoordinate0, input.TextureCoordinate1);
 
     // alpha cutoff
     clip((f_primary.a < AlphaCutoff) ? -1 : 1);
@@ -146,7 +146,7 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
 
     if (hasPerturbedNormals)
     {
-        ninfo = GetNormalInfo(input);
+        ninfo = GetNormalSample(input);
     }
     else
     {        
@@ -156,34 +156,23 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
         ninfo.b = 0;        
     }
 
-    // get additional textures
-    
+    // get additional textures    
 
     float4 f_secondary = 1;
-    float f_occlusion = 1;
-
-    if (hasSecondary)
-    {
-        f_secondary = GetSecondaryColor(input.TextureCoordinate0, input.TextureCoordinate1);
-
-        #if MATERIAL_METALLICROUGHNESS
-        // MetallicRoughness uses <GB> channels, and reserves the <R> channel for optional occlusion.
-        f_occlusion = GetSecondaryOcclusion(input.TextureCoordinate0, input.TextureCoordinate1);
-        #endif
-    }
-
-    float3 f_emissive = EmissiveScale;
-    if (hasEmissive) f_emissive *= GetEmissiveColor(input.TextureCoordinate0, input.TextureCoordinate1);
-    
-    if (hasOcclusion) f_occlusion = GetAmbientOcclusion(input.TextureCoordinate0, input.TextureCoordinate1);   
-    
-
+    if (hasSecondary) f_secondary = GetSecondarySample(input.TextureCoordinate0, input.TextureCoordinate1);    
 
     float3 color = PsWithPBR(input.PositionWS, ninfo, f_primary.rgb, f_secondary);    
 
-    color += f_emissive;
+    float3 f_emissive = EmissiveScale;
+    if (hasEmissive) f_emissive *= GetEmissiveSample(input.TextureCoordinate0, input.TextureCoordinate1);
 
-    color = lerp(color, color * f_occlusion, OcclusionScale);
+    color += f_emissive;
+    
+    if (hasOcclusionMap)
+    {
+        float f_occlusion = GetOcclusionSample(input.TextureCoordinate0, input.TextureCoordinate1);
+        color = lerp(color, color * f_occlusion, OcclusionScale);
+    }    
 
     color = toneMap(color);    
 

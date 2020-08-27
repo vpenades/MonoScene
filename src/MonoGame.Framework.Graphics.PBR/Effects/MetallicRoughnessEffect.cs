@@ -54,7 +54,7 @@ namespace Microsoft.Xna.Framework.Graphics
             if (BaseColorMap.Texture != null) techniqueIndex += 8;
             if (MetalRoughnessMap.Texture != null) techniqueIndex += 16;
             if (EmissiveMap.Texture != null) techniqueIndex += 32;
-            if (OcclusionMap.Texture != null && OcclusionMap.Texture != MetalRoughnessMap.Texture) techniqueIndex += 64;
+            if (OcclusionMap.Texture != null) techniqueIndex += 64;
 
             return techniqueIndex;
         }

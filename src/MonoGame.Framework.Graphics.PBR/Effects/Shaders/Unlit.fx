@@ -68,18 +68,21 @@ struct VsOutTexNorm
 float4 PsShader(VsOutTexNorm input, bool hasPrimary, bool hasEmissive, bool hasOcclusion)
 {
     float4 f_primary = input.Color * PrimaryScale;
-    if (hasPrimary) f_primary *= GetPrimaryColor(input.TextureCoordinate0, input.TextureCoordinate1);
-
-    float3 f_emissive = EmissiveScale;
-    if (hasEmissive) f_emissive *= GetEmissiveColor(input.TextureCoordinate0, input.TextureCoordinate1);
-
-    float f_occlusion = 1;
-    if (hasOcclusion) f_occlusion = GetAmbientOcclusion(input.TextureCoordinate0, input.TextureCoordinate1);
+    if (hasPrimary) f_primary *= GetPrimarySample(input.TextureCoordinate0, input.TextureCoordinate1);
 
     float3 color = f_primary.rgb;
 
+    float3 f_emissive = EmissiveScale;
+    if (hasEmissive) f_emissive *= GetEmissiveSample(input.TextureCoordinate0, input.TextureCoordinate1);        
+
     color += f_emissive;
-    color = lerp(color, color * f_occlusion, OcclusionScale);
+    
+    if (hasOcclusion)
+    {
+        float f_occlusion = GetOcclusionSample(input.TextureCoordinate0, input.TextureCoordinate1);
+        color = lerp(color, color * f_occlusion, OcclusionScale);
+    }
+    
     color = toneMap(color);
 
     return float4(color.xyz, 1);    
