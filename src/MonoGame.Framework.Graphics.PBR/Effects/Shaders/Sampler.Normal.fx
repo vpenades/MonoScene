@@ -19,7 +19,7 @@ NormalInfo GetNormalInfo(VsOutTexNorm input)
 
     // get normal sample
 
-    float2 uv = input.TextureCoordinate;
+    float2 uv = NormalTextureIdx < 1 ? input.TextureCoordinate0 : input.TextureCoordinate1;
     float3 uv1 = float3(uv, 1);
     uv.x = dot(uv1, NormalTransformU);
     uv.y = dot(uv1, NormalTransformV);

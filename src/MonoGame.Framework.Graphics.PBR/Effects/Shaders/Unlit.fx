@@ -20,14 +20,17 @@ BEGIN_CONSTANTS
     float4x3 Bones[SKINNED_EFFECT_MAX_BONES]; // 4x3 is enough, and saves constants            
 
     float4 PrimaryScale;
+    int PrimaryTextureIdx;
     float3 PrimaryTransformU;
     float3 PrimaryTransformV;    
 
     float OcclusionScale;
+    int OcclusionTextureIdx;
     float3 OcclusionTransformU;
     float3 OcclusionTransformV;
 
     float3 EmissiveScale;
+    int EmissiveTextureIdx;
     float3 EmissiveTransformU;
     float3 EmissiveTransformV;
 
@@ -47,14 +50,15 @@ struct VsOutTexNorm
     float4 PositionPS : SV_Position;
 
     float4 Color: COLOR0;
-    float2 TextureCoordinate : TEXCOORD0;
-    float3 PositionWS : TEXCOORD1;
+    float2 TextureCoordinate0 : TEXCOORD0;
+    float2 TextureCoordinate1 : TEXCOORD1;
+    float3 PositionWS : TEXCOORD2;
 
     // float3x3 TangentBasis : TBASIS; requires Shader Model 4 :(
 
-    float3 TangentBasisX : TEXCOORD2;
-    float3 TangentBasisY : TEXCOORD3;
-    float3 TangentBasisZ : TEXCOORD4;
+    float3 TangentBasisX : TEXCOORD3;
+    float3 TangentBasisY : TEXCOORD4;
+    float3 TangentBasisZ : TEXCOORD5;
 };
 
 #include "Sampler.Primary.fx"
@@ -64,13 +68,13 @@ struct VsOutTexNorm
 float4 PsShader(VsOutTexNorm input, bool hasPrimary, bool hasEmissive, bool hasOcclusion)
 {
     float4 f_primary = input.Color * PrimaryScale;
-    if (hasPrimary) f_primary *= GetPrimaryColor(input.TextureCoordinate);
+    if (hasPrimary) f_primary *= GetPrimaryColor(input.TextureCoordinate0, input.TextureCoordinate1);
 
     float3 f_emissive = EmissiveScale;
-    if (hasEmissive) f_emissive *= getEmissiveColor(input.TextureCoordinate);
+    if (hasEmissive) f_emissive *= GetEmissiveColor(input.TextureCoordinate0, input.TextureCoordinate1);
 
     float f_occlusion = 1;
-    if (hasOcclusion) f_occlusion = getAmbientOcclusion(input.TextureCoordinate);
+    if (hasOcclusion) f_occlusion = GetAmbientOcclusion(input.TextureCoordinate0, input.TextureCoordinate1);
 
     float3 color = f_primary.rgb;
 

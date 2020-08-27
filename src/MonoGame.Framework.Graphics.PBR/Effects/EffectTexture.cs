@@ -25,6 +25,7 @@ namespace Microsoft.Xna.Framework.Graphics
             _SamplerIndex = samplerIdx;
 
             _TextureScale = parameters[name + "Scale"];
+            _TextureSet = parameters[name + "TextureIdx"];
             _TextureTransformU = parameters[name + "TransformU"];
             _TextureTransformV = parameters[name + "TransformV"];
         }
@@ -37,6 +38,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private EffectParameter _TextureMap;
         internal EffectParameter _TextureScale;
+        internal EffectParameter _TextureSet;
         internal EffectParameter _TextureTransformU;
         internal EffectParameter _TextureTransformV;
 
@@ -47,7 +49,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private Vector4 _Scalar;
 
-        private Int32 _IndexSet;
+        private Int32 _TextureSetIndex;
         private Vector3 _TransformU = Vector3.UnitX;
         private Vector3 _TransformV = Vector3.UnitY;        
 
@@ -65,6 +67,12 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             get => _Sampler;
             set => _Sampler = value;
+        }
+
+        public int SetIndex
+        {
+            get => _TextureSetIndex;
+            set => _TextureSetIndex = value;
         }
 
         public (Vector3, Vector3) Transform
@@ -85,6 +93,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
             if (_Sampler != null) _Device.SamplerStates[_SamplerIndex] = _Sampler;
 
+            _TextureSet.SetValue(_TextureSetIndex);
             _TextureTransformU.SetValue(_TransformU);
             _TextureTransformV.SetValue(_TransformV);
         }

@@ -33,6 +33,7 @@ namespace SharpGLTF.Runtime
             
             _Color0 = srcPrim.GetVertexAccessor("COLOR_0")?.AsColorArray();
             _TexCoord0 = srcPrim.GetVertexAccessor("TEXCOORD_0")?.AsVector2Array();
+            _TexCoord1 = srcPrim.GetVertexAccessor("TEXCOORD_1")?.AsVector2Array();
 
             _Joints0 = srcPrim.GetVertexAccessor("JOINTS_0")?.AsVector4Array();
             _Joints1 = srcPrim.GetVertexAccessor("JOINTS_1")?.AsVector4Array();
@@ -72,6 +73,7 @@ namespace SharpGLTF.Runtime
 
         private readonly IList<XYZW> _Color0;
         private readonly IList<XY> _TexCoord0;
+        private readonly IList<XY> _TexCoord1;
 
         private readonly IList<XYZW> _Joints0;
         private readonly IList<XYZW> _Joints1;
@@ -109,6 +111,7 @@ namespace SharpGLTF.Runtime
         public XY GetTextureCoord(int idx, int set)
         {
             if (set == 0 && _TexCoord0 != null) return _TexCoord0[idx];
+            if (set == 1 && _TexCoord1 != null) return _TexCoord1[idx];
 
             return XY.Zero;
         }
@@ -158,7 +161,7 @@ namespace SharpGLTF.Runtime
                         case VertexElementUsage.Normal: v.SetValue(element, GetNormal(i)); break;
                         case VertexElementUsage.Tangent: v.SetValue(element, GetTangent(i)); break;
 
-                        case VertexElementUsage.TextureCoordinate: v.SetValue(element, GetTextureCoord(i,element.UsageIndex)); break;
+                        case VertexElementUsage.TextureCoordinate: v.SetValue(element, GetTextureCoord(i, element.UsageIndex)); break;
                         case VertexElementUsage.Color: v.SetValue(element, GetColor(i, element.UsageIndex)); break;
 
                         case VertexElementUsage.BlendIndices: v.SetValue(element, GetIndices(i)); break;

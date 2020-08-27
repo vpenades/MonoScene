@@ -6,7 +6,8 @@ struct VsInRigid
     float3 Normal : Normal0;
 
     float4 Color: COLOR0;
-    float2 TextureCoordinate : TEXCOORD0;
+    float2 TextureCoordinate0 : TEXCOORD0;
+    float2 TextureCoordinate1 : TEXCOORD1;
 };
 
 struct VsInSkinned
@@ -15,7 +16,8 @@ struct VsInSkinned
     float3 Normal : Normal0;
 
     float4 Color: COLOR0;
-    float2 TextureCoordinate : TEXCOORD0;
+    float2 TextureCoordinate0 : TEXCOORD0;
+    float2 TextureCoordinate1 : TEXCOORD1;
 
     uint4 BlendIndices : BLENDINDICES0;
     float4 BlendWeights : BLENDWEIGHT0;
@@ -28,7 +30,8 @@ struct VsInRigidTangent
     float4 Tangent: Tangent0;
 
     float4 Color: COLOR0;
-    float2 TextureCoordinate : TEXCOORD0;
+    float2 TextureCoordinate0 : TEXCOORD0;
+    float2 TextureCoordinate1 : TEXCOORD1;
 };
 
 struct VsInSkinnedTangent
@@ -38,7 +41,8 @@ struct VsInSkinnedTangent
     float4 Tangent: Tangent0;
 
     float4 Color: COLOR0;
-    float2 TextureCoordinate : TEXCOORD0;
+    float2 TextureCoordinate0 : TEXCOORD0;
+    float2 TextureCoordinate1 : TEXCOORD1;
 
     uint4 BlendIndices : BLENDINDICES0;
     float4 BlendWeights : BLENDWEIGHT0;
@@ -95,7 +99,8 @@ VsOutTexNorm VsRigidBasis(VsInRigidTangent input)
     output.TangentBasisZ = TBN[2];
 
     output.Color = input.Color;
-    output.TextureCoordinate = input.TextureCoordinate;
+    output.TextureCoordinate0 = input.TextureCoordinate0;
+    output.TextureCoordinate1 = input.TextureCoordinate1;
 
     return output;
 }
@@ -114,7 +119,8 @@ VsOutTexNorm VsSkinnedBasis(VsInSkinnedTangent input)
     output.Tangent = float4(tgt, input.Tangent.w);
 
     output.Color = input.Color;
-    output.TextureCoordinate = input.TextureCoordinate;
+    output.TextureCoordinate0 = input.TextureCoordinate0;
+    output.TextureCoordinate1 = input.TextureCoordinate1;
 
     return VsRigidBasis(output);
 }
@@ -135,7 +141,8 @@ VsOutTexNorm VsRigid(VsInRigid input)
     output.TangentBasisZ = mul(float4(input.Normal, 0.0), World).xyz;
 
     output.Color = input.Color;
-    output.TextureCoordinate = input.TextureCoordinate;
+    output.TextureCoordinate0 = input.TextureCoordinate0;
+    output.TextureCoordinate1 = input.TextureCoordinate1;
 
     return output;
 }
@@ -150,7 +157,8 @@ VsOutTexNorm VsSkinned(VsInSkinned input)
     output.Normal = mul(float4(input.Normal, 0), mbones).xyz;
 
     output.Color = input.Color;
-    output.TextureCoordinate = input.TextureCoordinate;
+    output.TextureCoordinate0 = input.TextureCoordinate0;
+    output.TextureCoordinate1 = input.TextureCoordinate1;
 
     return VsRigid(output);
 }
