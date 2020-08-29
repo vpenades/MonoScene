@@ -49,7 +49,7 @@ namespace MonoGameViewer
             _ModelBounds = _ModelTemplate.Instance.Bounds;
 
 
-            var points = SharpGLTF.Schema2.Schema2Toolkit.EvaluateTriangles(model.DefaultScene)
+            var points = SharpGLTF.Schema2.Toolkit.EvaluateTriangles(model.DefaultScene)
                 .SelectMany(item => new[] { item.A.GetGeometry().GetPosition(), item.B.GetGeometry().GetPosition(), item.C.GetGeometry().GetPosition() })
                 .Distinct()
                 .Select(item => new Vector3(item.X, item.Y, item.Z))
