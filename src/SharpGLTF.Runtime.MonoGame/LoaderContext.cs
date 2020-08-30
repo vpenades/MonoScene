@@ -83,8 +83,7 @@ namespace SharpGLTF.Runtime
             var srcPrims = _GetValidPrimitives(srcMesh)
                 .ToDictionary(item => item, item => new MeshPrimitiveReader(item));
 
-            VertexNormalsFactory.CalculateSmoothNormals(srcPrims.Values.ToList());
-            VertexTangentsFactory.CalculateTangents(srcPrims.Values.ToList());
+            MeshPrimitiveReader.GenerateNormalsAndTangents(srcPrims.Values);
             
             foreach (var srcPrim in srcPrims)
             {

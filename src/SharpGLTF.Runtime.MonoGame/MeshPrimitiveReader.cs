@@ -20,16 +20,21 @@ namespace SharpGLTF.Runtime
     /// Reads the content of a glTF <see cref="MeshPrimitive"/> object into a structure that's easier to consume by MonoGame.
     /// </summary>
     public sealed class MeshPrimitiveReader
-        : VertexNormalsFactory.IMeshPrimitive
-        , VertexTangentsFactory.IMeshPrimitive
     {
         #region lifecycle
 
         internal MeshPrimitiveReader(MeshPrimitive srcPrim)
         {
-            _Positions = srcPrim.GetVertexAccessor("POSITION")?.AsVector3Array();
-            _Normals = srcPrim.GetVertexAccessor("NORMAL")?.AsVector3Array();
-            _Tangents = srcPrim.GetVertexAccessor("TANGENT")?.AsVector4Array();
+            // the first geometry block is the base mesh.
+            var baseGeometry = new MeshGeometryReader(this, srcPrim);
+            _Geometries.Add(baseGeometry);
+
+            // additional geometry blocks are the morph targets (if any)
+            for(int i=0; i < srcPrim.MorphTargetsCount; ++i)
+            {
+                var morphTarget = new MeshGeometryReader(this, srcPrim, i);
+                _Geometries.Add(morphTarget);
+            }
             
             _Color0 = srcPrim.GetVertexAccessor("COLOR_0")?.AsColorArray();
             _TexCoord0 = srcPrim.GetVertexAccessor("TEXCOORD_0")?.AsVector2Array();
@@ -67,9 +72,7 @@ namespace SharpGLTF.Runtime
 
         private readonly (int A, int B, int C)[] _Triangles;
 
-        private readonly IList<XYZ> _Positions;
-        private IList<XYZ> _Normals;
-        private IList<XYZW> _Tangents;
+        private readonly List<MeshGeometryReader> _Geometries = new List<MeshGeometryReader>();        
 
         private readonly IList<XYZW> _Color0;
         private readonly IList<XY> _TexCoord0;
@@ -86,14 +89,20 @@ namespace SharpGLTF.Runtime
         #region properties        
 
         public bool IsSkinned => _Joints0 != null;
-        public int VertexCount => _Positions?.Count ?? 0;
-        public (int A, int B, int C)[] TriangleIndices => _Triangles;      
-        
+
+        public bool hasMorphTargets => _Geometries.Count > 1;
+
+        public int VertexCount => _Geometries[0].VertexCount;
+
+        public (int A, int B, int C)[] TriangleIndices => _Triangles;
+
+        internal IReadOnlyList<MeshGeometryReader> Geometries => _Geometries;
+
         public BoundingSphere BoundingSphere
         {
             get
             {
-                var points = _Positions.Select(item => item.ToXna());
+                var points = _Geometries[0]._Positions.Select(item => item.ToXna());
                 return BoundingSphere.CreateFromPoints(points);
             }
         }
@@ -102,11 +111,25 @@ namespace SharpGLTF.Runtime
 
         #region API
 
-        public XYZ GetPosition(int idx) { return _Positions[idx]; }
+        public static void GenerateNormalsAndTangents(IEnumerable<MeshPrimitiveReader> srcPrims)
+        {
+            // find out the number of morph targets (index 0 is base mesh)
+            var morphTargetsCount = srcPrims.Min(item => item.Geometries.Count);
 
-        public XYZ GetNormal(int idx) { return _Normals[idx]; }
+            // generate normals and tangents
+            for (int i = 0; i < morphTargetsCount; ++i)
+            {
+                var morphTargets = srcPrims.Select(item => item.Geometries[i]).ToList();
+                VertexNormalsFactory.CalculateSmoothNormals(morphTargets);
+                VertexTangentsFactory.CalculateTangents(morphTargets);
+            }
+        }
 
-        public XYZW GetTangent(int idx) { return _Tangents[idx]; }
+        public XYZ GetPosition(int idx) { return _Geometries[0].GetPosition(idx); }
+
+        public XYZ GetNormal(int idx) { return _Geometries[0].GetNormal(idx); }
+
+        public XYZW GetTangent(int idx) { return _Geometries[0].GetTangent(idx); }
 
         public XY GetTextureCoord(int idx, int set)
         {
@@ -147,7 +170,7 @@ namespace SharpGLTF.Runtime
 
             if (sizeof(TVertex) != declaration.VertexStride) throw new ArgumentException(nameof(TVertex));
 
-            var dst = new TVertex[_Positions.Count];
+            var dst = new TVertex[VertexCount];
 
             for (int i = 0; i < dst.Length; ++i)
             {
@@ -171,12 +194,42 @@ namespace SharpGLTF.Runtime
             }
 
             return dst;
-        }        
+        }
+
+        public unsafe TVertex[] ToXnaMorphTargets<TVertex>()
+            where TVertex : unmanaged, IVertexType
+        {
+            var declaration = default(TVertex).VertexDeclaration;
+
+            if (sizeof(TVertex) != declaration.VertexStride) throw new ArgumentException(nameof(TVertex));
+
+            var dst = new TVertex[VertexCount * _Geometries.Count];
+
+            for (int i = 0; i < dst.Length; ++i)
+            {
+                var v = _VertexWriter.CreateFromArray(dst, i);
+
+                foreach (var element in declaration.GetVertexElements())
+                {
+                    var geometry = _Geometries[i / VertexCount];
+
+                    var ii = i % VertexCount;
+
+                    switch (element.VertexElementUsage)
+                    {
+                        case VertexElementUsage.Position: v.SetValue(element, geometry.GetPosition(ii)); break;
+                        case VertexElementUsage.Normal: v.SetValue(element, geometry.GetNormal(ii)); break;
+                        case VertexElementUsage.Tangent: v.SetValue(element, geometry.GetTangent(ii)); break;                        
+                    }
+                }
+            }
+
+            return dst;
+        }
 
         #endregion
 
         #region nested types
-
         readonly ref struct _VertexWriter 
         {
             #region constructor
@@ -294,13 +347,102 @@ namespace SharpGLTF.Runtime
             #endregion
         }
 
+        #endregion        
+    }
+
+    [System.Diagnostics.DebuggerDisplay("Vertices: {VertexCount}")]
+    class MeshGeometryReader
+        : VertexNormalsFactory.IMeshPrimitive
+        , VertexTangentsFactory.IMeshPrimitive
+    {
+        #region  lifecycle
+
+        public MeshGeometryReader(MeshPrimitiveReader owner, MeshPrimitive srcPrim)
+        {
+            _Owner = owner;
+
+            _Positions = srcPrim.GetVertexAccessor("POSITION")?.AsVector3Array();
+            _Normals = srcPrim.GetVertexAccessor("NORMAL")?.AsVector3Array();
+            _Tangents = srcPrim.GetVertexAccessor("TANGENT")?.AsVector4Array();
+        }
+
+        public MeshGeometryReader(MeshPrimitiveReader owner, MeshPrimitive srcPrim, int morphTargetIndex)            
+        {
+            _Owner = owner;
+
+            // copy the Base Geometry from Geometry 0
+
+            _Positions = _Owner.Geometries[0]?._Positions?.ToArray();
+            _Normals = _Owner.Geometries[0]?._Normals?.ToArray();
+            _Tangents = _Owner.Geometries[0]?._Tangents?.ToArray();
+
+            // get morph deltas and apply them to our base geometry copy.
+
+            var morphs = srcPrim.GetMorphTargetAccessors(morphTargetIndex);
+
+            if (morphs.TryGetValue("POSITION", out Accessor pAccessor))
+            {
+                var pDeltas = pAccessor.AsVector3Array();
+                for (int i = 0; i < _Positions.Count; ++i)
+                {
+                    _Positions[i] += pDeltas[i];
+                }
+            }
+
+            if (morphs.TryGetValue("NORMAL", out Accessor nAccessor))
+            {
+                var nDeltas = nAccessor.AsVector3Array();
+                for (int i = 0; i < _Positions.Count; ++i)
+                {
+                    _Normals[i] += nDeltas[i];
+                }
+            }
+
+            if (morphs.TryGetValue("TANGENT", out Accessor tAccessor))
+            {
+                var tDeltas = tAccessor.AsVector3Array();
+                for (int i = 0; i < _Positions.Count; ++i)
+                {
+                    _Tangents[i] += new XYZW(tDeltas[i], 0);
+                }
+            }
+        }
+
+        #endregion
+
+        #region data
+
+        private readonly MeshPrimitiveReader _Owner;
+
+        internal readonly IList<XYZ> _Positions;
+        private IList<XYZ> _Normals;
+        private IList<XYZW> _Tangents;
+
+        #endregion
+
+        #region properties
+
+        public int VertexCount => _Positions?.Count ?? 0;
+
+        #endregion
+
+        #region API
+
+        public XYZ GetPosition(int idx) { return _Positions[idx]; }
+
+        public XYZ GetNormal(int idx) { return _Normals[idx]; }
+
+        public XYZW GetTangent(int idx) { return _Tangents[idx]; }
+
+        public XY GetTextureCoord(int idx, int set) { return _Owner.GetTextureCoord(idx, set); }
+
         #endregion
 
         #region Support methods for VertexNormalsFactory and VertexTangentsFactory
 
-        IEnumerable<(int A, int B, int C)> VertexNormalsFactory.IMeshPrimitive.GetTriangleIndices() { return _TrianglesSource; }
+        IEnumerable<(int A, int B, int C)> VertexNormalsFactory.IMeshPrimitive.GetTriangleIndices() { return _Owner.TriangleIndices; }
 
-        IEnumerable<(int A, int B, int C)> VertexTangentsFactory.IMeshPrimitive.GetTriangleIndices() { return _TrianglesSource; }
+        IEnumerable<(int A, int B, int C)> VertexTangentsFactory.IMeshPrimitive.GetTriangleIndices() { return _Owner.TriangleIndices; }
 
         XYZ VertexNormalsFactory.IMeshPrimitive.GetVertexPosition(int idx) { return GetPosition(idx); }
         XYZ VertexTangentsFactory.IMeshPrimitive.GetVertexPosition(int idx) { return GetPosition(idx); }
@@ -319,7 +461,7 @@ namespace SharpGLTF.Runtime
             if (_Tangents == null) _Tangents = new XYZW[VertexCount];
             if (!(_Tangents is XYZW[])) return; // if it's not a plain array, it's a glTF source, so we prevent writing existing tangents.            
             _Tangents[idx] = tangent;
-        }        
+        }
 
         #endregion
     }
