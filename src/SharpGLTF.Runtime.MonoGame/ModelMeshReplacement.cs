@@ -30,11 +30,11 @@ namespace SharpGLTF.Runtime
         private BlendState _Blend = BlendState.Opaque;
         private RasterizerState _Rasterizer = RasterizerState.CullCounterClockwise;
 
-        private IndexBuffer _IndexBuffer;
+        private IndexBuffer _SharedIndexBuffer;
         private int _IndexOffset;
         private int _PrimitiveCount;        
 
-        private VertexBuffer _VertexBuffer;
+        private VertexBuffer _SharedVertexBuffer;
         private int _VertexOffset;
         private int _VertexCount;
 
@@ -83,14 +83,14 @@ namespace SharpGLTF.Runtime
 
         public void SetVertexBuffer(VertexBuffer vb, int offset, int count)
         {
-            this._VertexBuffer = vb;
+            this._SharedVertexBuffer = vb;
             this._VertexOffset = offset;
             this._VertexCount = count;            
         }
 
         public void SetIndexBuffer(IndexBuffer ib, int offset, int count)
         {
-            this._IndexBuffer = ib;
+            this._SharedIndexBuffer = ib;
             this._IndexOffset = offset;
             this._PrimitiveCount = count;            
         }
@@ -99,15 +99,15 @@ namespace SharpGLTF.Runtime
         {
             if (_PrimitiveCount > 0)
             {
-                device.SetVertexBuffer(_VertexBuffer);
-                device.Indices = _IndexBuffer;
+                device.SetVertexBuffer(_SharedVertexBuffer);
+                device.Indices = _SharedIndexBuffer;
 
                 device.BlendState = _Blend;
                 device.RasterizerState = _Rasterizer;
 
-                for (int j = 0; j < _Effect.CurrentTechnique.Passes.Count; j++)
+                foreach(var pass in _Effect.CurrentTechnique.Passes)
                 {
-                    _Effect.CurrentTechnique.Passes[j].Apply();
+                    pass.Apply();
                     device.DrawIndexedPrimitives(PrimitiveType.TriangleList, _VertexOffset, _IndexOffset, _PrimitiveCount);
                 }
             }

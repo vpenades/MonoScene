@@ -42,12 +42,12 @@ namespace MonoGameViewer
             }
 
 
-            if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }            
+            if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
 
-            var loader = SharpGLTF.Runtime.PBREffectsLoaderContext.CreateLoaderContext(this.GraphicsDevice);
+            var loader = SharpGLTF.Runtime.LoaderContext.CreateLoaderContext(this.GraphicsDevice);            
+
             _ModelTemplate = loader.CreateDeviceModel(model);
             _ModelBounds = _ModelTemplate.Instance.Bounds;
-
 
             var points = SharpGLTF.Schema2.Toolkit.EvaluateTriangles(model.DefaultScene)
                 .SelectMany(item => new[] { item.A.GetGeometry().GetPosition(), item.B.GetGeometry().GetPosition(), item.C.GetGeometry().GetPosition() })

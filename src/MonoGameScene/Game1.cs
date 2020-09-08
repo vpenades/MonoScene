@@ -63,7 +63,7 @@ namespace MonoGameScene
 
         protected override void LoadContent()
         {
-            var loader = PBREffectsLoaderContext.CreateLoaderContext(this.GraphicsDevice);
+            var loader = LoaderContext.CreateLoaderContext(this.GraphicsDevice);
 
             _AvodadoTemplate = loader.LoadDeviceModel("Models\\Avocado.glb");
             _BrainStemTemplate = loader.LoadDeviceModel("Models\\BrainStem.glb");

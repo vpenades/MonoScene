@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,6 +30,8 @@ namespace SharpGLTF.Runtime
         private readonly int _SceneIndex;
         private readonly SceneInstance _Controller;
         private Matrix _WorldMatrix;
+
+        private static readonly List<Matrix[]> _BoneArrays = new List<Matrix[]>();
 
         #endregion
 
@@ -110,12 +113,17 @@ namespace SharpGLTF.Runtime
             {
                 // skinned transforms don't have a single "local transform" instead, they deform the mesh using multiple meshes.
 
-                var skinTransforms = skinnedXform.SkinMatrices.Select(item => item.ToXna()).ToArray();
+                var skinTransforms = UseArray(skinnedXform.SkinMatrices.Count);
+
+                for(int i=0; i < skinTransforms.Length; ++i)
+                {
+                    skinTransforms[i] = skinnedXform.SkinMatrices[i].ToXna();
+                }                
 
                 foreach (var effect in effects)
                 {
                     UpdateTransforms(effect, projectionXform, viewXform, worldXform, skinTransforms);
-                }
+                }                
             }
             
             if (meshXform is Transforms.RigidTransform rigidXform)
@@ -129,6 +137,18 @@ namespace SharpGLTF.Runtime
                     UpdateTransforms(effect, projectionXform, viewXform, worldXform);
                 }
             }            
+        }
+
+        // Since SkinnedEffect has such a flexible and GC friendly API,
+        // we have to do this to have a reusable bone matrix pool.
+        private static Matrix[] UseArray(int count)
+        {
+            while (_BoneArrays.Count <= count) _BoneArrays.Add(null);
+
+            if (_BoneArrays[count] == null) _BoneArrays[count] = new Matrix[count];
+
+            return _BoneArrays[count];
+
         }
 
         private static void UpdateTransforms(Effect effect, Matrix projectionXform, Matrix viewXform, Matrix worldXform, Matrix[] skinTransforms = null)
@@ -148,14 +168,14 @@ namespace SharpGLTF.Runtime
                 }
                 else if (effect is IEffectBones iskin)
                 {
-                    iskin.SetBoneTransforms(skinTransforms, 0, skinTransforms.Length);
+                    iskin.SetBoneTransforms(skinTransforms);
                 }
             }
             else
             {
                 if (effect is IEffectBones iskin)
                 {
-                    iskin.SetBoneTransforms(null, 0, 0);
+                    iskin.SetBoneTransforms(null);
                 }
             }
         }

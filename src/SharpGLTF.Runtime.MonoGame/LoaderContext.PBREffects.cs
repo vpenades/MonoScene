@@ -15,14 +15,7 @@ namespace SharpGLTF.Runtime
 {
     public class PBREffectsLoaderContext : LoaderContext
     {
-        #region lifecycle
-
-        public static LoaderContext CreateLoaderContext(GraphicsDevice device)
-        {
-            if (device.GraphicsProfile == GraphicsProfile.HiDef) return new PBREffectsLoaderContext(device);
-
-            return new BasicEffectsLoaderContext(device);
-        }
+        #region lifecycle        
 
         public PBREffectsLoaderContext(GraphicsDevice device) : base(device)
         {

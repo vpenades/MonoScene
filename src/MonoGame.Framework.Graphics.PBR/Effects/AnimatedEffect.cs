@@ -61,10 +61,10 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region API
 
-        public void SetBoneTransforms(Matrix[] boneTransforms, int boneStart, int boneCount)
+        public void SetBoneTransforms(Matrix[] boneTransforms)
         {
-            _BoneCount = boneCount; if (_BoneCount == 0) return;
-            Array.Copy(boneTransforms, boneStart, _Bones, 0, boneCount);
+            _BoneCount = boneTransforms?.Length ?? 0; if (_BoneCount == 0) return;
+            boneTransforms.CopyTo(_Bones, 0);
         }
 
         protected void UseTexture(string name, Texture2D tex)
