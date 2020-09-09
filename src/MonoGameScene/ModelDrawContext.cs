@@ -83,6 +83,8 @@ namespace MonoGameScene
             {
                 classicLights.LightingEnabled = true;
 
+                classicLights.AmbientLightColor = Vector3.Zero;
+
                 _Lights[0].ApplyTo(classicLights.DirectionalLight0);
                 _Lights[1].ApplyTo(classicLights.DirectionalLight1);
                 _Lights[2].ApplyTo(classicLights.DirectionalLight2);
