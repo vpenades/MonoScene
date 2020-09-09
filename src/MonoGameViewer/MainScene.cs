@@ -24,11 +24,19 @@ namespace MonoGameViewer
 
         private Quaternion _Rotation = Quaternion.Identity;
 
+        private readonly ClientLight[] _Lights = new ClientLight[] { ClientLight.CreateDefault(0), ClientLight.CreateDefault(1), ClientLight.CreateDefault(2) };
+
+        #endregion
+
+        #region properties
+
+        public ClientLight[] Lights => _Lights;
+
         #endregion
 
         #region API
 
-        public void LoadModel(string filePath)
+        public void LoadModel(string filePath, bool useBasicEffects)
         {
             SharpGLTF.Schema2.ModelRoot model = null;
 
@@ -44,7 +52,9 @@ namespace MonoGameViewer
 
             if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
 
-            var loader = SharpGLTF.Runtime.LoaderContext.CreateLoaderContext(this.GraphicsDevice);            
+            var loader = useBasicEffects
+                ? new SharpGLTF.Runtime.BasicEffectsLoaderContext(this.GraphicsDevice)
+                : SharpGLTF.Runtime.LoaderContext.CreateLoaderContext(this.GraphicsDevice);            
 
             _ModelTemplate = loader.CreateDeviceModel(model);
             _ModelBounds = _ModelTemplate.Instance.Bounds;
@@ -74,8 +84,6 @@ namespace MonoGameViewer
             _Rotation.Normalize();
         }
 
-
-
         public override void Update(GameTime gameTime)
         {
             if (_ModelInstance == null && _ModelTemplate != null) _ModelInstance = _ModelTemplate.Instance.CreateInstance();
@@ -97,6 +105,9 @@ namespace MonoGameViewer
             var camera = Matrix.CreateWorld(camPos, lookAt - camPos, Vector3.UnitY);
 
             var ctx = new ModelDrawContext(this.GraphicsDevice, camera);
+            ctx.SetLight(0, _Lights[0].ToPBR());
+            ctx.SetLight(1, _Lights[1].ToPBR());
+            ctx.SetLight(2, _Lights[2].ToPBR());
 
             var xform = Matrix.CreateFromQuaternion(_Rotation);
 
@@ -104,5 +115,64 @@ namespace MonoGameViewer
         }
 
         #endregion
+    }
+
+    public class ClientLight
+    {
+        public static ClientLight CreateDefault(int idx)
+        {
+            var l = new ClientLight();
+            l.Intensity = 15;
+            l.Color = System.Windows.Media.Colors.White;
+
+            switch(idx)
+            {
+                case 0:
+                    l.DirectionAngle = 60;
+                    l.ElevationAngle = 30;
+                    l.Intensity = 80;
+                    break;
+
+                case 1:
+                    l.DirectionAngle = -70;
+                    l.ElevationAngle = 60;
+                    l.Color = System.Windows.Media.Colors.LightBlue;
+                    break;
+
+                case 2:
+                    l.DirectionAngle = 20;
+                    l.ElevationAngle = -50;
+                    l.Color = System.Windows.Media.Colors.LightBlue;
+                    break;
+            }            
+
+            return l;
+        }
+
+        [PropertyTools.DataAnnotations.Slidable(-180,180)]
+        [PropertyTools.DataAnnotations.WideProperty]
+        public int DirectionAngle { get; set; }
+
+        [PropertyTools.DataAnnotations.Slidable(-90, 90)]
+        [PropertyTools.DataAnnotations.WideProperty]
+        public int ElevationAngle { get; set; }
+        public System.Windows.Media.Color Color { get; set; }
+
+
+        [PropertyTools.DataAnnotations.Slidable(0,100)]
+        [PropertyTools.DataAnnotations.WideProperty]
+        public int Intensity { get; set; }
+
+        public PBRLight ToPBR()
+        {
+            float yaw = (float)(DirectionAngle * Math.PI) / 180.0f;
+            float pitch = (float)(ElevationAngle * Math.PI) / 180.0f;
+            var xform = Matrix.CreateFromYawPitchRoll(yaw + 3.141592f, pitch, 0);
+            var dir = Vector3.Transform(Vector3.UnitZ, xform);
+
+            var color = new Vector3(Color.ScR, Color.ScG, Color.ScB);
+
+            return PBRLight.Directional(dir, color, (float)Intensity / 10.0f);
+        }
     }
 }

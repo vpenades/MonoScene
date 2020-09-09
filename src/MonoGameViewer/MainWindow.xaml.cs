@@ -27,7 +27,11 @@ namespace MonoGameViewer
             InitializeComponent();
         }
 
-        private void _OnClick_LoadModel(object sender, RoutedEventArgs e)
+        private void _OnClick_LoadModelBasic(object sender, RoutedEventArgs e) { _LoadModel(sender, true); }
+
+        private void _OnClick_LoadModelPBR(object sender, RoutedEventArgs e) { _LoadModel(sender, false); }
+
+        private static void _LoadModel(object sender, bool useBasicEffects)
         {
             if (sender is FrameworkElement fe)
             {
@@ -38,7 +42,7 @@ namespace MonoGameViewer
                     dlg.RestoreDirectory = true;
                     if (!dlg.ShowDialog().Value) return;
 
-                    scene.LoadModel(dlg.FileName);
+                    scene.LoadModel(dlg.FileName, useBasicEffects);
                 }
             }
         }

@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
+    /// <summary>
+    /// Represents a light source with parameters required for PBR punctual lighting.
+    /// </summary>
     public struct PBRLight
     {
         #region constructors
@@ -42,6 +45,7 @@ namespace Microsoft.Xna.Framework.Graphics
         public float Range;
 
         public Vector3 Color;
+
         public float Intensity;
 
         /// <summary>
@@ -75,14 +79,24 @@ namespace Microsoft.Xna.Framework.Graphics
             }
         }
 
+        /// <summary>
+        /// Applies the current settings to a classic Effect's DirectionalLight
+        /// </summary>
+        /// <param name="dlight">The target light.</param>
+        /// <remarks>
+        /// Due to the different nature of the way classic effects and PBR effects calculate light, it's
+        /// impossible to achieve the same results, so this method uses a "best effort" approach.
+        /// </remarks>
         public void ApplyTo(DirectionalLight dlight)
         {
             if (Type == 0)
             {
-                dlight.Enabled = true;
+                var sigma2 = 2f - 2f / (1f + Intensity);
+
+                dlight.Enabled = this.Intensity > 0;
                 dlight.Direction = this.Direction;
-                dlight.DiffuseColor = this.Color;
-                dlight.SpecularColor = Vector3.Lerp(this.Color, Vector3.One, 0.75f);
+                dlight.DiffuseColor = this.Color * sigma2;
+                dlight.SpecularColor = Vector3.Lerp(this.Color * sigma2 * 0.5f, Vector3.One* sigma2, 0.5f);
             }
             else
             {

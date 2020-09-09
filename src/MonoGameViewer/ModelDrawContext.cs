@@ -55,6 +55,11 @@ namespace MonoGameViewer
             _Lights[1] = PBRLight.Directional(new Vector3(-1, 0, -1), new Vector3(0.7f, 0.5f, 0.3f), 2);
         }
 
+        public void SetLight(int idx, PBRLight l)
+        {
+            _Lights[idx] = l;
+        }
+
         public void SetDemoLights(float t)
         {
             var dir = new Vector3((float)Math.Cos(t), 0, -(float)Math.Sin(t));

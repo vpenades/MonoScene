@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MonoGameViewer"
         xmlns:monoGameControls="clr-namespace:MonoGame.WpfCore.MonoGameControls"
+        xmlns:propTools="http://propertytools.org/wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
@@ -17,9 +18,20 @@
 
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
-                <MenuItem Header="Load..." Click="_OnClick_LoadModel" />
+                <MenuItem Header="Load Basic..." Click="_OnClick_LoadModelBasic" />
+                <MenuItem Header="Load PBR..." Click="_OnClick_LoadModelPBR" />
             </MenuItem>
         </Menu>
+
+        <StackPanel DockPanel.Dock="Right">
+            <ItemsControl ItemsSource="{Binding Lights}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <propTools:PropertyGrid SelectedObject="{Binding}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
 
         <monoGameControls:MonoGameContentControl MouseMove="_OnMouseMove" />
     </DockPanel>
