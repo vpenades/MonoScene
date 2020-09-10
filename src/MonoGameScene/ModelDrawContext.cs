@@ -42,7 +42,9 @@ namespace MonoGameScene
         private Matrix _Projection;
         private Matrix _View;
 
-        private readonly PBRPunctualLight[] _Lights = new PBRPunctualLight[3];        
+        private float _Exposure = 2.5f;
+        private Vector3 _AmbientLight = Vector3.Zero;
+        private readonly PBRPunctualLight[] _PunctualLights = new PBRPunctualLight[3];        
 
         #endregion        
 
@@ -50,15 +52,15 @@ namespace MonoGameScene
 
         public void SetDefaultLights()
         {
-            _Lights[0] = PBRPunctualLight.Directional(new Vector3(1, -1, -1), Vector3.One, 3);
-            _Lights[1] = PBRPunctualLight.Directional(new Vector3(-1, 0, -1), new Vector3(0.7f, 0.5f, 0.3f), 2);
+            _PunctualLights[0] = PBRPunctualLight.Directional(new Vector3(1, -1, -1), Vector3.One, 3);
+            _PunctualLights[1] = PBRPunctualLight.Directional(new Vector3(-1, 0, -1), new Vector3(0.7f, 0.5f, 0.3f), 2);
         }
 
         public void SetDemoLights(float t)
         {
             var dir = new Vector3((float)Math.Cos(t), 0, -(float)Math.Sin(t));
 
-            _Lights[0] = PBRPunctualLight.Directional(dir, Vector3.One, 1);
+            _PunctualLights[0] = PBRPunctualLight.Directional(dir, Vector3.One, 1);
 
             // _Lights[0] = PBRLight.Directional(new Vector3(1, -1, -1), 0, Vector3.One, 9);
             // _Lights[1] = PBRLight.Directional(dir, 0, new Vector3(0.2f, 0.5f, 1f), 5);
@@ -74,31 +76,9 @@ namespace MonoGameScene
 
         public void UpdateMaterial(Effect effect)
         {
-            if (effect is IEffectFog fog)
-            {
-                fog.FogEnabled = false;
-            }
+            if (effect is IEffectFog fog) { fog.FogEnabled = false; }
 
-            if (effect is IEffectLights classicLights)
-            {
-                classicLights.LightingEnabled = true;
-
-                classicLights.AmbientLightColor = Vector3.Zero;
-
-                _Lights[0].ApplyTo(classicLights.DirectionalLight0);
-                _Lights[1].ApplyTo(classicLights.DirectionalLight1);
-                _Lights[2].ApplyTo(classicLights.DirectionalLight2);
-            }
-
-            if (effect is PBRPunctualLight.IEffect pbrLights)
-            {
-                pbrLights.Exposure = 2.5f;
-
-                for(int i=0; i < _Lights.Length; ++i)
-                {
-                    pbrLights.SetPunctualLight(i, _Lights[i]);
-                }
-            }
+            PBRPunctualLight.ApplyLights(effect, _Exposure, _AmbientLight, _PunctualLights);
         }
 
         #endregion

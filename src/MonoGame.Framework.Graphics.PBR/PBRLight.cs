@@ -66,6 +66,48 @@ namespace Microsoft.Xna.Framework.Graphics
         #endregion
 
         #region API
+        
+        /// <summary>
+        /// Applies the current set of PBR lights to the given <see cref="Effect"/>.
+        /// </summary>
+        /// <param name="effect">The target <see cref="Effect"/>.</param>
+        /// <param name="exposure">Exposure factor.</param>
+        /// <param name="alight">Ambient light color.</param>
+        /// <param name="plights">Punctual lights collection.</param>
+        /// <remarks>
+        /// This methos works with effects using <see cref="IEffectLights"/> and <see cref="IEffect"/>.
+        /// </remarks>
+        public static void ApplyLights(Effect effect, float exposure, Vector3 alight, IReadOnlyList<PBRPunctualLight> plights)
+        {
+            var pbrLights = GetEffectInterface(effect);
+            if (pbrLights == null) return;
+            
+            pbrLights.Exposure = exposure;
+            pbrLights.AmbientLightColor = alight;
+
+            for (int i = 0; i < pbrLights.MaxPunctualLights; ++i)
+            {
+                var l = i < plights.Count ? plights[i] : default;
+                pbrLights.SetPunctualLight(i, l);
+            }            
+        }
+        
+        /// <summary>
+        /// Retrieves a <see cref="IEffect"/> interface fro the given <paramref name="effect"/>.
+        /// </summary>
+        /// <param name="effect">The <see cref="Effect"/> we want to update.</param>
+        /// <returns>An PBR lights interface</returns>
+        /// <remarks>
+        /// If the effect supports the interface, it's returned immediately.
+        /// If the effect supports the classic <see cref="IEffectLights"/>
+        /// it returns a wrapper that will do a best effort to convert the lights.
+        /// </remarks>
+        public static IEffect GetEffectInterface(Effect effect)
+        {
+            if (effect is IEffect pbrLightsEffect) return pbrLightsEffect;
+            if (effect is IEffectLights classicLightsEffect) return new ClassicLightsAdapter(classicLightsEffect);
+            return null;
+        }
 
         internal static void Encode(PBRPunctualLight[] src, Vector4[] p0, Vector4[] p1, Vector4[] p2, Vector4[] p3)
         {
@@ -77,31 +119,6 @@ namespace Microsoft.Xna.Framework.Graphics
                 p2[i] = new Vector4(l.Position, l.InnerConeCos);
                 p3[i] = new Vector4(l.OuterConeCos, l.Type, 0, 0);
             }
-        }
-
-        /// <summary>
-        /// Applies the current settings to a classic Effect's DirectionalLight
-        /// </summary>
-        /// <param name="dlight">The target light.</param>
-        /// <remarks>
-        /// Due to the different nature of the way classic effects and PBR effects calculate light, it's
-        /// impossible to achieve the same results, so this method uses a "best effort" approach.
-        /// </remarks>
-        public void ApplyTo(DirectionalLight dlight, float exposure)
-        {
-            if (Type == 0)
-            {
-                var sigma2 = 2f - 2f / (1f + (Intensity * exposure) );
-
-                dlight.Enabled = this.Intensity > 0;
-                dlight.Direction = this.Direction;
-                dlight.DiffuseColor = this.Color * sigma2;
-                dlight.SpecularColor = Vector3.Lerp(this.Color * sigma2 * 0.5f, Vector3.One* sigma2, 0.5f);
-            }
-            else
-            {
-                dlight.Enabled = false;
-            }            
         }
 
         #endregion
@@ -117,7 +134,77 @@ namespace Microsoft.Xna.Framework.Graphics
 
             Vector3 AmbientLightColor { get; set; }
 
+            int MaxPunctualLights { get; }
+
             void SetPunctualLight(int index, PBRPunctualLight light);
+        }
+
+        /// <summary>
+        /// this structure wraps in-built monogame effects supporting classic <see cref="IEffectLights"/>
+        /// interface and adapts PBR lights to classic lights so we can have some level of compatibility.
+        /// </summary>
+        /// <remarks>
+        /// Due to the different nature of the way classic effects and PBR effects calculate light, it's
+        /// impossible to achieve the same results, so this structure uses a "best effort" approach.
+        /// </remarks>
+        private struct ClassicLightsAdapter : IEffect
+        {
+            public ClassicLightsAdapter(IEffectLights effect)
+            {
+                _Effect = effect;
+                _Exposure = 2.5f;
+
+                _Effect.LightingEnabled = true;
+            }
+
+            private IEffectLights _Effect;
+            private float _Exposure;
+
+            public float Exposure
+            {
+                get => _Exposure;
+                set => _Exposure = value;
+            }
+
+            private float _GetExposureSigma()
+            {
+                return 4f - 4f / (1f + _Exposure);
+            }
+
+            public Vector3 AmbientLightColor
+            {
+                get => _Effect.AmbientLightColor / _GetExposureSigma();
+                set => _Effect.AmbientLightColor = value * _GetExposureSigma();
+            }
+
+            public int MaxPunctualLights => 3;
+
+            public void SetPunctualLight(int index, PBRPunctualLight light)
+            {
+                switch(index)
+                {
+                    case 0: ApplyTo(light, _Effect.DirectionalLight0, _Exposure); break;
+                    case 1: ApplyTo(light, _Effect.DirectionalLight1, _Exposure); break;
+                    case 2: ApplyTo(light, _Effect.DirectionalLight2, _Exposure); break;
+                }
+            }
+
+            private static void ApplyTo(PBRPunctualLight src, DirectionalLight dst, float exposure)
+            {
+                if (src.Type == 0)
+                {
+                    var sigma2 = 2f - 2f / (1f + (src.Intensity * exposure));
+
+                    dst.Enabled = src.Intensity > 0;
+                    dst.Direction = src.Direction;
+                    dst.DiffuseColor = src.Color * sigma2;
+                    dst.SpecularColor = Vector3.Lerp(src.Color * sigma2 * 0.5f, Vector3.One * sigma2, 0.5f);
+                }
+                else
+                {
+                    dst.Enabled = false;
+                }
+            }
         }
 
         #endregion

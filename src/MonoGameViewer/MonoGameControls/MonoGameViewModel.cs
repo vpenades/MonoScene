@@ -34,7 +34,9 @@ namespace MonoGame.WpfCore.MonoGameControls
             Content?.Dispose();
         }
 
+        [PropertyTools.DataAnnotations.Browsable(false)]
         public IGraphicsDeviceService GraphicsDeviceService { get; set; }
+
         protected GraphicsDevice GraphicsDevice => GraphicsDeviceService?.GraphicsDevice;
         protected MonoGameServiceProvider Services { get; private set; }
         protected ContentManager Content { get; set; }

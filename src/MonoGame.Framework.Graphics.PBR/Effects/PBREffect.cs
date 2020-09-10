@@ -36,12 +36,10 @@ namespace Microsoft.Xna.Framework.Graphics
         #region properties - lights
         
         public float Exposure { get; set; } = 1;
+        
+        public Vector3 AmbientLightColor { get; set; }        
 
-        public bool LightingEnabled { get; set; }
-
-        public Vector3 AmbientLightColor { get; set; }
-
-        public PBRPunctualLight GetLight(int index) => _Lights[index];
+        public int MaxPunctualLights => 3;
 
         public void SetPunctualLight(int index, PBRPunctualLight light) => _Lights[index] = light;
 
@@ -53,7 +51,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public EffectTexture2D.ScalarX NormalMap => _NormalMap;
         public EffectTexture2D.ScalarXYZ EmissiveMap => _EmissiveMap;
-        public EffectTexture2D.ScalarX OcclusionMap => _OcclusionMap;
+        public EffectTexture2D.ScalarX OcclusionMap => _OcclusionMap;        
 
         #endregion
 

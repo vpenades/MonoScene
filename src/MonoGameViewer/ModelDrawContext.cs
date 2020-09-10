@@ -64,36 +64,9 @@ namespace MonoGameViewer
 
         public void UpdateMaterial(Effect effect)
         {
-            if (effect is IEffectFog fog)
-            {
-                fog.FogEnabled = false;
-            }
+            if (effect is IEffectFog fog) { fog.FogEnabled = false; }
 
-            if (effect is IEffectLights classicLights)
-            {
-                // let's try to approximate PBR lights to classic lights...
-
-                classicLights.LightingEnabled = true;
-
-                var expSigma4 = 4f - 4f / (1f + _Exposure);
-
-                classicLights.AmbientLightColor = _AmbientLight * expSigma4;
-
-                _PunctualLights[0].ApplyTo(classicLights.DirectionalLight0, _Exposure);
-                _PunctualLights[1].ApplyTo(classicLights.DirectionalLight1, _Exposure);
-                _PunctualLights[2].ApplyTo(classicLights.DirectionalLight2, _Exposure);
-            }
-
-            if (effect is PBRPunctualLight.IEffect pbrLights)
-            {
-                pbrLights.Exposure = _Exposure;
-                pbrLights.AmbientLightColor = _AmbientLight;
-
-                for (int i = 0; i < _PunctualLights.Length; ++i)
-                {
-                    pbrLights.SetPunctualLight(i, _PunctualLights[i]);
-                }
-            }
+            PBRPunctualLight.ApplyLights(effect, _Exposure, _AmbientLight, _PunctualLights);
         }
 
         #endregion

@@ -7,7 +7,7 @@
         xmlns:monoGameControls="clr-namespace:MonoGame.WpfCore.MonoGameControls"
         xmlns:propTools="http://propertytools.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MonoGame glTF Model Viewer" Height="450" Width="800">
 
     <Window.DataContext>
         <local:MainScene />
@@ -18,13 +18,14 @@
 
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
-                <MenuItem Header="Load Basic..." Click="_OnClick_LoadModelBasic" />
-                <MenuItem Header="Load PBR..." Click="_OnClick_LoadModelPBR" />
+                <MenuItem Header="Load..." Click="_OnClick_LoadModel" />                
             </MenuItem>
         </Menu>
 
         <ScrollViewer DockPanel.Dock="Right" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
             <StackPanel>
+
+                <propTools:PropertyGrid SelectedObject="{Binding}" Margin="4" />
 
                 <propTools:PropertyGrid SelectedObject="{Binding GlobalLight}" Margin="4" />
 

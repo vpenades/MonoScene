@@ -17,8 +17,11 @@ namespace MonoGameViewer
     {
         #region data
 
+        SharpGLTF.Schema2.ModelRoot _Model;
         SharpGLTF.Runtime.MonoGameDeviceContent<SharpGLTF.Runtime.MonoGameModelTemplate> _ModelTemplate;
         BoundingSphere _ModelBounds;
+
+        private bool _UseClassicEffects;
 
         private SharpGLTF.Runtime.MonoGameModelInstance _ModelInstance;
 
@@ -31,14 +34,29 @@ namespace MonoGameViewer
 
         #region properties
 
+        [PropertyTools.DataAnnotations.Description("If enabled, it will use BasicEffect and SkinnedEffect.")]
+        public bool UseClassicEffects
+        {
+            get => _UseClassicEffects;
+            set
+            {
+                if (value == _UseClassicEffects) return;
+                _UseClassicEffects = value;
+                _ProcessModel();
+            }            
+        }
+
+        [PropertyTools.DataAnnotations.Browsable(false)]
         public GlobalLight GlobalLight => _GlobalLight;
+
+        [PropertyTools.DataAnnotations.Browsable(false)]
         public PunctualLight[] PunctualLights => _PunctualLights;
 
         #endregion
 
         #region API
 
-        public void LoadModel(string filePath, bool useBasicEffects)
+        public void LoadModel(string filePath)
         {
             SharpGLTF.Schema2.ModelRoot model = null;
 
@@ -51,24 +69,29 @@ namespace MonoGameViewer
                 model = SharpGLTF.Schema2.ModelRoot.Load(filePath, ValidationMode.TryFix);
             }
 
-
-            if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
-
-            var loader = useBasicEffects
-                ? new SharpGLTF.Runtime.BasicEffectsLoaderContext(this.GraphicsDevice)
-                : SharpGLTF.Runtime.LoaderContext.CreateLoaderContext(this.GraphicsDevice);            
-
-            _ModelTemplate = loader.CreateDeviceModel(model);
-            _ModelBounds = _ModelTemplate.Instance.Bounds;
-
+            // evaluate a single frame of the model to determine the actual bounds, even for a skinned object.
             var points = SharpGLTF.Schema2.Toolkit.EvaluateTriangles(model.DefaultScene)
                 .SelectMany(item => new[] { item.A.GetGeometry().GetPosition(), item.B.GetGeometry().GetPosition(), item.C.GetGeometry().GetPosition() })
                 .Distinct()
                 .Select(item => new Vector3(item.X, item.Y, item.Z))
                 .ToList();
 
+            _Model = model;
             _ModelBounds = BoundingSphere.CreateFromPoints(points);
 
+            _ProcessModel();
+        }
+
+        private void _ProcessModel()
+        {
+            if (_Model == null) return;
+            if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
+
+            var loader = _UseClassicEffects
+                ? new SharpGLTF.Runtime.BasicEffectsLoaderContext(this.GraphicsDevice)
+                : SharpGLTF.Runtime.LoaderContext.CreateLoaderContext(this.GraphicsDevice);
+
+            _ModelTemplate = loader.CreateDeviceModel(_Model);
             _ModelInstance = null;
         }
 
@@ -130,10 +153,7 @@ namespace MonoGameViewer
 
         public System.Windows.Media.Color AmbientColor { get; set; } = System.Windows.Media.Colors.Black;
 
-        public Vector3 ToXna()
-        {
-            return new Vector3(AmbientColor.ScR, AmbientColor.ScG, AmbientColor.ScB);
-        }
+        public Vector3 ToXna() { return new Vector3(AmbientColor.ScR, AmbientColor.ScG, AmbientColor.ScB); }
     }
 
     public class PunctualLight
@@ -150,19 +170,19 @@ namespace MonoGameViewer
                 case 0:
                     l.DirectionAngle = 60;
                     l.ElevationAngle = 30;
-                    l.Intensity = 80;
+                    l.Intensity = 40;
                     break;
 
                 case 1:
                     l.DirectionAngle = -70;
                     l.ElevationAngle = 60;
-                    l.Color = System.Windows.Media.Colors.LightBlue;
+                    l.Color = System.Windows.Media.Colors.DeepSkyBlue;
                     break;
 
                 case 2:
                     l.DirectionAngle = 20;
                     l.ElevationAngle = -50;
-                    l.Color = System.Windows.Media.Colors.LightBlue;
+                    l.Color = System.Windows.Media.Colors.OrangeRed;
                     break;
             }            
 
@@ -181,10 +201,10 @@ namespace MonoGameViewer
         [PropertyTools.DataAnnotations.DisplayName("Elevation")]
         public int ElevationAngle { get; set; }
         
-        [PropertyTools.DataAnnotations.Category("Color")]
+        [PropertyTools.DataAnnotations.Category("Properties")]        
         public System.Windows.Media.Color Color { get; set; }
 
-        [PropertyTools.DataAnnotations.Category("Color")]
+        [PropertyTools.DataAnnotations.Category("Properties")]
         [PropertyTools.DataAnnotations.Slidable(0,100)]
         [PropertyTools.DataAnnotations.WideProperty]
         public int Intensity { get; set; }
