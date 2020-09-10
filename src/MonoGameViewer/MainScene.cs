@@ -24,13 +24,15 @@ namespace MonoGameViewer
 
         private Quaternion _Rotation = Quaternion.Identity;
 
-        private readonly ClientLight[] _Lights = new ClientLight[] { ClientLight.CreateDefault(0), ClientLight.CreateDefault(1), ClientLight.CreateDefault(2) };
+        private readonly GlobalLight _GlobalLight = new GlobalLight();
+        private readonly PunctualLight[] _PunctualLights = new PunctualLight[] { PunctualLight.CreateDefault(0), PunctualLight.CreateDefault(1), PunctualLight.CreateDefault(2) };
 
         #endregion
 
         #region properties
 
-        public ClientLight[] Lights => _Lights;
+        public GlobalLight GlobalLight => _GlobalLight;
+        public PunctualLight[] PunctualLights => _PunctualLights;
 
         #endregion
 
@@ -105,9 +107,11 @@ namespace MonoGameViewer
             var camera = Matrix.CreateWorld(camPos, lookAt - camPos, Vector3.UnitY);
 
             var ctx = new ModelDrawContext(this.GraphicsDevice, camera);
-            ctx.SetLight(0, _Lights[0].ToPBR());
-            ctx.SetLight(1, _Lights[1].ToPBR());
-            ctx.SetLight(2, _Lights[2].ToPBR());
+            ctx.SetExposure((float)_GlobalLight.Exposure / 10.0f);
+            ctx.SetAmbientLight(_GlobalLight.ToXna());
+            ctx.SetPunctualLight(0, _PunctualLights[0].ToPBR());
+            ctx.SetPunctualLight(1, _PunctualLights[1].ToPBR());
+            ctx.SetPunctualLight(2, _PunctualLights[2].ToPBR());
 
             var xform = Matrix.CreateFromQuaternion(_Rotation);
 
@@ -117,11 +121,27 @@ namespace MonoGameViewer
         #endregion
     }
 
-    public class ClientLight
+
+    public class GlobalLight
     {
-        public static ClientLight CreateDefault(int idx)
+        [PropertyTools.DataAnnotations.Slidable(0,100)]
+        [PropertyTools.DataAnnotations.WideProperty]
+        public int Exposure { get; set; } = 25;
+
+        public System.Windows.Media.Color AmbientColor { get; set; } = System.Windows.Media.Colors.Black;
+
+        public Vector3 ToXna()
         {
-            var l = new ClientLight();
+            return new Vector3(AmbientColor.ScR, AmbientColor.ScG, AmbientColor.ScB);
+        }
+    }
+
+    public class PunctualLight
+    {
+        public static PunctualLight CreateDefault(int idx)
+        {
+            var l = new PunctualLight();            
+
             l.Intensity = 15;
             l.Color = System.Windows.Media.Colors.White;
 
@@ -147,23 +167,29 @@ namespace MonoGameViewer
             }            
 
             return l;
-        }
+        }                
 
+        [PropertyTools.DataAnnotations.Category("Source")]
         [PropertyTools.DataAnnotations.Slidable(-180,180)]
-        [PropertyTools.DataAnnotations.WideProperty]
+        // [PropertyTools.DataAnnotations.WideProperty]
+        [PropertyTools.DataAnnotations.DisplayName("Direction")]
         public int DirectionAngle { get; set; }
 
+        [PropertyTools.DataAnnotations.Category("Source")]
         [PropertyTools.DataAnnotations.Slidable(-90, 90)]
-        [PropertyTools.DataAnnotations.WideProperty]
+        //[PropertyTools.DataAnnotations.WideProperty]
+        [PropertyTools.DataAnnotations.DisplayName("Elevation")]
         public int ElevationAngle { get; set; }
+        
+        [PropertyTools.DataAnnotations.Category("Color")]
         public System.Windows.Media.Color Color { get; set; }
 
-
+        [PropertyTools.DataAnnotations.Category("Color")]
         [PropertyTools.DataAnnotations.Slidable(0,100)]
         [PropertyTools.DataAnnotations.WideProperty]
         public int Intensity { get; set; }
 
-        public PBRLight ToPBR()
+        public PBRPunctualLight ToPBR()
         {
             float yaw = (float)(DirectionAngle * Math.PI) / 180.0f;
             float pitch = (float)(ElevationAngle * Math.PI) / 180.0f;
@@ -172,7 +198,7 @@ namespace MonoGameViewer
 
             var color = new Vector3(Color.ScR, Color.ScG, Color.ScB);
 
-            return PBRLight.Directional(dir, color, (float)Intensity / 10.0f);
+            return PBRPunctualLight.Directional(dir, color, (float)Intensity / 10.0f);
         }
     }
 }

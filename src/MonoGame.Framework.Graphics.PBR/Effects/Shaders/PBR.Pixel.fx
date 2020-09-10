@@ -3,7 +3,7 @@
 #include "PunctualContrib.fx"
 
 // https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L419
-float3 PsWithPBR(float3 positionW, NormalInfo normalInfo, float3 primaryColor, float4 secondaryColor)
+float3 GetPunctualLightsContrib(float3 positionW, NormalInfo normalInfo, float3 primaryColor, float4 secondaryColor)
 {
     float3 v = normalize(CameraPosition - positionW);
     float3 n = normalInfo.n;

@@ -30,9 +30,7 @@ namespace MonoGameViewer
             float nearClipPlane = 0.01f;
             float farClipPlane = 1000;
 
-            _Projection = Matrix.CreatePerspectiveFieldOfView(fieldOfView, graphics.Viewport.AspectRatio, nearClipPlane, farClipPlane);
-
-            SetDefaultLights();
+            _Projection = Matrix.CreatePerspectiveFieldOfView(fieldOfView, graphics.Viewport.AspectRatio, nearClipPlane, farClipPlane);            
         }
 
         #endregion
@@ -43,33 +41,19 @@ namespace MonoGameViewer
         private Matrix _Projection;
         private Matrix _View;
 
-        private readonly PBRLight[] _Lights = new PBRLight[3];
+        private float _Exposure = 25;
+        private Vector3 _AmbientLight = Vector3.Zero;
+        private readonly PBRPunctualLight[] _PunctualLights = new PBRPunctualLight[3];
 
         #endregion
 
         #region API
+        
+        public void SetExposure(float exposure) { _Exposure = exposure; }
 
-        public void SetDefaultLights()
-        {
-            _Lights[0] = PBRLight.Directional(new Vector3(1, -1, -1), Vector3.One, 3);
-            _Lights[1] = PBRLight.Directional(new Vector3(-1, 0, -1), new Vector3(0.7f, 0.5f, 0.3f), 2);
-        }
+        public void SetAmbientLight(Vector3 color) { _AmbientLight = color; }
 
-        public void SetLight(int idx, PBRLight l)
-        {
-            _Lights[idx] = l;
-        }
-
-        public void SetDemoLights(float t)
-        {
-            var dir = new Vector3((float)Math.Cos(t), 0, -(float)Math.Sin(t));
-
-            _Lights[0] = PBRLight.Directional(dir, Vector3.One, 1);
-
-            // _Lights[0] = PBRLight.Directional(new Vector3(1, -1, -1), 0, Vector3.One, 9);
-            // _Lights[1] = PBRLight.Directional(dir, 0, new Vector3(0.2f, 0.5f, 1f), 5);
-            // _Lights[2] = PBRLight.Directional(new Vector3(0, 1, 0), 0, new Vector3(0.5f, 0.2f, 0f), 3);
-        }
+        public void SetPunctualLight(int idx, PBRPunctualLight l) { _PunctualLights[idx] = l; }        
 
         public void DrawModelInstance(MonoGameModelInstance model, Matrix world)
         {
@@ -87,20 +71,27 @@ namespace MonoGameViewer
 
             if (effect is IEffectLights classicLights)
             {
+                // let's try to approximate PBR lights to classic lights...
+
                 classicLights.LightingEnabled = true;
 
-                _Lights[0].ApplyTo(classicLights.DirectionalLight0);
-                _Lights[1].ApplyTo(classicLights.DirectionalLight1);
-                _Lights[2].ApplyTo(classicLights.DirectionalLight2);
+                var expSigma4 = 4f - 4f / (1f + _Exposure);
+
+                classicLights.AmbientLightColor = _AmbientLight * expSigma4;
+
+                _PunctualLights[0].ApplyTo(classicLights.DirectionalLight0, _Exposure);
+                _PunctualLights[1].ApplyTo(classicLights.DirectionalLight1, _Exposure);
+                _PunctualLights[2].ApplyTo(classicLights.DirectionalLight2, _Exposure);
             }
 
-            if (effect is PBRLight.IEffect pbrLights)
+            if (effect is PBRPunctualLight.IEffect pbrLights)
             {
-                pbrLights.Exposure = 2.5f;
+                pbrLights.Exposure = _Exposure;
+                pbrLights.AmbientLightColor = _AmbientLight;
 
-                for (int i = 0; i < _Lights.Length; ++i)
+                for (int i = 0; i < _PunctualLights.Length; ++i)
                 {
-                    pbrLights.SetLight(i, _Lights[i]);
+                    pbrLights.SetPunctualLight(i, _PunctualLights[i]);
                 }
             }
         }

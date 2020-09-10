@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
-    public abstract class PBREffect : AnimatedEffect, PBRLight.IEffect
+    public abstract class PBREffect : AnimatedEffect, PBRPunctualLight.IEffect
     {
         #region lifecycle
         
@@ -21,7 +21,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region data        
 
-        private readonly PBRLight[] _Lights = new PBRLight[3];
+        private readonly PBRPunctualLight[] _Lights = new PBRPunctualLight[3];
         private readonly Vector4[] _LightParams0 = new Vector4[3];
         private readonly Vector4[] _LightParams1 = new Vector4[3];
         private readonly Vector4[] _LightParams2 = new Vector4[3];
@@ -41,9 +41,9 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public Vector3 AmbientLightColor { get; set; }
 
-        public PBRLight GetLight(int index) => _Lights[index];
+        public PBRPunctualLight GetLight(int index) => _Lights[index];
 
-        public void SetLight(int index, PBRLight light) => _Lights[index] = light;
+        public void SetPunctualLight(int index, PBRPunctualLight light) => _Lights[index] = light;
 
         #endregion
 
@@ -63,16 +63,19 @@ namespace Microsoft.Xna.Framework.Graphics
         
         protected void ApplyPBR()
         {
-            this.ApplyTransforms();            
+            this.ApplyTransforms();
 
-            PBRLight.Encode(_Lights, _LightParams0, _LightParams1, _LightParams2, _LightParams3);
+            Parameters["Exposure"].SetValue(this.Exposure);
+            Parameters["AmbientLight"].SetValue(this.AmbientLightColor);
+
+            PBRPunctualLight.Encode(_Lights, _LightParams0, _LightParams1, _LightParams2, _LightParams3);
             Parameters["LightParam0"].SetValue(_LightParams0);
             Parameters["LightParam1"].SetValue(_LightParams1);
             Parameters["LightParam2"].SetValue(_LightParams2);
             Parameters["LightParam3"].SetValue(_LightParams3);
 
             Parameters["CameraPosition"].SetValue(-View.Translation);
-            Parameters["Exposure"].SetValue(this.Exposure);
+            
 
             Parameters["AlphaTransform"].SetValue(AlphaBlend ? Vector2.UnitX : Vector2.UnitY);
             Parameters["AlphaCutoff"].SetValue(AlphaCutoff);

@@ -34,13 +34,13 @@ BEGIN_CONSTANTS
 
     float Exposure; // parameter for ToneMapping.toneMap
 
+    float3 AmbientLight;
+
     int NumberOfLights;
     float4 LightParam0[3];
     float4 LightParam1[3];
     float4 LightParam2[3];
     float4 LightParam3[3];
-
-
     
     float NormalScale;
     int NormalTextureIdx;
@@ -161,7 +161,9 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
     float4 f_secondary = 1;
     if (hasSecondary) f_secondary = GetSecondarySample(input.TextureCoordinate0, input.TextureCoordinate1);    
 
-    float3 color = PsWithPBR(input.PositionWS, ninfo, f_primary.rgb, f_secondary);    
+    float3 color = f_primary.rgb * AmbientLight;
+
+    color += GetPunctualLightsContrib(input.PositionWS, ninfo, f_primary.rgb, f_secondary);
 
     float3 f_emissive = EmissiveScale;
     if (hasEmissive) f_emissive *= GetEmissiveSample(input.TextureCoordinate0, input.TextureCoordinate1);

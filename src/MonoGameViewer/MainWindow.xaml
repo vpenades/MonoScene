@@ -23,15 +23,21 @@
             </MenuItem>
         </Menu>
 
-        <StackPanel DockPanel.Dock="Right">
-            <ItemsControl ItemsSource="{Binding Lights}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <propTools:PropertyGrid SelectedObject="{Binding}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
+        <ScrollViewer DockPanel.Dock="Right" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
+            <StackPanel>
+
+                <propTools:PropertyGrid SelectedObject="{Binding GlobalLight}" Margin="4" />
+
+                <ItemsControl ItemsSource="{Binding PunctualLights}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <propTools:PropertyGrid SelectedObject="{Binding}" Margin="4" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+        </ScrollViewer>
 
         <monoGameControls:MonoGameContentControl MouseMove="_OnMouseMove" />
     </DockPanel>
