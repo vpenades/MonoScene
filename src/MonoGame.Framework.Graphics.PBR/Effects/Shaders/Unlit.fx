@@ -54,8 +54,7 @@ struct VsOutTexNorm
     float2 TextureCoordinate1 : TEXCOORD1;
     float3 PositionWS : TEXCOORD2;
 
-    // float3x3 TangentBasis : TBASIS; requires Shader Model 4 :(
-
+    // float3x3 TangentBasis : TBASIS; // requires Shader Model 4 :(
     float3 TangentBasisX : TEXCOORD3;
     float3 TangentBasisY : TEXCOORD4;
     float3 TangentBasisZ : TEXCOORD5;

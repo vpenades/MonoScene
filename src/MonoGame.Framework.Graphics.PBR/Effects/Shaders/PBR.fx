@@ -8,7 +8,6 @@
 
 #include "Functions.fx"
 #include "BDRF.fx"
-#include "Punctual.fx"
 
 #define SKINNED_EFFECT_MAX_BONES   128
 
@@ -28,6 +27,8 @@ BEGIN_CONSTANTS
     float4x3 Bones[SKINNED_EFFECT_MAX_BONES]; // 4x3 is enough, and saves constants    
 
     float3 CameraPosition;
+
+    float DoubleSidedNormals; // 0=disabled, 1=enabled
 
     float2 AlphaTransform;
     float AlphaCutoff;
@@ -71,29 +72,9 @@ BEGIN_CONSTANTS
 
 END_CONSTANTS
 
-
-Light getLight(int index)
-{
-    Light l;
-    l.direction = LightParam0[index].xyz;
-    l.range = LightParam0[index].w;
-
-    l.color = LightParam1[index].xyz;
-    l.intensity = LightParam1[index].w;
-
-    l.position = LightParam2[index].xyz;
-    l.innerConeCos = LightParam2[index].w;
-
-    l.outerConeCos = LightParam3[index].x;
-    l.type = (int)LightParam3[index].y;
-
-    l.padding;
-
-    return l;
-}
-
 #include "ToneMapping.fx"
 
+#include "PunctualLight.fx"
 // #include "IBL.fx"
 
 
@@ -111,15 +92,11 @@ struct VsOutTexNorm
     float2 TextureCoordinate1 : TEXCOORD1;
     float3 PositionWS : TEXCOORD2;
 
-    // float3x3 TangentBasis : TBASIS; requires Shader Model 4 :(
-
+    // float3x3 TangentBasis : TBASIS; // requires Shader Model 4 :(
     float3 TangentBasisX : TEXCOORD3;
     float3 TangentBasisY : TEXCOORD4;
     float3 TangentBasisZ : TEXCOORD5;
 };
-
-
-#include "PBR.Pixel.fx"
 
 #include "Sampler.Normal.fx"
 #include "Sampler.Primary.fx"
@@ -127,9 +104,12 @@ struct VsOutTexNorm
 #include "Sampler.Emissive.fx"
 #include "Sampler.Occlusion.fx"
 
+
+#include "PBR.Pixel.fx"
+
 float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, bool hasSecondary, bool hasEmissive, bool hasOcclusionMap)
 {
-    // get primary color
+    // get primary color and alpha
 
     float4 f_primary = PrimaryScale * input.Color;
     if (hasPrimary) f_primary *= GetPrimarySample(input.TextureCoordinate0, input.TextureCoordinate1);
@@ -144,39 +124,36 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
 
     NormalInfo ninfo;
 
-    if (hasPerturbedNormals)
-    {
-        ninfo = GetNormalSample(input);
-    }
-    else
-    {        
-        ninfo.ng = normalize(input.TangentBasisZ);
-        ninfo.n = ninfo.ng;
-        ninfo.t = 0; // should generate some random T & b ?
-        ninfo.b = 0;        
-    }
+    if (hasPerturbedNormals) ninfo = GetPerturbedNormalSample(input, DoubleSidedNormals);
+    else ninfo = GetGeometricNormalSample(input, DoubleSidedNormals);
+    
+    // calculate ambient light contribution
 
-    // get additional textures    
+    float3 hdrColor = f_primary.rgb * AmbientLight;
+
+    // calculate punctual lights contribution
 
     float4 f_secondary = 1;
-    if (hasSecondary) f_secondary = GetSecondarySample(input.TextureCoordinate0, input.TextureCoordinate1);    
+    if (hasSecondary) f_secondary = GetSecondarySample(input.TextureCoordinate0, input.TextureCoordinate1);
 
-    float3 color = f_primary.rgb * AmbientLight;
+    hdrColor += GetPunctualLightsContrib(input.PositionWS, ninfo, f_primary.rgb, f_secondary);
 
-    color += GetPunctualLightsContrib(input.PositionWS, ninfo, f_primary.rgb, f_secondary);
+    // calculate emissive light contribution    
 
     float3 f_emissive = EmissiveScale;
     if (hasEmissive) f_emissive *= GetEmissiveSample(input.TextureCoordinate0, input.TextureCoordinate1);
 
-    color += f_emissive;
+    hdrColor += f_emissive;
+
+    // calculate occlusion map attenuation
     
     if (hasOcclusionMap)
     {
         float f_occlusion = GetOcclusionSample(input.TextureCoordinate0, input.TextureCoordinate1);
-        color = lerp(color, color * f_occlusion, OcclusionScale);
-    }    
+        hdrColor = lerp(hdrColor, hdrColor * f_occlusion, OcclusionScale);
+    }
 
-    color = toneMap(color);    
+    // all PBR lighting is calculated in linear RGB space (AKA HDR), we need to scale it down to sRGB    
 
-    return float4(color.xyz, f_primary.a);
+    return float4(toneMap(hdrColor), f_primary.a);
 }

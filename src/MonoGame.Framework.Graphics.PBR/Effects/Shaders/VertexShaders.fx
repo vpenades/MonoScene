@@ -93,7 +93,7 @@ VsOutTexNorm VsRigidBasis(VsInRigidTangent input)
     output.PositionWS = pos.xyz;
 
     float3x3 TBN = GetTangentBasis(input);
-    // output.TangentBasis = TBN;    
+    // output.TangentBasis = TBN;
     output.TangentBasisX = TBN[0];
     output.TangentBasisY = TBN[1];
     output.TangentBasisZ = TBN[2];
@@ -139,6 +139,10 @@ VsOutTexNorm VsRigid(VsInRigid input)
     output.TangentBasisX = float3(0, 0, 0);
     output.TangentBasisY = float3(0, 0, 0);
     output.TangentBasisZ = mul(float4(input.Normal, 0.0), World).xyz;
+
+    // output.TangentBasis[0] = float3(0, 0, 0);
+    // output.TangentBasis[1] = float3(0, 0, 0);
+    // output.TangentBasis[2] = mul(float4(input.Normal, 0.0), World).xyz;
 
     output.Color = input.Color;
     output.TextureCoordinate0 = input.TextureCoordinate0;

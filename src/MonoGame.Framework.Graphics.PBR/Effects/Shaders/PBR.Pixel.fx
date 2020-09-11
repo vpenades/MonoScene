@@ -51,16 +51,17 @@ float3 GetPunctualLightsContrib(float3 positionW, NormalInfo normalInfo, float3 
     materialInfo.n = n;
 
     // lighting
-
+    
     LightContrib result;
     result.f_diffuse = 0;
-    result.f_specular = 0;        
+    result.f_specular = 0;
 
     for (int i = 0; i < 3; ++i)
     {
-        LightContrib lres = AggregateLight(getLight(i), positionW, n, v, materialInfo);
+        PunctualLight lightSource = GetPunctualLight(i);
+        LightContrib lightContrib = AggregateLight(lightSource, positionW, n, v, materialInfo);
 
-        result.Add(lres);
+        result.Add(lightContrib);
     }
 
     return result.f_diffuse + result.f_specular;

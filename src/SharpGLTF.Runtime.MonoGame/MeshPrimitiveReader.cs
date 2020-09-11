@@ -113,6 +113,8 @@ namespace SharpGLTF.Runtime
 
         public static void GenerateNormalsAndTangents(IEnumerable<MeshPrimitiveReader> srcPrims)
         {
+            if (!srcPrims.Any()) return;
+
             // find out the number of morph targets (index 0 is base mesh)
             var morphTargetsCount = srcPrims.Min(item => item.Geometries.Count);
 

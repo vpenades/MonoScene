@@ -46,6 +46,9 @@ namespace Microsoft.Xna.Framework.Graphics
         #endregion
 
         #region properties - material
+        
+        public bool DoubleSidedNormals { get; set; }
+
         public bool AlphaBlend { get; set; }
         public float AlphaCutoff { get; set; }
 
@@ -62,6 +65,8 @@ namespace Microsoft.Xna.Framework.Graphics
         protected void ApplyPBR()
         {
             this.ApplyTransforms();
+
+            Parameters["DoubleSidedNormals"].SetValue(DoubleSidedNormals ? 1f : 0f);
 
             Parameters["Exposure"].SetValue(this.Exposure);
             Parameters["AmbientLight"].SetValue(this.AmbientLightColor);

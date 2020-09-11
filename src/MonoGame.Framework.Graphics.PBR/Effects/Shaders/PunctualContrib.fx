@@ -47,28 +47,10 @@ struct LightContrib
 
 
 // https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L545
-LightContrib AggregateLight(Light light, float3 positionW, float3 n, float3 v, MaterialInfo materialInfo)
+LightContrib AggregateLight(PunctualLight light, float3 positionW, float3 n, float3 v, MaterialInfo materialInfo)
 {
-    float3 pointToLight = -light.direction;
-    float rangeAttenuation = 1.0;
-    float spotAttenuation = 1.0;    
-
-    if (light.type != LightType_Directional)
-    {
-        pointToLight = light.position - positionW;
-    }
-
-    // Compute range and spot light attenuation.
-    if (light.type != LightType_Directional)
-    {
-        rangeAttenuation = getRangeAttenuation(light.range, length(pointToLight));
-    }
-    if (light.type == LightType_Spot)
-    {
-        spotAttenuation = getSpotAttenuation(pointToLight, light.direction, light.outerConeCos, light.innerConeCos);
-    }
-
-    float3 intensity = rangeAttenuation * spotAttenuation * light.intensity * light.color;
+    float3 pointToLight = light.GetPointToLightVector(positionW);
+    float3 intensity = light.GetIntensity(pointToLight);
 
     float3 l = normalize(pointToLight);   // Direction from surface point to light
     float3 h = normalize(l + v);          // Direction of the vector between l and v, called halfway vector

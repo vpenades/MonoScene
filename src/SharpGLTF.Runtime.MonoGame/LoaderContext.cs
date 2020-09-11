@@ -132,6 +132,8 @@ namespace SharpGLTF.Runtime
 
             if (effect is PBREffect pbrEffect)            
             {
+                pbrEffect.DoubleSidedNormals = srcMaterial.DoubleSided;
+
                 pbrEffect.AlphaCutoff = -1;
 
                 if (srcMaterial.Alpha == AlphaMode.BLEND)

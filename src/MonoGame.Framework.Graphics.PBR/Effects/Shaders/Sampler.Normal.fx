@@ -1,18 +1,49 @@
-﻿// https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L136
-NormalInfo GetNormalSample(VsOutTexNorm input)
+﻿
+
+NormalInfo GetGeometricNormalSample(VsOutTexNorm input, float supportDoubleSidedFaces)
+{
+    float3 v = normalize(CameraPosition - input.PositionWS);
+
+    float3 ng = normalize(input.TangentBasisZ);
+
+    // For a back-facing surface, the tangential basis vectors are negated.    
+    
+    float facing = step((supportDoubleSidedFaces - 1) * 16, dot(v, ng)) * 2.0 - 1.0;
+    ng *= facing;
+
+    // result
+
+    NormalInfo info;
+    info.ng = ng;
+    info.n = ng;
+    info.t = 0; // should generate some random T & b ?
+    info.b = 0;
+    return info;
+}
+
+
+
+// https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L136
+NormalInfo GetPerturbedNormalSample(VsOutTexNorm input, float supportDoubleSidedFaces)
 {
     // create tangent basis:
 
     float3 v = normalize(CameraPosition - input.PositionWS);
+    
     float3 t = normalize(input.TangentBasisX);
     float3 b = normalize(input.TangentBasisY);
-    float3 ng = normalize(input.TangentBasisZ);
+    float3 ng = normalize(input.TangentBasisZ);    
 
-    // For a back-facing surface, the tangential basis vectors are negated.
-    float facing = step(0.0, dot(v, ng)) * 2.0 - 1.0;
-    t *= facing;
-    b *= facing;
+    // float3 t = normalize(input.TangentBasis[0]);
+    // float3 b = normalize(input.TangentBasis[1]);
+    // float3 ng = normalize(input.TangentBasis[2]);
+
+    // For a back-facing surface, the tangential basis vectors are negated.    
+    
+    float facing = step((supportDoubleSidedFaces - 1) * 16, dot(v, ng)) * 2.0 - 1.0;
     ng *= facing;
+    t *= facing;
+    b *= facing;    
 
     // tangent basis
     float3x3 tangentBasis = float3x3(t, b, ng);
@@ -31,6 +62,8 @@ NormalInfo GetNormalSample(VsOutTexNorm input)
     n *= float3(NormalScale.x, NormalScale.x, 1.0);
     n = mul(n, tangentBasis);
     n = normalize(n);
+
+    // result
 
     NormalInfo info;
     info.ng = ng;
