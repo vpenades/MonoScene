@@ -6,6 +6,7 @@
 
 #include "MacrosSM4.fxh"
 #include "ToneMapping.fx"
+#include "Alpha.fx"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PIXEL SHADERS
@@ -34,23 +35,34 @@ struct VsOutTexNorm
 
 float4 PsShader(VsOutTexNorm input, bool hasPrimary, bool hasEmissive, bool hasOcclusion)
 {
-    float4 f_primary = input.Color * PrimaryScale;
+    // get primary color and alpha
+
+    float4 f_primary = PrimaryScale * input.Color;
     if (hasPrimary) f_primary *= GetPrimarySample(input.TextureCoordinate0, input.TextureCoordinate1);
 
-    float3 color = f_primary.rgb;
+    f_primary.a = ProcessAlphaChannel(f_primary.a); // alpha Cutoff & Blend
+    f_primary.rgb = sRGBToLinear(f_primary.rgb); // gamma correction
+
+    // primary color contribution
+
+    float3 linearColor = f_primary.rgb;
+
+    // calculate emissive light contribution    
 
     float3 f_emissive = EmissiveScale;
-    if (hasEmissive) f_emissive *= GetEmissiveSample(input.TextureCoordinate0, input.TextureCoordinate1);        
+    if (hasEmissive) f_emissive *= GetEmissiveSample(input.TextureCoordinate0, input.TextureCoordinate1);
 
-    color += f_emissive;
+    linearColor += sRGBToLinear(f_emissive);
     
+    // calculate occlusion map attenuation
+
     if (hasOcclusion)
     {
         float f_occlusion = GetOcclusionSample(input.TextureCoordinate0, input.TextureCoordinate1);
-        color = lerp(color, color * f_occlusion, OcclusionScale);
+        linearColor = lerp(linearColor, linearColor * f_occlusion, OcclusionScale);
     }
-    
-    color = toneMap(color);
 
-    return float4(color.xyz, 1);    
+    // all PBR lighting is calculated in linear RGB space (AKA HDR), we need to scale it down to sRGB    
+
+    return float4(toneMap(linearColor), f_primary.a);
 }

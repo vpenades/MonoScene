@@ -29,7 +29,14 @@ namespace Microsoft.Xna.Framework.Graphics
         private Matrix _Proj;
 
         private int _BoneCount;
-        private readonly Matrix[] _Bones = new Matrix[128];        
+        private readonly Matrix[] _Bones = new Matrix[128];
+
+        #endregion
+
+        #region properties - material
+
+        public bool AlphaBlend { get; set; }
+        public float AlphaCutoff { get; set; }
 
         #endregion
 
@@ -76,14 +83,20 @@ namespace Microsoft.Xna.Framework.Graphics
             Parameters[name].SetValue(tex);
         }
 
-        protected void ApplyTransforms()
+
+        protected override void OnApply()
         {
+            base.OnApply();
+
             Parameters["World"].SetValue(World);
             Parameters["View"].SetValue(View);
             Parameters["Projection"].SetValue(Projection);
-            if (_BoneCount > 0) Parameters["Bones"].SetValue(_Bones);            
-        }
+            if (_BoneCount > 0) Parameters["Bones"].SetValue(_Bones);
 
+            Parameters["AlphaTransform"].SetValue(AlphaBlend ? Vector2.UnitX : Vector2.UnitY);
+            Parameters["AlphaCutoff"].SetValue(AlphaCutoff);
+        }
+        
         #endregion
     }
 }

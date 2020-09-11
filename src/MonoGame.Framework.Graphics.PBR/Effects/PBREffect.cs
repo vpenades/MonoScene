@@ -12,9 +12,9 @@ namespace Microsoft.Xna.Framework.Graphics
         
         public PBREffect(GraphicsDevice device, byte[] effectCode) : base(device, effectCode)
         {
-            _NormalMap = new EffectTexture2D.ScalarX(device, this.Parameters, "Normal", 0);
-            _EmissiveMap = new EffectTexture2D.ScalarXYZ(device, this.Parameters, "Emissive", 3);
-            _OcclusionMap = new EffectTexture2D.ScalarX(device, this.Parameters, "Occlusion", 4);
+            _NormalMap = new EffectTexture2D.Scalar1(device, this.Parameters, "Normal", 0);
+            _EmissiveMap = new EffectTexture2D.Scalar3(device, this.Parameters, "Emissive", 3);
+            _OcclusionMap = new EffectTexture2D.Scalar1(device, this.Parameters, "Occlusion", 4);
         }
 
         #endregion
@@ -27,16 +27,16 @@ namespace Microsoft.Xna.Framework.Graphics
         private readonly Vector4[] _LightParams2 = new Vector4[3];
         private readonly Vector4[] _LightParams3 = new Vector4[3];
 
-        private readonly EffectTexture2D.ScalarX _NormalMap;
-        private readonly EffectTexture2D.ScalarXYZ _EmissiveMap;
-        private readonly EffectTexture2D.ScalarX _OcclusionMap;
+        private readonly EffectTexture2D.Scalar1 _NormalMap;
+        private readonly EffectTexture2D.Scalar3 _EmissiveMap;
+        private readonly EffectTexture2D.Scalar1 _OcclusionMap;
 
         #endregion
 
         #region properties - lights
         
         /// <summary>
-        /// Gets or sets the light exposure, which directly affect the apparent brightness of the render.
+        /// Gets or sets the lighting exposure, which directly affect the apparent brightness of the render.
         /// </summary>
         /// <remarks>
         /// PBR lighting is calculated in LINEAR RGB space, which exceeds the limits of screen sRGB space,
@@ -54,31 +54,26 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region properties - material
         
-        public SurfaceNormalMode NormalMode { get; set; }
+        public SurfaceNormalMode NormalMode { get; set; }        
 
-        public bool AlphaBlend { get; set; }
-        public float AlphaCutoff { get; set; }
-
-        public EffectTexture2D.ScalarX NormalMap => _NormalMap;
-        public EffectTexture2D.ScalarXYZ EmissiveMap => _EmissiveMap;
-        public EffectTexture2D.ScalarX OcclusionMap => _OcclusionMap;        
+        public EffectTexture2D.Scalar1 NormalMap => _NormalMap;
+        public EffectTexture2D.Scalar3 EmissiveMap => _EmissiveMap;
+        public EffectTexture2D.Scalar1 OcclusionMap => _OcclusionMap;
 
         #endregion
 
         #region API
 
-        public void EnableDefaultLighting() { }
-        
-        protected void ApplyPBR()
+        protected override void OnApply()
         {
-            this.ApplyTransforms();
+            base.OnApply();
 
-            switch(this.NormalMode)
+            switch (this.NormalMode)
             {
                 case SurfaceNormalMode.Default: Parameters["NormalsMode"].SetValue(2f); break;
                 case SurfaceNormalMode.Reverse: Parameters["NormalsMode"].SetValue(-2f); break;
                 case SurfaceNormalMode.DoubleSided: Parameters["NormalsMode"].SetValue(0f); break;
-            }            
+            }
 
             Parameters["Exposure"].SetValue(this.Exposure);
             Parameters["AmbientLight"].SetValue(this.AmbientLightColor);
@@ -90,16 +85,12 @@ namespace Microsoft.Xna.Framework.Graphics
             Parameters["LightParam3"].SetValue(_LightParams3);
 
             Parameters["CameraPosition"].SetValue(-View.Translation);
-            
-
-            Parameters["AlphaTransform"].SetValue(AlphaBlend ? Vector2.UnitX : Vector2.UnitY);
-            Parameters["AlphaCutoff"].SetValue(AlphaCutoff);
 
             Resources.GenerateDotTextures(this.GraphicsDevice);
             _NormalMap.Apply();
             _EmissiveMap.Apply();
             _OcclusionMap.Apply();
-        }        
+        }    
 
         #endregion
     }

@@ -1,19 +1,18 @@
-﻿//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Shader globals
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// https://github.com/KhronosGroup/glTF-Sample-Viewer/tree/master/src/shaders
+﻿// https://github.com/KhronosGroup/glTF-Sample-Viewer/tree/master/src/shaders
 
 #include "MacrosSM4.fxh"
 
 #include "Functions.fx"
 #include "BDRF.fx"
 #include "ToneMapping.fx"
+#include "Alpha.fx"
 
-float3 CameraPosition;    
 
-float2 AlphaTransform;
-float AlphaCutoff;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CONSTANTS
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+float3 CameraPosition;
     
 float3 AmbientLight;
 
@@ -48,53 +47,49 @@ struct VsOutTexNorm
 // #include "IBL.fx"
 #include "PBR.Pixel.fx"
 
-float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, bool hasSecondary, bool hasEmissive, bool hasOcclusionMap)
+float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, bool hasSecondary, bool hasEmissive, bool hasOcclusion)
 {
     // get primary color and alpha
 
     float4 f_primary = PrimaryScale * input.Color;
-    if (hasPrimary) f_primary *= GetPrimarySample(input.TextureCoordinate0, input.TextureCoordinate1);
+    if (hasPrimary) f_primary *= GetPrimarySample(input.TextureCoordinate0, input.TextureCoordinate1);    
 
-    // alpha cutoff
-    clip((f_primary.a < AlphaCutoff) ? -1 : 1);
-
-    // alpha blend
-    f_primary.a = mad(f_primary.a, AlphaTransform.x, AlphaTransform.y);        
+    f_primary.a = ProcessAlphaChannel(f_primary.a); // alpha Cutoff & Blend
+    f_primary.rgb = sRGBToLinear(f_primary.rgb); // gamma correction
 
     // normals
 
     NormalInfo ninfo;
-
     if (hasPerturbedNormals) ninfo = GetPerturbedNormalSample(input);
     else ninfo = GetGeometricNormalSample(input);
     
     // calculate ambient light contribution
 
-    float3 hdrColor = f_primary.rgb * AmbientLight;
+    float3 linearColor = f_primary.rgb * AmbientLight;
 
     // calculate punctual lights contribution
 
     float4 f_secondary = 1;
     if (hasSecondary) f_secondary = GetSecondarySample(input.TextureCoordinate0, input.TextureCoordinate1);
 
-    hdrColor += GetPunctualLightsContrib(input.PositionWS, ninfo, f_primary.rgb, f_secondary);
+    linearColor += GetPunctualLightsContrib(input.PositionWS, ninfo, f_primary.rgb, f_secondary);
 
     // calculate emissive light contribution    
 
     float3 f_emissive = EmissiveScale;
     if (hasEmissive) f_emissive *= GetEmissiveSample(input.TextureCoordinate0, input.TextureCoordinate1);
 
-    hdrColor += f_emissive;
+    linearColor += sRGBToLinear(f_emissive);
 
     // calculate occlusion map attenuation
     
-    if (hasOcclusionMap)
+    if (hasOcclusion)
     {
         float f_occlusion = GetOcclusionSample(input.TextureCoordinate0, input.TextureCoordinate1);
-        hdrColor = lerp(hdrColor, hdrColor * f_occlusion, OcclusionScale);
+        linearColor = lerp(linearColor, linearColor * f_occlusion, OcclusionScale);
     }
 
-    // all PBR lighting is calculated in linear RGB space (AKA HDR), we need to scale it down to sRGB    
+    // all PBR lighting is calculated in linear RGB space, we need to scale it down to sRGB    
 
-    return float4(toneMap(hdrColor), f_primary.a);
+    return float4(toneMap(linearColor), f_primary.a);
 }

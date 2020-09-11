@@ -4,29 +4,29 @@ using System.Text;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
-    public class SpecularGlossinessEffect : PBREffect
+    public class PBRSpecularGlossinessEffect : PBREffect
     {
         #region lifecycle
         
-        public SpecularGlossinessEffect(GraphicsDevice device) : base(device, Resources.GetShaderByteCode("SpecularGlossinessEffect"))
+        public PBRSpecularGlossinessEffect(GraphicsDevice device) : base(device, Resources.GetShaderByteCode("SpecularGlossinessEffect"))
         {
-            _DiffuseMap = new EffectTexture2D.ScalarXYZW(device, this.Parameters, "Primary", 1);
-            _SpecularGlossinessMap = new EffectTexture2D.ScalarXYZW(device, this.Parameters, "Secondary", 2);
+            _DiffuseMap = new EffectTexture2D.Scalar4(device, this.Parameters, "Primary", 1);
+            _SpecularGlossinessMap = new EffectTexture2D.Scalar4(device, this.Parameters, "Secondary", 2);
         }
 
         #endregion
 
         #region data
 
-        private readonly EffectTexture2D.ScalarXYZW _DiffuseMap;
-        private readonly EffectTexture2D.ScalarXYZW _SpecularGlossinessMap;
+        private readonly EffectTexture2D.Scalar4 _DiffuseMap;
+        private readonly EffectTexture2D.Scalar4 _SpecularGlossinessMap;
 
         #endregion
 
         #region properties - material
 
-        public EffectTexture2D.ScalarXYZW DiffuseMap => _DiffuseMap;
-        public EffectTexture2D.ScalarXYZW SpecularGlossinessMap => _SpecularGlossinessMap;
+        public EffectTexture2D.Scalar4 DiffuseMap => _DiffuseMap;
+        public EffectTexture2D.Scalar4 SpecularGlossinessMap => _SpecularGlossinessMap;
 
         #endregion
 
@@ -34,10 +34,8 @@ namespace Microsoft.Xna.Framework.Graphics
 
         protected override void OnApply()
         {
-            base.OnApply();            
-
-            ApplyPBR();
-
+            base.OnApply();
+            
             _DiffuseMap.Apply();
             _SpecularGlossinessMap.Apply();            
 

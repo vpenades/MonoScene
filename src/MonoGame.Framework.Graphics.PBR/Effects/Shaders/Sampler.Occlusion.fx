@@ -1,8 +1,10 @@
 ﻿
-// ========================================= CONSTANTS =========================================
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CONSTANTS
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // All Shaders
-// - R : Oclussion, or unused if separated oclussion map is defined (*)
+// - R : Oclussion, or unused if alternte oclussion map is defined (*)
 // - G : Unused
 // - B : Unused
 // - A : Unused
@@ -16,6 +18,12 @@
 //       - When occlusion map uses the second set of UV coordinates, or when
 //         MetallicRoughness and Occlusion need different texture sizes.
 
+// (**) - Also, notice that in case the occlusion channel is stored in the R channel
+//        of the MetallicRoughness map, we could avoid one texture sampler read,
+//        BUT only if OcclusionTextureIdx is equal to SecondaryTextureIdx, because
+//        if they're not the same, we need to read the same texture, but at different
+//        locations.
+
 DECLARE_TEXTURE(OcclusionTexture, 4);
 
 float OcclusionScale;
@@ -23,7 +31,9 @@ int OcclusionTextureIdx;
 float3 OcclusionTransformU;
 float3 OcclusionTransformV;
 
-// ========================================= FUNCTIONS =========================================
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// FUNCTIONS
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 float GetOcclusionSample(float2 uv0, float2 uv1)
 {

@@ -130,21 +130,24 @@ namespace SharpGLTF.Runtime
 
             var blending = BlendState.Opaque;
 
-            if (effect is PBREffect pbrEffect)            
+            if (effect is AnimatedEffect animEffect)
             {
-                pbrEffect.NormalMode = srcMaterial.DoubleSided ? SurfaceNormalMode.DoubleSided : SurfaceNormalMode.Reverse;
-
-                pbrEffect.AlphaCutoff = -1;
+                animEffect.AlphaCutoff = -1;
 
                 if (srcMaterial.Alpha == AlphaMode.BLEND)
                 {
                     blending = BlendState.NonPremultiplied;
-                    pbrEffect.AlphaBlend = true;
+                    animEffect.AlphaBlend = true;
                 }
                 if (srcMaterial.Alpha == AlphaMode.MASK)
-                {                    
-                    pbrEffect.AlphaCutoff = srcMaterial.AlphaCutoff;
+                {
+                    animEffect.AlphaCutoff = srcMaterial.AlphaCutoff;
                 }
+            }
+
+            if (effect is PBREffect pbrEffect)            
+            {
+                pbrEffect.NormalMode = srcMaterial.DoubleSided ? SurfaceNormalMode.DoubleSided : SurfaceNormalMode.Reverse;                
             }
             
             WriteMeshPrimitive(srcPrim, effect, blending, srcMaterial.DoubleSided ? RasterizerState.CullNone : RasterizerState.CullCounterClockwise);

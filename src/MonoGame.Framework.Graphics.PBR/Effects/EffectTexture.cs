@@ -46,9 +46,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private int _SamplerIndex;
         private SamplerState _Sampler = SamplerState.LinearWrap;
-
-        private Vector4 _Scalar;
-
+        
         private Int32 _TextureSetIndex;
         private Vector3 _TransformU = Vector3.UnitX;
         private Vector3 _TransformV = Vector3.UnitY;        
@@ -102,30 +100,30 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region nested
 
-        public sealed class ScalarX : EffectTexture2D
+        public sealed class Scalar1 : EffectTexture2D
         {
-            internal ScalarX(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
+            internal Scalar1(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
             public float Scale { get; set; }
             internal override void Apply() { base.Apply(); _TextureScale.SetValue(Scale); }
         }
 
-        public sealed class ScalarXY : EffectTexture2D
+        public sealed class Scalar2 : EffectTexture2D
         {
-            internal ScalarXY(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
+            internal Scalar2(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
             public Vector2 Scale { get; set; }
             internal override void Apply() { base.Apply(); _TextureScale.SetValue(Scale); }
         }
 
-        public sealed class ScalarXYZ : EffectTexture2D
+        public sealed class Scalar3 : EffectTexture2D
         {
-            internal ScalarXYZ(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
+            internal Scalar3(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
             public Vector3 Scale { get; set; }
             internal override void Apply() { base.Apply(); _TextureScale.SetValue(Scale); }
         }
 
-        public sealed class ScalarXYZW : EffectTexture2D
+        public sealed class Scalar4 : EffectTexture2D
         {
-            internal ScalarXYZW(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
+            internal Scalar4(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
             public Vector4 Scale { get; set; }
             internal override void Apply() { base.Apply(); _TextureScale.SetValue(Scale); }
         }

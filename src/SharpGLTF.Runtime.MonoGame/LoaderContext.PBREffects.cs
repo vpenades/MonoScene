@@ -44,7 +44,7 @@ namespace SharpGLTF.Runtime
 
             if (srcMaterial.FindChannel("SpecularGlossiness") != null)
             {
-                var xeffect = new SpecularGlossinessEffect(this.Device);
+                var xeffect = new PBRSpecularGlossinessEffect(this.Device);
                 effect = xeffect;
 
                 TransferChannel(xeffect.DiffuseMap, srcMaterial, "Diffuse", Vector4.One);
@@ -52,7 +52,7 @@ namespace SharpGLTF.Runtime
             }
             else
             {
-                var xeffect = new MetallicRoughnessEffect(this.Device);
+                var xeffect = new PBRMetallicRoughnessEffect(this.Device);
                 effect = xeffect;
 
                 TransferChannel(xeffect.BaseColorMap, srcMaterial, "BaseColor", Vector4.One);
@@ -85,7 +85,7 @@ namespace SharpGLTF.Runtime
 
         #region gltf helpers
         
-        private void TransferChannel(EffectTexture2D.ScalarX dst, GLTFMATERIAL src, string name, float defval)
+        private void TransferChannel(EffectTexture2D.Scalar1 dst, GLTFMATERIAL src, string name, float defval)
         {            
             dst.Texture = UseTexture(src, name);
             dst.Sampler = UseSampler(src, name);
@@ -94,7 +94,7 @@ namespace SharpGLTF.Runtime
             dst.Transform = GetTransform(src, name);
         }
 
-        private void TransferChannel(EffectTexture2D.ScalarXY dst, GLTFMATERIAL src, string name, Vector2 defval)
+        private void TransferChannel(EffectTexture2D.Scalar2 dst, GLTFMATERIAL src, string name, Vector2 defval)
         {
             dst.Texture = UseTexture(src, name);
             dst.Sampler = UseSampler(src, name);
@@ -103,7 +103,7 @@ namespace SharpGLTF.Runtime
             dst.Transform = GetTransform(src, name);
         }
 
-        private void TransferChannel(EffectTexture2D.ScalarXYZ dst, GLTFMATERIAL src, string name, Vector3 defval)
+        private void TransferChannel(EffectTexture2D.Scalar3 dst, GLTFMATERIAL src, string name, Vector3 defval)
         {
             dst.Texture = UseTexture(src, name);
             dst.Sampler = UseSampler(src, name);
@@ -112,7 +112,7 @@ namespace SharpGLTF.Runtime
             dst.Transform = GetTransform(src, name);
         }
 
-        private void TransferChannel(EffectTexture2D.ScalarXYZW dst, GLTFMATERIAL src, string name, Vector4 defval)
+        private void TransferChannel(EffectTexture2D.Scalar4 dst, GLTFMATERIAL src, string name, Vector4 defval)
         {
             dst.Texture = UseTexture(src, name);
             dst.Sampler = UseSampler(src, name);

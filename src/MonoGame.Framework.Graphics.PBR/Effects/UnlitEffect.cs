@@ -14,18 +14,18 @@ namespace Microsoft.Xna.Framework.Graphics.Effects
         /// </summary>
         public UnlitEffect(GraphicsDevice device) : base(device, Resources.GetShaderByteCode("Unlit"))
         {
-            _BaseColorMap = new EffectTexture2D.ScalarXYZW(device, this.Parameters, "Primary", 1);
-            _EmissiveMap = new EffectTexture2D.ScalarXYZ(device, this.Parameters, "Emissive", 3);
-            _OcclusionMap = new EffectTexture2D.ScalarX(device, this.Parameters, "Occlusion", 4);
+            _BaseColorMap = new EffectTexture2D.Scalar4(device, this.Parameters, "Primary", 1);
+            _EmissiveMap = new EffectTexture2D.Scalar3(device, this.Parameters, "Emissive", 3);
+            _OcclusionMap = new EffectTexture2D.Scalar1(device, this.Parameters, "Occlusion", 4);
         }
 
         #endregion
 
         #region data
 
-        private readonly EffectTexture2D.ScalarXYZW _BaseColorMap;
-        private readonly EffectTexture2D.ScalarXYZ _EmissiveMap;
-        private readonly EffectTexture2D.ScalarX _OcclusionMap;
+        private readonly EffectTexture2D.Scalar4 _BaseColorMap;
+        private readonly EffectTexture2D.Scalar3 _EmissiveMap;
+        private readonly EffectTexture2D.Scalar1 _OcclusionMap;
 
         #endregion        
 
@@ -37,34 +37,23 @@ namespace Microsoft.Xna.Framework.Graphics.Effects
 
         #region properties - material         
 
-        public EffectTexture2D.ScalarXYZW BaseColorMap => _BaseColorMap;
-        public EffectTexture2D.ScalarXYZ EmissiveMap => _EmissiveMap;
-        public EffectTexture2D.ScalarX OcclusionMap => _OcclusionMap;
+        public EffectTexture2D.Scalar4 BaseColorMap => _BaseColorMap;
+        public EffectTexture2D.Scalar3 EmissiveMap => _EmissiveMap;
+        public EffectTexture2D.Scalar1 OcclusionMap => _OcclusionMap;
 
         #endregion
 
-        #region API        
-
-        protected void ApplyUnlit()
+        #region API
+        
+        protected override void OnApply()
         {
-            this.ApplyTransforms();
-
-            Resources.GenerateDotTextures(this.GraphicsDevice);
+            base.OnApply();
 
             Parameters["Exposure"].SetValue(this.Exposure);
 
             _BaseColorMap.Apply();
             _EmissiveMap.Apply();
             _OcclusionMap.Apply();
-
-            // GraphicsDevice.BlendState = BlendState.Opaque;
-        }
-
-        protected override void OnApply()
-        {
-            base.OnApply();
-
-            ApplyUnlit();            
 
             var shaderIndex = RecalculateAll();
 
