@@ -35,6 +35,13 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region properties - lights
         
+        /// <summary>
+        /// Gets or sets the light exposure, which directly affect the apparent brightness of the render.
+        /// </summary>
+        /// <remarks>
+        /// PBR lighting is calculated in LINEAR RGB space, which exceeds the limits of screen sRGB space,
+        /// In order to convert from linear to screen space, we need to "Tone Map" the linear RGB color.
+        /// </remarks>
         public float Exposure { get; set; } = 1;
         
         public Vector3 AmbientLightColor { get; set; }        
@@ -47,7 +54,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region properties - material
         
-        public bool DoubleSidedNormals { get; set; }
+        public SurfaceNormalMode NormalMode { get; set; }
 
         public bool AlphaBlend { get; set; }
         public float AlphaCutoff { get; set; }
@@ -66,7 +73,12 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             this.ApplyTransforms();
 
-            Parameters["DoubleSidedNormals"].SetValue(DoubleSidedNormals ? 1f : 0f);
+            switch(this.NormalMode)
+            {
+                case SurfaceNormalMode.Default: Parameters["NormalsMode"].SetValue(2f); break;
+                case SurfaceNormalMode.Reverse: Parameters["NormalsMode"].SetValue(-2f); break;
+                case SurfaceNormalMode.DoubleSided: Parameters["NormalsMode"].SetValue(0f); break;
+            }            
 
             Parameters["Exposure"].SetValue(this.Exposure);
             Parameters["AmbientLight"].SetValue(this.AmbientLightColor);
@@ -90,6 +102,24 @@ namespace Microsoft.Xna.Framework.Graphics
         }        
 
         #endregion
+    }
+
+    public enum SurfaceNormalMode
+    {
+        /// <summary>
+        /// Default normal mode.
+        /// </summary>
+        Default,
+
+        /// <summary>
+        /// Normal direction is reversed.
+        /// </summary>
+        Reverse,
+
+        /// <summary>
+        /// Normal direction is reversed only when back face is visible.
+        /// </summary>
+        DoubleSided,
     }
 
     

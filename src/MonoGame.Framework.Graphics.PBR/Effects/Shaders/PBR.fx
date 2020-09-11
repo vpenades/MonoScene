@@ -8,75 +8,14 @@
 
 #include "Functions.fx"
 #include "BDRF.fx"
-
-#define SKINNED_EFFECT_MAX_BONES   128
-
-DECLARE_TEXTURE(NormalTexture, 0);
-
-DECLARE_TEXTURE(PrimaryTexture, 1);     // either BaseColor or Diffuse
-DECLARE_TEXTURE(SecondaryTexture, 2);   // either MetallicRoughness or SpecularGlossiness
-
-DECLARE_TEXTURE(EmissiveTexture, 3);
-DECLARE_TEXTURE(OcclusionTexture, 4);
-
-BEGIN_CONSTANTS
-
-    float4x4 World;
-    float4x4 View;
-    float4x4 Projection;
-    float4x3 Bones[SKINNED_EFFECT_MAX_BONES]; // 4x3 is enough, and saves constants    
-
-    float3 CameraPosition;
-
-    float DoubleSidedNormals; // 0=disabled, 1=enabled
-
-    float2 AlphaTransform;
-    float AlphaCutoff;
-
-    float Exposure; // parameter for ToneMapping.toneMap
-
-    float3 AmbientLight;
-
-    int NumberOfLights;
-    float4 LightParam0[3];
-    float4 LightParam1[3];
-    float4 LightParam2[3];
-    float4 LightParam3[3];
-    
-    float NormalScale;
-    int NormalTextureIdx;
-    float3 NormalTransformU;
-    float3 NormalTransformV;
-
-    // either BaseColor or Diffuse
-    float4 PrimaryScale;
-    int PrimaryTextureIdx;
-    float3 PrimaryTransformU;
-    float3 PrimaryTransformV;
-
-    // either MetallicRoughness or SpecularGlossiness
-    float4 SecondaryScale;
-    int SecondaryTextureIdx;
-    float3 SecondaryTransformU;
-    float3 SecondaryTransformV;
-
-    float OcclusionScale;
-    int OcclusionTextureIdx;
-    float3 OcclusionTransformU;
-    float3 OcclusionTransformV;
-
-    float3 EmissiveScale;
-    int EmissiveTextureIdx;
-    float3 EmissiveTransformU;
-    float3 EmissiveTransformV;
-
-END_CONSTANTS
-
 #include "ToneMapping.fx"
 
-#include "PunctualLight.fx"
-// #include "IBL.fx"
+float3 CameraPosition;    
 
+float2 AlphaTransform;
+float AlphaCutoff;
+    
+float3 AmbientLight;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PIXEL SHADERS
@@ -98,13 +37,15 @@ struct VsOutTexNorm
     float3 TangentBasisZ : TEXCOORD5;
 };
 
+
 #include "Sampler.Normal.fx"
 #include "Sampler.Primary.fx"
 #include "Sampler.Secondary.fx"
 #include "Sampler.Emissive.fx"
 #include "Sampler.Occlusion.fx"
 
-
+#include "PunctualLight.fx"
+// #include "IBL.fx"
 #include "PBR.Pixel.fx"
 
 float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, bool hasSecondary, bool hasEmissive, bool hasOcclusionMap)
@@ -124,8 +65,8 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
 
     NormalInfo ninfo;
 
-    if (hasPerturbedNormals) ninfo = GetPerturbedNormalSample(input, DoubleSidedNormals);
-    else ninfo = GetGeometricNormalSample(input, DoubleSidedNormals);
+    if (hasPerturbedNormals) ninfo = GetPerturbedNormalSample(input);
+    else ninfo = GetGeometricNormalSample(input);
     
     // calculate ambient light contribution
 

@@ -5,39 +5,6 @@
 // https://github.com/KhronosGroup/glTF-Sample-Viewer/tree/master/src/shaders
 
 #include "MacrosSM4.fxh"
-
-#define SKINNED_EFFECT_MAX_BONES   128
-
-DECLARE_TEXTURE(PrimaryTexture, 0);     // either BaseColor or Diffuse
-DECLARE_TEXTURE(EmissiveTexture, 1);
-DECLARE_TEXTURE(OcclusionTexture, 2);
-
-BEGIN_CONSTANTS
-
-    float4x4 World;
-    float4x4 View;
-    float4x4 Projection;
-    float4x3 Bones[SKINNED_EFFECT_MAX_BONES]; // 4x3 is enough, and saves constants            
-
-    float4 PrimaryScale;
-    int PrimaryTextureIdx;
-    float3 PrimaryTransformU;
-    float3 PrimaryTransformV;    
-
-    float OcclusionScale;
-    int OcclusionTextureIdx;
-    float3 OcclusionTransformU;
-    float3 OcclusionTransformV;
-
-    float3 EmissiveScale;
-    int EmissiveTextureIdx;
-    float3 EmissiveTransformU;
-    float3 EmissiveTransformV;
-
-    float Exposure; // parameter for ToneMapping.toneMap
-
-END_CONSTANTS
-
 #include "ToneMapping.fx"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +26,7 @@ struct VsOutTexNorm
     float3 TangentBasisY : TEXCOORD4;
     float3 TangentBasisZ : TEXCOORD5;
 };
+
 
 #include "Sampler.Primary.fx"
 #include "Sampler.Emissive.fx"

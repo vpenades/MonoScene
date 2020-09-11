@@ -1,5 +1,13 @@
 ﻿// Based on: https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/punctual.glsl
 
+// ========================================= CONSTANTS =========================================
+
+int NumberOfLights;
+float4 LightParam0[3];
+float4 LightParam1[3];
+float4 LightParam2[3];
+float4 LightParam3[3];
+
 static const int LightType_Directional = 0;
 static const int LightType_Point = 1;
 static const int LightType_Spot = 2;
@@ -67,6 +75,8 @@ struct PunctualLight
     }
 };
 
+// ========================================= FUNCTIONS =========================================
+
 PunctualLight GetPunctualLight(int index)
 {
     PunctualLight l;
@@ -86,10 +96,6 @@ PunctualLight GetPunctualLight(int index)
 
     return l;
 }
-
-
-
-
 
 
 

@@ -2,7 +2,7 @@
 
 // IBL
 
-DECLARE_TEXTURE(u_GGXLUT, 4);
+DECLARE_TEXTURE(u_GGXLUT, 5);
 
 // uniform int u_MipCount;
 uniform samplerCube u_LambertianEnvSampler;

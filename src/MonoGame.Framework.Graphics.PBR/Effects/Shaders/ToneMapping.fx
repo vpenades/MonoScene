@@ -1,5 +1,11 @@
 ﻿// based on: https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/tonemapping.glsl
 
+// ========================================= CONSTANTS =========================================
+
+float Exposure; // parameter for ToneMapping.toneMap
+
+// ========================================= FUNCTIONS =========================================
+
 
 
 static const float GAMMA = 2.2;

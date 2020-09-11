@@ -132,7 +132,7 @@ namespace SharpGLTF.Runtime
 
             if (effect is PBREffect pbrEffect)            
             {
-                pbrEffect.DoubleSidedNormals = srcMaterial.DoubleSided;
+                pbrEffect.NormalMode = srcMaterial.DoubleSided ? SurfaceNormalMode.DoubleSided : SurfaceNormalMode.Reverse;
 
                 pbrEffect.AlphaCutoff = -1;
 

@@ -1,4 +1,14 @@
 ﻿
+// ========================================= CONSTANTS =========================================
+
+#define SKINNED_EFFECT_MAX_BONES   128
+
+float4x4 World;
+float4x4 View;
+float4x4 Projection;
+float4x3 Bones[SKINNED_EFFECT_MAX_BONES]; // 4x3 is enough, and saves constants 
+
+// ========================================= STRUCTURES =========================================
 
 struct VsInRigid
 {
@@ -48,6 +58,8 @@ struct VsInSkinnedTangent
     float4 BlendWeights : BLENDWEIGHT0;
 };
 
+
+// ========================================= FUNCTIONS =========================================
 
 
 float4x3 FunctionBoneMatrixCalculation(float4 BlendIndices, float4 BlendWeights)

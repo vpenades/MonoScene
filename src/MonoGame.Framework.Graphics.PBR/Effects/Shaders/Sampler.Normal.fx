@@ -1,6 +1,18 @@
 ﻿
+// ========================================= CONSTANTS =========================================
 
-NormalInfo GetGeometricNormalSample(VsOutTexNorm input, float supportDoubleSidedFaces)
+DECLARE_TEXTURE(NormalTexture, 0);
+
+float NormalsMode; // ? > 1 : Forward; ? < -1 : Reverse;   ? == 0 : Auto
+
+float NormalScale;
+int NormalTextureIdx;
+float3 NormalTransformU;
+float3 NormalTransformV;
+
+// ========================================= FUNCTIONS =========================================
+
+NormalInfo GetGeometricNormalSample(VsOutTexNorm input)
 {
     float3 v = normalize(CameraPosition - input.PositionWS);
 
@@ -8,7 +20,7 @@ NormalInfo GetGeometricNormalSample(VsOutTexNorm input, float supportDoubleSided
 
     // For a back-facing surface, the tangential basis vectors are negated.    
     
-    float facing = step((supportDoubleSidedFaces - 1) * 16, dot(v, ng)) * 2.0 - 1.0;
+    float facing = step(NormalsMode, dot(v, ng)) * 2.0 - 1.0;
     ng *= facing;
 
     // result
@@ -24,7 +36,7 @@ NormalInfo GetGeometricNormalSample(VsOutTexNorm input, float supportDoubleSided
 
 
 // https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L136
-NormalInfo GetPerturbedNormalSample(VsOutTexNorm input, float supportDoubleSidedFaces)
+NormalInfo GetPerturbedNormalSample(VsOutTexNorm input)
 {
     // create tangent basis:
 
@@ -40,7 +52,7 @@ NormalInfo GetPerturbedNormalSample(VsOutTexNorm input, float supportDoubleSided
 
     // For a back-facing surface, the tangential basis vectors are negated.    
     
-    float facing = step((supportDoubleSidedFaces - 1) * 16, dot(v, ng)) * 2.0 - 1.0;
+    float facing = step(NormalsMode, dot(v, ng)) * 2.0 - 1.0;
     ng *= facing;
     t *= facing;
     b *= facing;    
