@@ -13,25 +13,25 @@ namespace MonoGameScene
     /// <summary>
     /// Small helper for rendering MonoGame models.
     /// </summary>
-    class ModelDrawContext
+    struct ModelDrawContext
     {
-        #region lifecycle                
+        #region lifecycle
 
-        public ModelDrawContext(GraphicsDeviceManager graphics, Matrix cameraMatrix)
+        public ModelDrawContext(GraphicsDevice graphics, Matrix cameraMatrix)
         {
-            _Device = graphics.GraphicsDevice;
+            _Device = graphics;
 
             _Device.DepthStencilState = DepthStencilState.Default;
 
-            _View = Matrix.Invert(cameraMatrix);            
-            
-            float fieldOfView = MathHelper.PiOver4;            
-            float nearClipPlane = 0.01f;            
+            _View = Matrix.Invert(cameraMatrix);
+
+            float fieldOfView = MathHelper.PiOver4;
+            float nearClipPlane = 0.01f;
             float farClipPlane = 1000;
 
-            _Projection = Matrix.CreatePerspectiveFieldOfView(fieldOfView, graphics.GraphicsDevice.Viewport.AspectRatio, nearClipPlane, farClipPlane);
+            _DistanceComparer = MonoGameModelInstance.GetDistanceComparer(-_View.Translation);
 
-            SetDefaultLights();
+            _Projection = Matrix.CreatePerspectiveFieldOfView(fieldOfView, graphics.Viewport.AspectRatio, nearClipPlane, farClipPlane);
         }
 
         #endregion
@@ -41,44 +41,47 @@ namespace MonoGameScene
         private GraphicsDevice _Device;
         private Matrix _Projection;
         private Matrix _View;
+        private IComparer<MonoGameModelInstance> _DistanceComparer;
 
-        private float _Exposure = 2.5f;
-        private Vector3 _AmbientLight = Vector3.Zero;
-        private readonly PBRPunctualLight[] _PunctualLights = new PBRPunctualLight[3];        
+        private static readonly List<MonoGameModelInstance> _Instances = new List<MonoGameModelInstance>();
 
-        #endregion        
+        #endregion
 
-        #region API
+        #region API       
 
-        public void SetDefaultLights()
+        public void DrawModelInstance(MonoGameModelInstance model, PBREnvironment env)
         {
-            _PunctualLights[0] = PBRPunctualLight.Directional(new Vector3(1, -1, -1), Vector3.One, 3);
-            _PunctualLights[1] = PBRPunctualLight.Directional(new Vector3(-1, 0, -1), new Vector3(0.7f, 0.5f, 0.3f), 2);
+            foreach (var e in model.Template.Effects) env.ApplyTo(e);
+
+            model.Draw(_Projection, _View);
         }
 
-        public void SetDemoLights(float t)
+        public void DrawSceneInstances(PBREnvironment env, params MonoGameModelInstance[] models)
         {
-            var dir = new Vector3((float)Math.Cos(t), 0, -(float)Math.Sin(t));
+            // todo: fustrum culling goes here
+            // todo: find the closest lights for each instance.
 
-            _PunctualLights[0] = PBRPunctualLight.Directional(dir, Vector3.One, 1);
+            _Instances.Clear();
+            _Instances.AddRange(models);
+            _Instances.Sort(_DistanceComparer);
 
-            // _Lights[0] = PBRLight.Directional(new Vector3(1, -1, -1), 0, Vector3.One, 9);
-            // _Lights[1] = PBRLight.Directional(dir, 0, new Vector3(0.2f, 0.5f, 1f), 5);
-            // _Lights[2] = PBRLight.Directional(new Vector3(0, 1, 0), 0, new Vector3(0.5f, 0.2f, 0f), 3);
-        }
+            // render opaque parts from closest to farthest
 
-        public void DrawModelInstance(MonoGameModelInstance model, Matrix world)
-        {
-            foreach (var e in model.Template.Effects) UpdateMaterial(e);
+            foreach (var model in _Instances)
+            {
+                foreach (var e in model.Template.Effects) env.ApplyTo(e);
+                model.DrawOpaqueParts(_Projection, _View);
+            }
 
-            model.Draw(_Projection, _View, world);
-        }
+            // render translucid parts from farthest to closest
 
-        public void UpdateMaterial(Effect effect)
-        {
-            if (effect is IEffectFog fog) { fog.FogEnabled = false; }
+            _Instances.Reverse();
 
-            PBRPunctualLight.ApplyLights(effect, _Exposure, _AmbientLight, _PunctualLights);
+            foreach (var model in _Instances)
+            {
+                foreach (var e in model.Template.Effects) env.ApplyTo(e);
+                model.DrawTranslucidParts(_Projection, _View);
+            }
         }
 
         #endregion

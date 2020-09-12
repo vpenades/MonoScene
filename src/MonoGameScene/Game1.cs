@@ -94,19 +94,19 @@ namespace MonoGameScene
 
         #region game loop
 
+        private PBREnvironment _LightsAndFog = PBREnvironment.CreateDefault();
+
         // these are the scene instances we create for every glTF model we want to render on screen.
         // Instances are designed to be as lightweight as possible, so it should not be a problem to
         // create as many of them as you need at runtime.
-        private SharpGLTF.Runtime.MonoGameModelInstance _HauntedHouse;
-        private SharpGLTF.Runtime.MonoGameModelInstance _BrainStem;
-        private SharpGLTF.Runtime.MonoGameModelInstance _Avocado;
-        private SharpGLTF.Runtime.MonoGameModelInstance _CesiumMan1;
-        private SharpGLTF.Runtime.MonoGameModelInstance _CesiumMan2;
-        private SharpGLTF.Runtime.MonoGameModelInstance _CesiumMan3;
-        private SharpGLTF.Runtime.MonoGameModelInstance _CesiumMan4;
-
-        private SharpGLTF.Runtime.MonoGameModelInstance _Shark;
-
+        private MonoGameModelInstance _HauntedHouse;
+        private MonoGameModelInstance _BrainStem;
+        private MonoGameModelInstance _Avocado;
+        private MonoGameModelInstance _CesiumMan1;
+        private MonoGameModelInstance _CesiumMan2;
+        private MonoGameModelInstance _CesiumMan3;
+        private MonoGameModelInstance _CesiumMan4;
+        private MonoGameModelInstance _Shark;
 
         protected override void Update(GameTime gameTime)
         {
@@ -118,27 +118,40 @@ namespace MonoGameScene
 
             // create as many instances as we need from the templates
 
-            if (_Avocado == null) _Avocado = _AvodadoTemplate.Instance.CreateInstance();
-            if (_HauntedHouse == null) _HauntedHouse = _HauntedHouseTemplate.Instance.CreateInstance();
-            if (_BrainStem == null) _BrainStem = _BrainStemTemplate.Instance.CreateInstance();
+            if (_Avocado == null) _Avocado = _AvodadoTemplate.Content.CreateInstance();
+            if (_HauntedHouse == null) _HauntedHouse = _HauntedHouseTemplate.Content.CreateInstance();
+            if (_BrainStem == null) _BrainStem = _BrainStemTemplate.Content.CreateInstance();
 
-            if (_CesiumMan1 == null) _CesiumMan1 = _CesiumManTemplate.Instance.CreateInstance();
-            if (_CesiumMan2 == null) _CesiumMan2 = _CesiumManTemplate.Instance.CreateInstance();
-            if (_CesiumMan3 == null) _CesiumMan3 = _CesiumManTemplate.Instance.CreateInstance();
-            if (_CesiumMan4 == null) _CesiumMan4 = _CesiumManTemplate.Instance.CreateInstance();
+            if (_CesiumMan1 == null) _CesiumMan1 = _CesiumManTemplate.Content.CreateInstance();
+            if (_CesiumMan2 == null) _CesiumMan2 = _CesiumManTemplate.Content.CreateInstance();
+            if (_CesiumMan3 == null) _CesiumMan3 = _CesiumManTemplate.Content.CreateInstance();
+            if (_CesiumMan4 == null) _CesiumMan4 = _CesiumManTemplate.Content.CreateInstance();
 
-            if (_Shark == null) _Shark = _SharkTemplate.Instance.CreateInstance();
+            if (_Shark == null) _Shark = _SharkTemplate.Content.CreateInstance();
 
             // animate each instance individually.
 
             var animTime = (float)gameTime.TotalGameTime.TotalSeconds;
 
+            _Avocado.WorldMatrix = Matrix.CreateScale(30) * Matrix.CreateRotationY(animTime * 0.3f) * Matrix.CreateTranslation(-4, 4, 1);
+            _HauntedHouse.WorldMatrix = Matrix.CreateScale(20) * Matrix.CreateRotationY(1);
+
+            _BrainStem.WorldMatrix = Matrix.CreateTranslation(0, 0.5f, 8);
             _BrainStem.Controller.SetAnimationFrame(0, 0.7f* animTime);
+
+            _CesiumMan1.WorldMatrix = Matrix.CreateTranslation(-3, 0, 5);
             _CesiumMan1.Controller.SetAnimationFrame(0, 0.3f);
+
+            _CesiumMan2.WorldMatrix = Matrix.CreateTranslation(-2, 0, 5);
             _CesiumMan2.Controller.SetAnimationFrame(0, 0.5f * animTime);
+
+            _CesiumMan3.WorldMatrix = Matrix.CreateTranslation(2, 0, 5);
             _CesiumMan3.Controller.SetAnimationFrame(0, 1.0f * animTime);
+
+            _CesiumMan4.WorldMatrix = Matrix.CreateTranslation(3, 0, 5);
             _CesiumMan4.Controller.SetAnimationFrame(0, 1.5f * animTime);
 
+            _Shark.WorldMatrix = Matrix.CreateTranslation(5, 3, -6);
             _Shark.Controller.SetAnimationFrame(0, 1.0f * animTime);
 
             base.Update(gameTime);
@@ -151,31 +164,28 @@ namespace MonoGameScene
 
             base.Draw(gameTime);
 
+            // setup drawing context
+
             var animTime = (float)gameTime.TotalGameTime.TotalSeconds;
 
             var lookAt = new Vector3(0, 2, 0);
             var camPos = new Vector3((float)Math.Sin(animTime*0.5f) * 2, 2, 12);
+            var camera = Matrix.CreateWorld(camPos, lookAt - camPos, Vector3.UnitY);            
 
-            var camera = Matrix.CreateWorld(camPos, lookAt - camPos, Vector3.UnitY);                      
+            var ctx = new ModelDrawContext(_Graphics.GraphicsDevice, camera);
 
-            // draw all the instances.
+            // draw all the instances.            
 
-            var ctx = new ModelDrawContext(_Graphics, camera);
+            ctx.DrawSceneInstances
+                (
 
-            ctx.SetDemoLights(animTime);
+                // environment lights and fog
+                _LightsAndFog,
 
-            ctx.DrawModelInstance(_Avocado, Matrix.CreateScale(30) * Matrix.CreateRotationY(animTime*0.3f) * Matrix.CreateTranslation(-4,4,1));
+                // all model instances
+                _Avocado, _HauntedHouse, _BrainStem, _CesiumMan1, _CesiumMan2, _CesiumMan3, _CesiumMan4, _Shark
 
-            ctx.DrawModelInstance(_HauntedHouse, Matrix.CreateScale(20) * Matrix.CreateRotationY(1));
-
-            ctx.DrawModelInstance(_BrainStem, Matrix.CreateTranslation(0,0.5f,8));
-
-            ctx.DrawModelInstance(_CesiumMan1, Matrix.CreateTranslation(-3, 0, 5));
-            ctx.DrawModelInstance(_CesiumMan2, Matrix.CreateTranslation(-2, 0, 5));
-            ctx.DrawModelInstance(_CesiumMan3, Matrix.CreateTranslation( 2, 0, 5));
-            ctx.DrawModelInstance(_CesiumMan4, Matrix.CreateTranslation( 3, 0, 5));
-
-            ctx.DrawModelInstance(_Shark, Matrix.CreateTranslation(5, 3, -6));
+                );
         }
         
         #endregion

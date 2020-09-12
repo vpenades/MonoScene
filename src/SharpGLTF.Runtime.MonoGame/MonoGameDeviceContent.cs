@@ -13,13 +13,13 @@ namespace SharpGLTF.Runtime
 
         internal MonoGameDeviceContent(T instance, IDisposable[] disposables)
         {
-            _Instance = instance;
+            _Content = instance;
             _Disposables = disposables;
         }
 
         public void Dispose()
         {
-            _Instance = null;
+            _Content = null;
             if (_Disposables == null) return;
 
             foreach (var d in _Disposables) d.Dispose();
@@ -38,10 +38,10 @@ namespace SharpGLTF.Runtime
         /// <summary>
         /// The actual object.
         /// </summary>
-        private T _Instance;
+        private T _Content;
 
         /// <summary>
-        /// The disposable resources associated with <see cref="_Instance"/>.
+        /// The disposable resources associated with <see cref="_Content"/>.
         /// </summary>
         private IDisposable[] _Disposables;
 
@@ -49,9 +49,9 @@ namespace SharpGLTF.Runtime
 
         #region properties
 
-        public static implicit operator T(MonoGameDeviceContent<T> value) { return value?.Instance; }
+        public static implicit operator T(MonoGameDeviceContent<T> value) { return value?.Content; }
 
-        public T Instance => _Instance;
+        public T Content => _Content;
 
         #endregion       
     }

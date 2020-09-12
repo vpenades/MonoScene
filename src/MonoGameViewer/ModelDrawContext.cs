@@ -9,14 +9,9 @@ using SharpGLTF.Runtime;
 
 namespace MonoGameViewer
 {
-    class ModelDrawContext
+    struct ModelDrawContext
     {
-        #region lifecycle                
-
-        public ModelDrawContext(GraphicsDeviceManager graphics, Matrix cameraMatrix) : this(graphics.GraphicsDevice, cameraMatrix)
-        {
-            
-        }
+        #region lifecycle
 
         public ModelDrawContext(GraphicsDevice graphics, Matrix cameraMatrix)
         {
@@ -39,35 +34,18 @@ namespace MonoGameViewer
 
         private GraphicsDevice _Device;
         private Matrix _Projection;
-        private Matrix _View;
-
-        private float _Exposure = 25;
-        private Vector3 _AmbientLight = Vector3.Zero;
-        private readonly PBRPunctualLight[] _PunctualLights = new PBRPunctualLight[3];
+        private Matrix _View;        
 
         #endregion
 
-        #region API
-        
-        public void SetExposure(float exposure) { _Exposure = exposure; }
+        #region API       
 
-        public void SetAmbientLight(Vector3 color) { _AmbientLight = color; }
-
-        public void SetPunctualLight(int idx, PBRPunctualLight l) { _PunctualLights[idx] = l; }        
-
-        public void DrawModelInstance(MonoGameModelInstance model, Matrix world)
+        public void DrawModelInstance(MonoGameModelInstance model, PBREnvironment env)
         {
-            foreach (var e in model.Template.Effects) UpdateMaterial(e);
+            foreach (var e in model.Template.Effects) env.ApplyTo(e);
 
-            model.Draw(_Projection, _View, world);
-        }
-
-        public void UpdateMaterial(Effect effect)
-        {
-            if (effect is IEffectFog fog) { fog.FogEnabled = false; }
-
-            PBRPunctualLight.ApplyLights(effect, _Exposure, _AmbientLight, _PunctualLights);
-        }
+            model.Draw(_Projection, _View);
+        }        
 
         #endregion
     }

@@ -29,8 +29,10 @@ namespace SharpGLTF.Runtime
         private readonly MonoGameModelTemplate _Template;
         private readonly int _SceneIndex;
         private readonly SceneInstance _Controller;
+
         private Matrix _WorldMatrix;
 
+        // pre-allocated bone arrays to update the IEffectBones
         private static readonly List<Matrix[]> _BoneArrays = new List<Matrix[]>();
 
         #endregion
@@ -77,17 +79,14 @@ namespace SharpGLTF.Runtime
         public void Draw(Matrix projection, Matrix view)
         {
             // first we draw all the opaque meshes
-            foreach (var d in _Controller.DrawableInstances)
-            {
-                var mesh = _Template._Meshes[d.Template.LogicalMeshIndex];
-                if (mesh.OpaqueEffects.Count == 0) continue;                
-
-                SetEffectsTransforms(mesh.OpaqueEffects, projection, view, _WorldMatrix, d.Transform);
-
-                mesh.DrawOpaque();
-            }
+            DrawOpaqueParts(projection, view);
 
             // next, we draw all the translucid meshes
+            DrawTranslucidParts(projection, view);
+        }
+
+        public void DrawTranslucidParts(Matrix projection, Matrix view)
+        {
             foreach (var d in _Controller.DrawableInstances)
             {
                 var mesh = _Template._Meshes[d.Template.LogicalMeshIndex];
@@ -96,6 +95,19 @@ namespace SharpGLTF.Runtime
                 SetEffectsTransforms(mesh.TranslucidEffects, projection, view, _WorldMatrix, d.Transform);
 
                 mesh.DrawTranslucid();
+            }
+        }
+
+        public void DrawOpaqueParts(Matrix projection, Matrix view)
+        {
+            foreach (var d in _Controller.DrawableInstances)
+            {
+                var mesh = _Template._Meshes[d.Template.LogicalMeshIndex];
+                if (mesh.OpaqueEffects.Count == 0) continue;
+
+                SetEffectsTransforms(mesh.OpaqueEffects, projection, view, _WorldMatrix, d.Transform);
+
+                mesh.DrawOpaque();
             }
         }
 
@@ -181,5 +193,29 @@ namespace SharpGLTF.Runtime
         }
 
         #endregion
-    }    
+
+        #region nested types
+
+        public static IComparer<MonoGameModelInstance> GetDistanceComparer(Vector3 origin)
+        {
+            return new _DistanceComparer(origin);
+        }
+
+        private struct _DistanceComparer : IComparer<MonoGameModelInstance>
+        {
+            public _DistanceComparer(Vector3 origin) { _Origin = origin; }
+
+            private readonly Vector3 _Origin;
+
+            public int Compare(MonoGameModelInstance x, MonoGameModelInstance y)
+            {
+                var xDist = (x.WorldMatrix.Translation - _Origin).LengthSquared();
+                var yDist = (y.WorldMatrix.Translation - _Origin).LengthSquared();
+
+                return xDist.CompareTo(yDist);
+            }
+        }
+
+        #endregion
+    }
 }

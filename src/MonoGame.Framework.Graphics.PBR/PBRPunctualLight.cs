@@ -10,6 +10,17 @@ namespace Microsoft.Xna.Framework.Graphics
     public struct PBRPunctualLight
     {
         #region constructors
+
+        public static PBRPunctualLight Directional((int direction, int elevation) degrees, Vector3 color, float intensity)
+        {
+            float yaw = (float)(degrees.direction * Math.PI) / 180.0f;
+            float pitch = (float)(degrees.elevation * Math.PI) / 180.0f;
+            var xform = Matrix.CreateFromYawPitchRoll(yaw + 3.141592f, pitch, 0);
+            var dir = Vector3.Transform(Vector3.UnitZ, xform);
+
+            return Directional(dir, color, intensity);
+        }
+
         public static PBRPunctualLight Directional(Vector3 dir, Vector3 color, float intensity)
         {
             return new PBRPunctualLight

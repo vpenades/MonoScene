@@ -111,7 +111,7 @@ namespace MonoGameViewer
 
         public override void Update(GameTime gameTime)
         {
-            if (_ModelInstance == null && _ModelTemplate != null) _ModelInstance = _ModelTemplate.Instance.CreateInstance();
+            if (_ModelInstance == null && _ModelTemplate != null) _ModelInstance = _ModelTemplate.Content.CreateInstance();
         }
 
         public override void Draw(GameTime gameTime)
@@ -129,16 +129,20 @@ namespace MonoGameViewer
 
             var camera = Matrix.CreateWorld(camPos, lookAt - camPos, Vector3.UnitY);
 
-            var ctx = new ModelDrawContext(this.GraphicsDevice, camera);
-            ctx.SetExposure((float)_GlobalLight.Exposure / 10.0f);
-            ctx.SetAmbientLight(_GlobalLight.ToXna());
-            ctx.SetPunctualLight(0, _PunctualLights[0].ToPBR());
-            ctx.SetPunctualLight(1, _PunctualLights[1].ToPBR());
-            ctx.SetPunctualLight(2, _PunctualLights[2].ToPBR());
+            var env = new PBREnvironment();
+            env.SetExposure((float)_GlobalLight.Exposure / 10.0f);
+            env.SetAmbientLight(_GlobalLight.ToXna());
 
-            var xform = Matrix.CreateFromQuaternion(_Rotation);
+            for(int i=0; i< _PunctualLights.Length; ++i)
+            {
+                env.SetDirectLight(i, _PunctualLights[i].Direction, _PunctualLights[i].XnaColor, _PunctualLights[i].Intensity / 10.0f);
+            }
 
-            if (_ModelInstance != null) ctx.DrawModelInstance(_ModelInstance, xform);
+            var ctx = new ModelDrawContext(this.GraphicsDevice, camera);            
+
+            _ModelInstance.WorldMatrix = Matrix.CreateFromQuaternion(_Rotation);
+
+            if (_ModelInstance != null) ctx.DrawModelInstance(_ModelInstance, env);
         }
 
         #endregion
@@ -209,16 +213,17 @@ namespace MonoGameViewer
         [PropertyTools.DataAnnotations.WideProperty]
         public int Intensity { get; set; }
 
-        public PBRPunctualLight ToPBR()
+        public Vector3 Direction
         {
-            float yaw = (float)(DirectionAngle * Math.PI) / 180.0f;
-            float pitch = (float)(ElevationAngle * Math.PI) / 180.0f;
-            var xform = Matrix.CreateFromYawPitchRoll(yaw + 3.141592f, pitch, 0);
-            var dir = Vector3.Transform(Vector3.UnitZ, xform);
-
-            var color = new Vector3(Color.ScR, Color.ScG, Color.ScB);
-
-            return PBRPunctualLight.Directional(dir, color, (float)Intensity / 10.0f);
+            get
+            {
+                float yaw = (float)(DirectionAngle * Math.PI) / 180.0f;
+                float pitch = (float)(ElevationAngle * Math.PI) / 180.0f;
+                var xform = Matrix.CreateFromYawPitchRoll(yaw + 3.141592f, pitch, 0);
+                return Vector3.Transform(Vector3.UnitZ, xform);
+            }
         }
+
+        public Color XnaColor => new Color(Color.ScR, Color.ScG, Color.ScB);        
     }
 }
