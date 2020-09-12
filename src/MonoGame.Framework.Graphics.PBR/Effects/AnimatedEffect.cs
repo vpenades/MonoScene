@@ -93,6 +93,8 @@ namespace Microsoft.Xna.Framework.Graphics
             Parameters["Projection"].SetValue(Projection);
             if (_BoneCount > 0) Parameters["Bones"].SetValue(_Bones);
 
+            Parameters["CameraPosition"].SetValue(-View.Translation);
+
             Parameters["AlphaTransform"].SetValue(AlphaBlend ? Vector2.UnitX : Vector2.UnitY);
             Parameters["AlphaCutoff"].SetValue(AlphaCutoff);
         }

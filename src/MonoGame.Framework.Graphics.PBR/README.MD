@@ -2,8 +2,11 @@
 
 Extends Monogame with additional PBR effects:
 
-- MetallicRoughnessEffect
-- SpecularGlossinessEffect
+- AnimatedEffect (abstract base class)
+  - UnlitEffect
+  - PBREffect (abstract)
+    - PBRMetallicRoughnessEffect
+    - PBRSpecularGlossinessEffect
 
 These effects are designed, but not limited, to provide the neccesary shader features
 required by glTF format.

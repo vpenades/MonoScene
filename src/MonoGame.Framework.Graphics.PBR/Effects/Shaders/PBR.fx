@@ -20,6 +20,8 @@ float3 AmbientLight;
 // PIXEL SHADERS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include "BasicFog.fx"
+
 // Vertex Shader output, Pixel Shader input
 struct VsOutTexNorm
 {
@@ -91,5 +93,11 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
 
     // all PBR lighting is calculated in linear RGB space, we need to scale it down to sRGB    
 
-    return float4(toneMap(linearColor), f_primary.a);
+    float4 sRGBA = float4(toneMap(linearColor), f_primary.a);
+
+    // apply athmospheric effecs
+
+    ApplyFog(sRGBA, input.PositionWS);
+
+    return sRGBA;
 }

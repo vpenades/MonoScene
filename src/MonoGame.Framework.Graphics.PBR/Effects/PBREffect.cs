@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
-    public abstract class PBREffect : AnimatedEffect, PBRPunctualLight.IEffect
+    public abstract class PBREffect : AnimatedEffect, PBRPunctualLight.IEffect , IEffectFog
     {
         #region lifecycle
         
@@ -15,6 +15,8 @@ namespace Microsoft.Xna.Framework.Graphics
             _NormalMap = new EffectTexture2D.Scalar1(device, this.Parameters, "Normal", 0);
             _EmissiveMap = new EffectTexture2D.Scalar3(device, this.Parameters, "Emissive", 3);
             _OcclusionMap = new EffectTexture2D.Scalar1(device, this.Parameters, "Occlusion", 4);
+
+            _Fog = new EffectBasicFog(device, this.Parameters);
         }
 
         #endregion
@@ -31,10 +33,12 @@ namespace Microsoft.Xna.Framework.Graphics
         private readonly EffectTexture2D.Scalar3 _EmissiveMap;
         private readonly EffectTexture2D.Scalar1 _OcclusionMap;
 
+        private readonly EffectBasicFog _Fog;
+
         #endregion
 
         #region properties - lights
-        
+
         /// <summary>
         /// Gets or sets the lighting exposure, which directly affect the apparent brightness of the render.
         /// </summary>
@@ -62,6 +66,13 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #endregion
 
+        #region properties - fog
+        public Vector3 FogColor { get => _Fog.FogColor; set => _Fog.FogColor = value; }
+        public bool FogEnabled { get => _Fog.FogEnabled; set => _Fog.FogEnabled = value; }
+        public float FogEnd { get => _Fog.FogEnd; set => _Fog.FogEnd = value; }
+        public float FogStart { get => _Fog.FogStart; set => _Fog.FogStart = value; }
+        #endregion
+
         #region API
 
         protected override void OnApply()
@@ -84,9 +95,10 @@ namespace Microsoft.Xna.Framework.Graphics
             Parameters["LightParam2"].SetValue(_LightParams2);
             Parameters["LightParam3"].SetValue(_LightParams3);
 
-            Parameters["CameraPosition"].SetValue(-View.Translation);
+            _Fog.Apply();
 
-            Resources.GenerateDotTextures(this.GraphicsDevice);
+            Resources.GenerateDotTextures(this.GraphicsDevice); // temporary hack
+
             _NormalMap.Apply();
             _EmissiveMap.Apply();
             _OcclusionMap.Apply();
