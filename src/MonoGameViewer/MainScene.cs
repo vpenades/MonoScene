@@ -213,6 +213,7 @@ namespace MonoGameViewer
         [PropertyTools.DataAnnotations.WideProperty]
         public int Intensity { get; set; }
 
+        [PropertyTools.DataAnnotations.Browsable(false)]
         public Vector3 Direction
         {
             get
@@ -224,6 +225,7 @@ namespace MonoGameViewer
             }
         }
 
+        [PropertyTools.DataAnnotations.Browsable(false)]
         public Color XnaColor => new Color(Color.ScR, Color.ScG, Color.ScB);        
     }
 }

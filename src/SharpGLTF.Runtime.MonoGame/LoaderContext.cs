@@ -147,18 +147,18 @@ namespace SharpGLTF.Runtime
 
             if (effect is PBREffect pbrEffect)            
             {
-                pbrEffect.NormalMode = srcMaterial.DoubleSided ? SurfaceNormalMode.DoubleSided : SurfaceNormalMode.Reverse;                
+                pbrEffect.NormalMode = srcMaterial.DoubleSided ? GeometryNormalMode.DoubleSided : GeometryNormalMode.Reverse;                
             }
             
-            WriteMeshPrimitive(srcPrim, effect, blending, srcMaterial.DoubleSided ? RasterizerState.CullNone : RasterizerState.CullCounterClockwise);
+            WriteMeshPrimitive(srcPrim, effect, blending, srcMaterial.DoubleSided);
         }        
 
-        protected abstract void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect, BlendState blending, RasterizerState fc);
+        protected abstract void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect, BlendState blending, bool doubleSided);
 
-        protected void WriteMeshPrimitive<TVertex>(Effect effect, BlendState blending, RasterizerState fc, MeshPrimitiveReader primitive)
+        protected void WriteMeshPrimitive<TVertex>(Effect effect, BlendState blending, bool doubleSided, MeshPrimitiveReader primitive)
             where TVertex : unmanaged, IVertexType
         {
-            _MeshWriter.WriteMeshPrimitive<TVertex>(_CurrentMeshIndex, effect, blending, fc, primitive);
+            _MeshWriter.WriteMeshPrimitive<TVertex>(_CurrentMeshIndex, effect, blending, doubleSided, primitive);
         }
 
         #endregion

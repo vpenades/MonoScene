@@ -28,7 +28,8 @@ namespace SharpGLTF.Runtime
 
         private Effect _Effect;
         private BlendState _Blend = BlendState.Opaque;
-        private RasterizerState _Rasterizer = RasterizerState.CullCounterClockwise;
+        private RasterizerState _FrontRasterizer = RasterizerState.CullCounterClockwise;
+        private RasterizerState _BackRasterizer = RasterizerState.CullClockwise;
 
         private IndexBuffer _SharedIndexBuffer;
         private int _IndexOffset;
@@ -65,11 +66,17 @@ namespace SharpGLTF.Runtime
             set => _Blend = value;
         }
 
-        public RasterizerState Rasterizer
+        public RasterizerState FrontRasterizer
         {
-            get => _Rasterizer;
-            set => _Rasterizer = value;
-        }        
+            get => _FrontRasterizer;
+            set => _FrontRasterizer = value;
+        }
+
+        public RasterizerState BackRasterizer
+        {
+            get => _BackRasterizer;
+            set => _BackRasterizer = value;
+        }
 
         public Microsoft.Xna.Framework.BoundingSphere BoundingSphere
         {
@@ -97,13 +104,15 @@ namespace SharpGLTF.Runtime
 
         public void Draw(GraphicsDevice device)
         {
+            bool isMirrorTransform = _Effect is AnimatedEffect animEffect && animEffect.WorldIsMirror;
+
             if (_PrimitiveCount > 0)
             {
                 device.SetVertexBuffer(_SharedVertexBuffer);
                 device.Indices = _SharedIndexBuffer;
 
                 device.BlendState = _Blend;
-                device.RasterizerState = _Rasterizer;
+                device.RasterizerState = isMirrorTransform ? _BackRasterizer : _FrontRasterizer;
 
                 foreach(var pass in _Effect.CurrentTechnique.Passes)
                 {

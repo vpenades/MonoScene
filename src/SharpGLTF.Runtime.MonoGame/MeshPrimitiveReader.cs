@@ -482,7 +482,7 @@ namespace SharpGLTF.Runtime
 
         #region API
 
-        public void WriteMeshPrimitive<TVertex>(int logicalMeshIndex, Effect effect,BlendState blending, RasterizerState fc, MeshPrimitiveReader primitive)
+        public void WriteMeshPrimitive<TVertex>(int logicalMeshIndex, Effect effect,BlendState blending, bool doubleSided, MeshPrimitiveReader primitive)
             where TVertex : unmanaged, IVertexType
         {
             if (!_Buffers.TryGetValue(typeof(TVertex), out IPrimitivesBuffers pb))
@@ -490,7 +490,7 @@ namespace SharpGLTF.Runtime
                 _Buffers[typeof(TVertex)] = pb = new _PrimitivesBuffers<TVertex>();
             }
 
-            var part = (pb as _PrimitivesBuffers<TVertex>).Append(logicalMeshIndex, effect, blending, fc, primitive);
+            var part = (pb as _PrimitivesBuffers<TVertex>).Append(logicalMeshIndex, effect, blending, doubleSided, primitive);
 
             _MeshPrimitives.Add(part);
         }
@@ -519,7 +519,8 @@ namespace SharpGLTF.Runtime
                     var dstPart = dstMesh.CreateMeshPart();
                     dstPart.Effect = srcPart.Material.PrimitiveEffect;
                     dstPart.Blending = srcPart.Material.PrimitiveBlending;
-                    dstPart.Rasterizer = srcPart.Material.Rasterizer;
+                    dstPart.FrontRasterizer = srcPart.Material.DoubleSided ? RasterizerState.CullNone : RasterizerState.CullCounterClockwise;
+                    dstPart.BackRasterizer = srcPart.Material.DoubleSided ? RasterizerState.CullNone : RasterizerState.CullClockwise;
                     dstPart.BoundingSphere = srcPart.BoundingSphere;
                     dstPart.SetVertexBuffer(vb, srcPart.VertexOffset, srcPart.VertexCount);
                     dstPart.SetIndexBuffer(ib, srcPart.TriangleOffset * 3, srcPart.TriangleCount);                    
@@ -559,7 +560,7 @@ namespace SharpGLTF.Runtime
 
             #region API
 
-            public _MeshPrimitive Append(int meshKey, Effect effect, BlendState blending, RasterizerState fc, MeshPrimitiveReader primitive)
+            public _MeshPrimitive Append(int meshKey, Effect effect, BlendState blending, bool doubleSided, MeshPrimitiveReader primitive)
             {
                 var partVertices = primitive.ToXnaVertices<TVertex>();
                 var partTriangles = primitive.TriangleIndices;
@@ -568,7 +569,7 @@ namespace SharpGLTF.Runtime
                 {
                     PrimitiveEffect = effect,
                     PrimitiveBlending = blending,
-                    Rasterizer = fc
+                    DoubleSided = doubleSided
                 };
 
                 var part = new _MeshPrimitive
@@ -651,7 +652,7 @@ namespace SharpGLTF.Runtime
         {
             public Effect PrimitiveEffect;
             public BlendState PrimitiveBlending;
-            public RasterizerState Rasterizer;
+            public bool DoubleSided;
         }
 
         #endregion

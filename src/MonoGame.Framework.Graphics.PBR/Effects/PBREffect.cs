@@ -58,7 +58,19 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region properties - material
         
-        public SurfaceNormalMode NormalMode { get; set; }        
+        /// <summary>
+        /// Gets or sets the mode indicating whether geometry normals must be flipped in the pixel shader.        
+        /// </summary>
+        /// <remarks>
+        /// <see cref="GeometryNormalMode.Default"/> is the preferred mode for standard geometry.
+        /// <see cref="GeometryNormalMode.Reverse"/> will flip the normals, producing an "inside out" effect.
+        /// <see cref="GeometryNormalMode.DoubleSided"/> will flip the normals only when the normal is
+        ///   pointing in opposite direction to the camera. Notice that this mode, altough it can be a general
+        ///   solution for all kinds of geometry, it produces artifacts one normals are close to perpendicular
+        ///   to the camera. This mode is recommended to be used along with double sided, thin geometris like
+        ///   tree leafs, glass, etc.
+        /// </remarks>
+        public GeometryNormalMode NormalMode { get; set; }        
 
         public EffectTexture2D.Scalar1 NormalMap => _NormalMap;
         public EffectTexture2D.Scalar3 EmissiveMap => _EmissiveMap;
@@ -81,9 +93,9 @@ namespace Microsoft.Xna.Framework.Graphics
 
             switch (this.NormalMode)
             {
-                case SurfaceNormalMode.Default: Parameters["NormalsMode"].SetValue(2f); break;
-                case SurfaceNormalMode.Reverse: Parameters["NormalsMode"].SetValue(-2f); break;
-                case SurfaceNormalMode.DoubleSided: Parameters["NormalsMode"].SetValue(0f); break;
+                case GeometryNormalMode.Default: Parameters["NormalsMode"].SetValue(2f); break;
+                case GeometryNormalMode.Reverse: Parameters["NormalsMode"].SetValue(-2f); break;
+                case GeometryNormalMode.DoubleSided: Parameters["NormalsMode"].SetValue(0f); break;
             }
 
             Parameters["Exposure"].SetValue(this.Exposure);
@@ -107,7 +119,7 @@ namespace Microsoft.Xna.Framework.Graphics
         #endregion
     }
 
-    public enum SurfaceNormalMode
+    public enum GeometryNormalMode
     {
         /// <summary>
         /// Default normal mode.
