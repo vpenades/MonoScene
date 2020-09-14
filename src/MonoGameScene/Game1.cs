@@ -63,7 +63,7 @@ namespace MonoGameScene
 
         protected override void LoadContent()
         {
-            var loader = LoaderContext.CreateLoaderContext(this.GraphicsDevice);
+            var loader = SharpGLTF.Runtime.Content.LoaderContext.CreateLoaderContext(this.GraphicsDevice);
 
             _AvodadoTemplate = loader.LoadDeviceModel("Models\\Avocado.glb");
             _BrainStemTemplate = loader.LoadDeviceModel("Models\\BrainStem.glb");
@@ -172,7 +172,9 @@ namespace MonoGameScene
             var camPos = new Vector3((float)Math.Sin(animTime*0.5f) * 2, 2, 12);
             var camera = Matrix.CreateWorld(camPos, lookAt - camPos, Vector3.UnitY);            
 
-            var ctx = new ModelDrawContext(_Graphics.GraphicsDevice, camera);
+            var ctx = new MonoGameDrawingContext(_Graphics.GraphicsDevice);
+
+            ctx.SetCamera(camera);
 
             // draw all the instances.            
 

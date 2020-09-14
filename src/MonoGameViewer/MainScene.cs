@@ -88,8 +88,8 @@ namespace MonoGameViewer
             if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
 
             var loader = _UseClassicEffects
-                ? new SharpGLTF.Runtime.BasicEffectsLoaderContext(this.GraphicsDevice)
-                : SharpGLTF.Runtime.LoaderContext.CreateLoaderContext(this.GraphicsDevice);
+                ? new SharpGLTF.Runtime.Content.BasicEffectsLoaderContext(this.GraphicsDevice)
+                : SharpGLTF.Runtime.Content.LoaderContext.CreateLoaderContext(this.GraphicsDevice);
 
             _ModelTemplate = loader.CreateDeviceModel(_Model);
             _ModelInstance = null;
@@ -136,13 +136,16 @@ namespace MonoGameViewer
             for(int i=0; i< _PunctualLights.Length; ++i)
             {
                 env.SetDirectLight(i, _PunctualLights[i].Direction, _PunctualLights[i].XnaColor, _PunctualLights[i].Intensity / 10.0f);
+            }            
+
+            if (_ModelInstance != null)
+            {
+                _ModelInstance.WorldMatrix = Matrix.CreateFromQuaternion(_Rotation);
+
+                var ctx = new SharpGLTF.Runtime.MonoGameDrawingContext(this.GraphicsDevice);
+                ctx.SetCamera(camera);                
+                ctx.DrawModelInstance(env, _ModelInstance);
             }
-
-            var ctx = new ModelDrawContext(this.GraphicsDevice, camera);            
-
-            _ModelInstance.WorldMatrix = Matrix.CreateFromQuaternion(_Rotation);
-
-            if (_ModelInstance != null) ctx.DrawModelInstance(_ModelInstance, env);
         }
 
         #endregion

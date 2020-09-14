@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Schema;
 
-namespace SharpGLTF.Runtime
+namespace SharpGLTF.Runtime.Content
 {
     using VERTEXKEY = System.ValueTuple<Vector3, Vector3, Vector2>;
 

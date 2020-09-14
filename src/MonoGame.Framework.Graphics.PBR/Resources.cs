@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
-    public static class Resources
+    static class Resources
     {
         private static readonly Dictionary<string, Byte[]> _Shaders = new Dictionary<string, byte[]>();
 

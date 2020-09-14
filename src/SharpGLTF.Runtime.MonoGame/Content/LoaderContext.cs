@@ -10,9 +10,9 @@ using SRCMESH = SharpGLTF.Schema2.Mesh;
 using SRCPRIM = SharpGLTF.Schema2.MeshPrimitive;
 using SRCMATERIAL = SharpGLTF.Schema2.Material;
 
-using MODELMESH = SharpGLTF.Runtime.RuntimeModelMesh;
+using MODELMESH = SharpGLTF.Runtime.Content.RuntimeModelMesh;
 
-namespace SharpGLTF.Runtime
+namespace SharpGLTF.Runtime.Content
 {
     /// <summary>
     /// Helper class used to import a glTF meshes and materials into MonoGame

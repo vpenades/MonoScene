@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using SharpGLTF.Schema2;
 
-namespace SharpGLTF.Runtime
+namespace SharpGLTF.Runtime.Content
 {
     // tracks all the disposable objects of a model;
     // vertex buffers, index buffers, effects and textures.

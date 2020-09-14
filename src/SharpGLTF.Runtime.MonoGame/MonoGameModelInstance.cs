@@ -6,11 +6,15 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using MODELMESH = SharpGLTF.Runtime.RuntimeModelMesh;
-using MODELMESHPART = SharpGLTF.Runtime.RuntimeModelMeshPart;
-
 namespace SharpGLTF.Runtime
 {
+    /// <summary>
+    /// Represents the state machine of a specific model instance on screen.    
+    /// </summary>
+    /// <remarks>
+    /// For each <see cref="MonoGameModelTemplate"/> you can have
+    /// multiple <see cref="MonoGameModelInstance"/> objects.
+    /// </remarks>
     public sealed class MonoGameModelInstance
     {
         #region lifecycle
@@ -58,19 +62,7 @@ namespace SharpGLTF.Runtime
         #endregion
 
         #region API
-
-        /// <summary>
-        /// Draws this <see cref="MonoGameModelInstance"/> into the current <see cref="GraphicsDevice"/>.
-        /// </summary>
-        /// <param name="projection">The projection matrix.</param>
-        /// <param name="view">The view matrix.</param>
-        /// <param name="world">The world matrix.</param>
-        public void Draw(Matrix projection, Matrix view, Matrix world)
-        {
-            _WorldMatrix = world;
-            Draw(projection, view);
-        }
-
+        
         /// <summary>
         /// Draws this <see cref="MonoGameModelInstance"/> into the current <see cref="GraphicsDevice"/>.
         /// </summary>
@@ -78,34 +70,39 @@ namespace SharpGLTF.Runtime
         /// <param name="view">The view matrix.</param>        
         public void Draw(Matrix projection, Matrix view)
         {
+            foreach (var e in this.Template.Effects)
+            {                
+                UpdateProjViewTransforms(e, projection, view);
+            }
+
             // first we draw all the opaque meshes
-            DrawOpaqueParts(projection, view);
+            DrawOpaqueParts();
 
             // next, we draw all the translucid meshes
-            DrawTranslucidParts(projection, view);
+            DrawTranslucidParts();
         }
 
-        public void DrawTranslucidParts(Matrix projection, Matrix view)
+        public void DrawTranslucidParts()
         {
             foreach (var d in _Controller.DrawableInstances)
             {
                 var mesh = _Template._Meshes[d.Template.LogicalMeshIndex];
                 if (mesh.TranslucidEffects.Count == 0) continue;
 
-                SetEffectsTransforms(mesh.TranslucidEffects, projection, view, _WorldMatrix, d.Transform);
+                SetEffectsTransforms(mesh.TranslucidEffects, _WorldMatrix, d.Transform);
 
                 mesh.DrawTranslucid();
             }
         }
 
-        public void DrawOpaqueParts(Matrix projection, Matrix view)
+        public void DrawOpaqueParts()
         {
             foreach (var d in _Controller.DrawableInstances)
             {
                 var mesh = _Template._Meshes[d.Template.LogicalMeshIndex];
                 if (mesh.OpaqueEffects.Count == 0) continue;
 
-                SetEffectsTransforms(mesh.OpaqueEffects, projection, view, _WorldMatrix, d.Transform);
+                SetEffectsTransforms(mesh.OpaqueEffects, _WorldMatrix, d.Transform);
 
                 mesh.DrawOpaque();
             }
@@ -119,7 +116,7 @@ namespace SharpGLTF.Runtime
         /// <param name="viewXform">The current view matrix</param>
         /// <param name="worldXform">The current world matrix</param>
         /// <param name="meshXform">The mesh local transform provided by the runtime</param>
-        private void SetEffectsTransforms(IReadOnlyCollection<Effect> effects, Matrix projectionXform, Matrix viewXform, Matrix worldXform, Transforms.IGeometryTransform meshXform)
+        private void SetEffectsTransforms(IReadOnlyCollection<Effect> effects, Matrix worldXform, Transforms.IGeometryTransform meshXform)
         {            
             if (meshXform is Transforms.SkinnedTransform skinnedXform)
             {
@@ -133,8 +130,8 @@ namespace SharpGLTF.Runtime
                 }                
 
                 foreach (var effect in effects)
-                {
-                    UpdateTransforms(effect, projectionXform, viewXform, worldXform, skinTransforms);
+                {                    
+                    UpdateWorldTransforms(effect, worldXform, skinTransforms);
                 }                
             }
             
@@ -145,8 +142,8 @@ namespace SharpGLTF.Runtime
                 worldXform = Matrix.Multiply(statTransform, worldXform);
 
                 foreach (var effect in effects)
-                {
-                    UpdateTransforms(effect, projectionXform, viewXform, worldXform);
+                {                    
+                    UpdateWorldTransforms(effect, worldXform);
                 }
             }            
         }
@@ -163,12 +160,20 @@ namespace SharpGLTF.Runtime
 
         }
 
-        private static void UpdateTransforms(Effect effect, Matrix projectionXform, Matrix viewXform, Matrix worldXform, Matrix[] skinTransforms = null)
+
+        public static void UpdateProjViewTransforms(Effect effect, Matrix projectionXform, Matrix viewXform)
         {
             if (effect is IEffectMatrices matrices)
             {
                 matrices.Projection = projectionXform;
                 matrices.View = viewXform;
+            }
+        }
+
+        private static void UpdateWorldTransforms(Effect effect, Matrix worldXform, Matrix[] skinTransforms = null)
+        {
+            if (effect is IEffectMatrices matrices)
+            {
                 matrices.World = worldXform;
             }
 

@@ -11,15 +11,14 @@ using Microsoft.Xna.Framework.Graphics.Effects;
 
 using GLTFMATERIAL = SharpGLTF.Schema2.Material;
 
-namespace SharpGLTF.Runtime
+namespace SharpGLTF.Runtime.Content
 {
     public class PBREffectsLoaderContext : LoaderContext
     {
         #region lifecycle        
 
         public PBREffectsLoaderContext(GraphicsDevice device) : base(device)
-        {
-            Resources.GenerateDotTextures(device);
+        {            
         }
 
         #endregion

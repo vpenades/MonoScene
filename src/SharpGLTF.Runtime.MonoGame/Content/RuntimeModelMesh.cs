@@ -1,130 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+
 using Microsoft.Xna.Framework.Graphics;
 
-namespace SharpGLTF.Runtime
+namespace SharpGLTF.Runtime.Content
 {
-    /// <summary>
-    /// Replaces <see cref="ModelMeshPart"/>.
-    /// </summary>    
-    sealed class RuntimeModelMeshPart
-    {
-        #region lifecycle
-
-        internal RuntimeModelMeshPart(RuntimeModelMesh parent)
-        {
-            _Parent = parent;
-        }
-
-        #endregion
-
-        #region data
-
-        private readonly RuntimeModelMesh _Parent;
-
-        private Effect _Effect;
-        private BlendState _Blend = BlendState.Opaque;
-        private RasterizerState _FrontRasterizer = RasterizerState.CullCounterClockwise;
-        private RasterizerState _BackRasterizer = RasterizerState.CullClockwise;
-
-        private IndexBuffer _SharedIndexBuffer;
-        private int _IndexOffset;
-        private int _PrimitiveCount;        
-
-        private VertexBuffer _SharedVertexBuffer;
-        private int _VertexOffset;
-        private int _VertexCount;
-
-        private Microsoft.Xna.Framework.BoundingSphere _Bounds;
-
-        public object Tag { get; set; }
-
-        #endregion
-
-        #region properties
-
-        public GraphicsDevice Device => _Parent._GraphicsDevice;
-
-        public Effect Effect
-        {
-            get => _Effect;
-            set
-            {
-                if (_Effect == value) return;
-                _Effect = value;
-                _Parent.InvalidateEffectCollection(); // if we change this property, we need to invalidate the parent's effect collection.
-            }
-        }
-
-        public BlendState Blending
-        {
-            get => _Blend;
-            set => _Blend = value;
-        }
-
-        public RasterizerState FrontRasterizer
-        {
-            get => _FrontRasterizer;
-            set => _FrontRasterizer = value;
-        }
-
-        public RasterizerState BackRasterizer
-        {
-            get => _BackRasterizer;
-            set => _BackRasterizer = value;
-        }
-
-        public Microsoft.Xna.Framework.BoundingSphere BoundingSphere
-        {
-            get => _Bounds;
-            internal set => _Bounds = value;
-        }
-
-        #endregion
-
-        #region API
-
-        public void SetVertexBuffer(VertexBuffer vb, int offset, int count)
-        {
-            this._SharedVertexBuffer = vb;
-            this._VertexOffset = offset;
-            this._VertexCount = count;            
-        }
-
-        public void SetIndexBuffer(IndexBuffer ib, int offset, int count)
-        {
-            this._SharedIndexBuffer = ib;
-            this._IndexOffset = offset;
-            this._PrimitiveCount = count;            
-        }
-
-        public void Draw(GraphicsDevice device)
-        {
-            bool isMirrorTransform = _Effect is AnimatedEffect animEffect && animEffect.WorldIsMirror;
-
-            if (_PrimitiveCount > 0)
-            {
-                device.SetVertexBuffer(_SharedVertexBuffer);
-                device.Indices = _SharedIndexBuffer;
-
-                device.BlendState = _Blend;
-                device.RasterizerState = isMirrorTransform ? _BackRasterizer : _FrontRasterizer;
-
-                foreach(var pass in _Effect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-                    device.DrawIndexedPrimitives(PrimitiveType.TriangleList, _VertexOffset, _IndexOffset, _PrimitiveCount);
-                }
-            }
-        }
-
-        #endregion
-    }
-
     /// <summary>
     /// Replaces <see cref="ModelMesh"/>
     /// </summary>
@@ -133,7 +16,7 @@ namespace SharpGLTF.Runtime
         #region lifecycle
 
         public RuntimeModelMesh(GraphicsDevice graphicsDevice)
-        {            
+        {
             this._GraphicsDevice = graphicsDevice;
         }
 
@@ -193,7 +76,7 @@ namespace SharpGLTF.Runtime
 
                 return _TranslucidEffects;
             }
-        }        
+        }
 
         public Microsoft.Xna.Framework.BoundingSphere BoundingSphere
         {
@@ -203,15 +86,15 @@ namespace SharpGLTF.Runtime
             {
                 if (_Sphere.HasValue) return _Sphere.Value;
 
-                foreach(var part in _Primitives)
+                foreach (var part in _Primitives)
                 {
                     if (_Sphere.HasValue) _Sphere = Microsoft.Xna.Framework.BoundingSphere.CreateMerged(_Sphere.Value, part.BoundingSphere);
                     else _Sphere = part.BoundingSphere;
                 }
 
                 return _Sphere.Value;
-            }            
-        }        
+            }
+        }
 
         #endregion
 
@@ -234,8 +117,8 @@ namespace SharpGLTF.Runtime
         }
 
         internal void InvalidateEffectCollection()
-        {            
-            _OpaqueEffects = null;            
+        {
+            _OpaqueEffects = null;
             _TranslucidEffects = null;
         }
 
@@ -254,10 +137,10 @@ namespace SharpGLTF.Runtime
         }
 
         public void DrawOpaque()
-        {            
+        {
             _GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-            
+
 
             foreach (var part in GetOpaqueParts()) part.Draw(_GraphicsDevice);
         }
@@ -267,8 +150,8 @@ namespace SharpGLTF.Runtime
             _GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
 
             foreach (var part in GetTranslucidParts()) part.Draw(_GraphicsDevice);
-        }        
+        }
 
         #endregion
-    }    
+    }
 }

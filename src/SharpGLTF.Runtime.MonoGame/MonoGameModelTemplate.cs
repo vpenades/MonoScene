@@ -5,25 +5,34 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using MODELMESH = SharpGLTF.Runtime.RuntimeModelMesh;
-using MODELMESHPART = SharpGLTF.Runtime.RuntimeModelMeshPart;
+using MODELMESH = SharpGLTF.Runtime.Content.RuntimeModelMesh;
+using MODELMESHPART = SharpGLTF.Runtime.Content.RuntimeModelMeshPart;
 
 namespace SharpGLTF.Runtime
 {
+    /// <summary>
+    /// Represents a container of all the resources that make a 3D model. this is the equivalent to a unity's model prefab.
+    /// </summary>
+    /// <remarks>
+    /// - Hierarchy graphs
+    /// - Animation curves
+    /// - Meshes : vertex buffers, index buffers, etc
+    /// - Materials: effects, textures, etc.
+    /// </remarks>    
     public class MonoGameModelTemplate
     {
         #region lifecycle
 
-        public static MonoGameDeviceContent<MonoGameModelTemplate> LoadDeviceModel(GraphicsDevice device, string filePath, LoaderContext context = null)
+        public static MonoGameDeviceContent<MonoGameModelTemplate> LoadDeviceModel(GraphicsDevice device, string filePath, Content.LoaderContext context = null)
         {
             var model = Schema2.ModelRoot.Load(filePath, Validation.ValidationMode.TryFix);
 
             return CreateDeviceModel(device, model, context);
         }
 
-        public static MonoGameDeviceContent<MonoGameModelTemplate> CreateDeviceModel(GraphicsDevice device, Schema2.ModelRoot srcModel, LoaderContext context = null)
+        public static MonoGameDeviceContent<MonoGameModelTemplate> CreateDeviceModel(GraphicsDevice device, Schema2.ModelRoot srcModel, Content.LoaderContext context = null)
         {
-            if (context == null) context = new BasicEffectsLoaderContext(device);
+            if (context == null) context = new Content.BasicEffectsLoaderContext(device);
 
             context.Reset();
 
@@ -57,7 +66,7 @@ namespace SharpGLTF.Runtime
                 .ToArray();
 
             _Scenes = scenes;
-            _Bounds = scenes
+            _ScenesBounds = scenes
                 .Select(item => CalculateBounds(item))
                 .ToArray();
 
@@ -78,9 +87,11 @@ namespace SharpGLTF.Runtime
         /// </summary>
         private readonly Effect[] _Effects;
 
-
+        /// <summary>
+        /// Scenes available in this template
+        /// </summary>
         private readonly SceneTemplate[] _Scenes;
-        private readonly BoundingSphere[] _Bounds;
+        private readonly BoundingSphere[] _ScenesBounds;
 
         private readonly int _DefaultSceneIndex;
 
@@ -102,7 +113,7 @@ namespace SharpGLTF.Runtime
 
         public int IndexOfScene(string sceneName) => Array.FindIndex(_Scenes, item => item.Name == sceneName);
 
-        public BoundingSphere GetBounds(int sceneIndex) => _Bounds[sceneIndex];
+        public BoundingSphere GetBounds(int sceneIndex) => _ScenesBounds[sceneIndex];
 
         public IEnumerable<string> GetAnimationTracks(int sceneIndex) => _Scenes[sceneIndex].AnimationTracks;
 
