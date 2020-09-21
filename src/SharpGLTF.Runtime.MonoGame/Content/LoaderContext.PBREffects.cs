@@ -74,16 +74,15 @@ namespace SharpGLTF.Runtime.Content
 
         #region meshes creation
 
-        protected override void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect, BlendState blending, bool doubleSided)
+        protected override Type GetPreferredVertexType(IMeshPrimitiveDecoder srcPrimitive, Effect effect)
         {
-            if (srcPrimitive.IsSkinned) WriteMeshPrimitive<VertexSkinned>(effect, blending, doubleSided, srcPrimitive);
-            else WriteMeshPrimitive<VertexRigid>(effect, blending, doubleSided, srcPrimitive);
+            return srcPrimitive.JointsWeightsCount > 0 ? typeof(VertexSkinned) : typeof(VertexRigid);
         }
 
         #endregion
 
         #region gltf helpers
-        
+
         private void TransferChannel(EffectTexture2D.Scalar1 dst, GLTFMATERIAL src, string name, float defval)
         {            
             dst.Texture = UseTexture(src, name);

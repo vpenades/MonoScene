@@ -9,7 +9,7 @@
   <ItemGroup>
       <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1375-develop" />
       <PackageReference Include="PropertyTools.Wpf" Version="3.1.0-alpha0041" />
-      <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0019" />
+      <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-Preview-20200921-1654" />
   </ItemGroup>
 
   <ItemGroup>

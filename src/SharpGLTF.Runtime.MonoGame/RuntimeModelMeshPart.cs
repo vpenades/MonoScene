@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 using Microsoft.Xna.Framework.Graphics;
 
-namespace SharpGLTF.Runtime.Content
+namespace SharpGLTF.Runtime
 {
     /// <summary>
     /// Replaces <see cref="ModelMeshPart"/>.
@@ -79,12 +76,6 @@ namespace SharpGLTF.Runtime.Content
         {
             get => _BackRasterizer;
             set => _BackRasterizer = value;
-        }
-
-        public Microsoft.Xna.Framework.BoundingSphere BoundingSphere
-        {
-            get => _Bounds;
-            internal set => _Bounds = value;
         }
 
         #endregion

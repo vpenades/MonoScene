@@ -108,10 +108,9 @@ namespace SharpGLTF.Runtime.Content
 
         #region meshes creation
 
-        protected override void WriteMeshPrimitive(MeshPrimitiveReader srcPrimitive, Effect effect, BlendState blending, bool doubleSided)
+        protected override Type GetPreferredVertexType(IMeshPrimitiveDecoder srcPrimitive, Effect effect)
         {
-            if (srcPrimitive.IsSkinned) WriteMeshPrimitive<VertexSkinned>(effect, blending, doubleSided, srcPrimitive);
-            else WriteMeshPrimitive<VertexPositionNormalTexture>(effect, blending, doubleSided, srcPrimitive);
+            return srcPrimitive.JointsWeightsCount > 0 ? typeof(VertexSkinned) : typeof(VertexPositionNormalTexture);
         }
 
         #endregion

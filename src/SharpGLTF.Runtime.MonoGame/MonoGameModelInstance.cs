@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Buffers;
 using System.Collections.Generic;
-using System.Linq;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -62,7 +60,37 @@ namespace SharpGLTF.Runtime
         #endregion
 
         #region API
-        
+
+        public int IndexOfNode(string nodeName)
+        {
+            for(int i=0; i < _Controller.LogicalNodes.Count; ++i)
+            {
+                if (_Controller.LogicalNodes[i].Name == nodeName) return i;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Gets the matrix of a given node/bone in Model Space.
+        /// </summary>
+        /// <param name="nodeIndex">The index of the node/bone.</param>
+        /// <returns>A matrix in model space.</returns>
+        public Matrix GetModelMatrix(int nodeIndex)
+        {
+            return _Controller.LogicalNodes[nodeIndex].WorldMatrix.ToXna();
+        }
+
+        /// <summary>
+        /// Gets the matrix of a given node/bone in World Space.
+        /// </summary>
+        /// <param name="nodeIndex">The index of the node/bone.</param>
+        /// <returns>A matrix in world space.</returns>
+        public Matrix GetWorldMatrix(int nodeIndex)
+        {
+            return _Controller.LogicalNodes[nodeIndex].WorldMatrix.ToXna() * _WorldMatrix;
+        }
+
         /// <summary>
         /// Draws this <see cref="MonoGameModelInstance"/> into the current <see cref="GraphicsDevice"/>.
         /// </summary>

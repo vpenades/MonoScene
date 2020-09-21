@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Xna.Framework.Graphics;
 
-namespace SharpGLTF.Runtime.Content
+namespace SharpGLTF.Runtime
 {
     /// <summary>
     /// Replaces <see cref="ModelMesh"/>
@@ -29,14 +29,11 @@ namespace SharpGLTF.Runtime.Content
         private readonly List<RuntimeModelMeshPart> _Primitives = new List<RuntimeModelMeshPart>();
         private IReadOnlyList<Effect> _Effects;
 
-
         private IReadOnlyList<RuntimeModelMeshPart> _OpaquePrimitives;
         private IReadOnlyList<Effect> _OpaqueEffects;
 
         private IReadOnlyList<RuntimeModelMeshPart> _TranslucidPrimitives;
-        private IReadOnlyList<Effect> _TranslucidEffects;
-
-        private Microsoft.Xna.Framework.BoundingSphere? _Sphere;
+        private IReadOnlyList<Effect> _TranslucidEffects;        
 
         #endregion
 
@@ -76,25 +73,7 @@ namespace SharpGLTF.Runtime.Content
 
                 return _TranslucidEffects;
             }
-        }
-
-        public Microsoft.Xna.Framework.BoundingSphere BoundingSphere
-        {
-            set => _Sphere = value;
-
-            get
-            {
-                if (_Sphere.HasValue) return _Sphere.Value;
-
-                foreach (var part in _Primitives)
-                {
-                    if (_Sphere.HasValue) _Sphere = Microsoft.Xna.Framework.BoundingSphere.CreateMerged(_Sphere.Value, part.BoundingSphere);
-                    else _Sphere = part.BoundingSphere;
-                }
-
-                return _Sphere.Value;
-            }
-        }
+        }        
 
         #endregion
 
@@ -109,9 +88,7 @@ namespace SharpGLTF.Runtime.Content
             _OpaquePrimitives = null;
             _TranslucidPrimitives = null;
 
-            InvalidateEffectCollection();
-
-            _Sphere = null;
+            InvalidateEffectCollection();            
 
             return primitive;
         }
@@ -139,8 +116,6 @@ namespace SharpGLTF.Runtime.Content
         public void DrawOpaque()
         {
             _GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
-
 
             foreach (var part in GetOpaqueParts()) part.Draw(_GraphicsDevice);
         }

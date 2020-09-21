@@ -18,8 +18,7 @@ namespace MonoGameViewer
         #region data
 
         SharpGLTF.Schema2.ModelRoot _Model;
-        SharpGLTF.Runtime.MonoGameDeviceContent<SharpGLTF.Runtime.MonoGameModelTemplate> _ModelTemplate;
-        BoundingSphere _ModelBounds;
+        SharpGLTF.Runtime.MonoGameDeviceContent<SharpGLTF.Runtime.MonoGameModelTemplate> _ModelTemplate;        
 
         private bool _UseClassicEffects;
 
@@ -68,16 +67,8 @@ namespace MonoGameViewer
             {
                 model = SharpGLTF.Schema2.ModelRoot.Load(filePath, ValidationMode.TryFix);
             }
-
-            // evaluate a single frame of the model to determine the actual bounds, even for a skinned object.
-            var points = SharpGLTF.Schema2.Toolkit.EvaluateTriangles(model.DefaultScene)
-                .SelectMany(item => new[] { item.A.GetGeometry().GetPosition(), item.B.GetGeometry().GetPosition(), item.C.GetGeometry().GetPosition() })
-                .Distinct()
-                .Select(item => new Vector3(item.X, item.Y, item.Z))
-                .ToList();
-
-            _Model = model;
-            _ModelBounds = BoundingSphere.CreateFromPoints(points);
+            
+            _Model = model;            
 
             _ProcessModel();
         }
@@ -122,7 +113,7 @@ namespace MonoGameViewer
 
             _ModelInstance.Controller.SetAnimationFrame(0, (float)gameTime.TotalGameTime.TotalSeconds);
 
-            var bounds = _ModelBounds;
+            var bounds = _ModelInstance.Template.Bounds;
 
             var lookAt = bounds.Center;
             var camPos = bounds.Center + new Vector3(0, 0, bounds.Radius * 3);
