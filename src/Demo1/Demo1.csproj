@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -9,16 +9,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Content\WaterBottle.glb" />
+  <ItemGroup>    
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\WaterBottle.glb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+  </ItemGroup>  
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
     <EmbeddedResource Include="Icon.bmp" />
@@ -33,4 +27,9 @@
   <ItemGroup>
     <ProjectReference Include="..\MonoGame.Framework.Graphics.GLTF\MonoGame.Framework.Pipeline.GLTF.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Content\WaterBottle.glb" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  
 </Project>
