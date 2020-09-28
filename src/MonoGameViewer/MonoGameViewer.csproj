@@ -13,8 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonoGame.Framework.Graphics.PBR\MonoGame.Framework.Graphics.PBR.csproj" />
-    <ProjectReference Include="..\SharpGLTF.Runtime.MonoGame\SharpGLTF.Runtime.MonoGame.csproj" />
+    <ProjectReference Include="..\MonoGame.Framework.Graphics.GLTF\MonoGame.Framework.Pipeline.GLTF.csproj" />
   </ItemGroup>
 
 

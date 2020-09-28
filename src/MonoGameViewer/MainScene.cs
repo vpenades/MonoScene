@@ -18,11 +18,11 @@ namespace MonoGameViewer
         #region data
 
         SharpGLTF.Schema2.ModelRoot _Model;
-        SharpGLTF.Runtime.MonoGameDeviceContent<SharpGLTF.Runtime.MonoGameModelTemplate> _ModelTemplate;        
+        ModelTemplate _ModelTemplate;
 
         private bool _UseClassicEffects;
 
-        private SharpGLTF.Runtime.MonoGameModelInstance _ModelInstance;
+        private ModelLayerInstance _ModelInstance;
 
         private Quaternion _Rotation = Quaternion.Identity;
 
@@ -78,11 +78,7 @@ namespace MonoGameViewer
             if (_Model == null) return;
             if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
 
-            var loader = _UseClassicEffects
-                ? new SharpGLTF.Runtime.Content.BasicEffectsLoaderContext(this.GraphicsDevice)
-                : SharpGLTF.Runtime.Content.LoaderContext.CreateLoaderContext(this.GraphicsDevice);
-
-            _ModelTemplate = loader.CreateDeviceModel(_Model);
+            _ModelTemplate = Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatGLTF.ReadModel(_Model, GraphicsDevice, _UseClassicEffects);
             _ModelInstance = null;
         }
 
@@ -102,7 +98,7 @@ namespace MonoGameViewer
 
         public override void Update(GameTime gameTime)
         {
-            if (_ModelInstance == null && _ModelTemplate != null) _ModelInstance = _ModelTemplate.Content.CreateInstance();
+            if (_ModelInstance == null && _ModelTemplate != null) _ModelInstance = _ModelTemplate.DefaultLayer.CreateInstance();
         }
 
         public override void Draw(GameTime gameTime)
@@ -111,9 +107,9 @@ namespace MonoGameViewer
 
             if (_ModelInstance == null) return;
 
-            _ModelInstance.Controller.SetAnimationFrame(0, (float)gameTime.TotalGameTime.TotalSeconds);
+            _ModelInstance.Armature.SetAnimationFrame(0, (float)gameTime.TotalGameTime.TotalSeconds);
 
-            var bounds = _ModelInstance.Template.Bounds;
+            var bounds = _ModelInstance.ModelBounds;
 
             var lookAt = bounds.Center;
             var camPos = bounds.Center + new Vector3(0, 0, bounds.Radius * 3);
@@ -133,7 +129,7 @@ namespace MonoGameViewer
             {
                 _ModelInstance.WorldMatrix = Matrix.CreateFromQuaternion(_Rotation);
 
-                var ctx = new SharpGLTF.Runtime.MonoGameDrawingContext(this.GraphicsDevice);
+                var ctx = new ModelDrawingContext(this.GraphicsDevice);
                 ctx.SetCamera(camera);                
                 ctx.DrawModelInstance(env, _ModelInstance);
             }

@@ -109,6 +109,16 @@ namespace Microsoft.Xna.Framework.Graphics
             return new Vector2(A / (float)samples, B / (float)samples);
         }
 
+        /// <summary>
+        /// Generates the pixels of the BRDF LUT texture.
+        /// </summary>
+        /// <typeparam name="TPixel">The pixel format</typeparam>
+        /// <param name="size">The width and height size of the square texture.</param>
+        /// <param name="pixelConverter">a converter from Vector2 to your final pixel format</param>
+        /// <returns>A size x size array with the final pixels</returns>
+        /// <remarks>
+        /// The end result must look exactly as the image of <see href="https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_slides.pdf"/> on page 13.
+        /// </remarks>
         public static TPixel[] Generate<TPixel>(int size, Func<Vector2,TPixel> pixelConverter)
         {
             uint samples = 1024;

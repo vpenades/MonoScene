@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.Effects;
 
 using GLTFMATERIAL = SharpGLTF.Schema2.Material;
 
@@ -61,11 +60,7 @@ namespace SharpGLTF.Runtime.Content
             TransferChannel(effect.NormalMap, srcMaterial, "Normal", 1);
             TransferChannel(effect.EmissiveMap, srcMaterial, "Emissive", Vector3.Zero);
             TransferChannel(effect.OcclusionMap, srcMaterial, "Occlusion", 0);            
-            if (effect.OcclusionMap.Texture == null) effect.OcclusionMap.Scale = 0;
-
-            // effect.AlphaMode = srcMaterial.Alpha;
-            // effect.AlphaCutoff = srcMaterial.AlphaCutoff;
-            // effect.DoubleSided = srcMaterial.DoubleSided;
+            if (effect.OcclusionMap.Texture == null) effect.OcclusionMap.Scale = 0;            
 
             return effect;
         }

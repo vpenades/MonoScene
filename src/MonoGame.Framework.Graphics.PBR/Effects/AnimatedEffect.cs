@@ -38,8 +38,8 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region properties - material
 
-        public bool AlphaBlend { get; set; }
-        public float AlphaCutoff { get; set; }
+        public bool AlphaBlend { get; set; } = false;
+        public float AlphaCutoff { get; set; } = -1;
 
         #endregion
 

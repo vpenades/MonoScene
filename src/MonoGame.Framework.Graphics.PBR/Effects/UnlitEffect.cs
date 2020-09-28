@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Microsoft.Xna.Framework.Graphics.Effects
+namespace Microsoft.Xna.Framework.Graphics
 {
     public class UnlitEffect : AnimatedEffect , IEffectFog
     {
