@@ -18,7 +18,8 @@ namespace MonoGameViewer
         #region data
 
         SharpGLTF.Schema2.ModelRoot _Model;
-        ModelTemplate _ModelTemplate;
+        ModelTemplateContent _ModelTemplate;
+        BoundingSphere _ModelSphere;
 
         private bool _UseClassicEffects;
 
@@ -57,7 +58,7 @@ namespace MonoGameViewer
 
         public void LoadModel(string filePath)
         {
-            SharpGLTF.Schema2.ModelRoot model = null;
+            SharpGLTF.Schema2.ModelRoot model;
 
             if (filePath.ToLower().EndsWith(".zip"))
             {
@@ -79,6 +80,7 @@ namespace MonoGameViewer
             if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
 
             _ModelTemplate = Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatGLTF.ReadModel(_Model, GraphicsDevice, _UseClassicEffects);
+            _ModelSphere = _ModelTemplate.DefaultLayer.ModelBounds;
             _ModelInstance = null;
         }
 
@@ -109,10 +111,10 @@ namespace MonoGameViewer
 
             _ModelInstance.Armature.SetAnimationFrame(0, (float)gameTime.TotalGameTime.TotalSeconds);
 
-            var bounds = _ModelInstance.ModelBounds;
+            
 
-            var lookAt = bounds.Center;
-            var camPos = bounds.Center + new Vector3(0, 0, bounds.Radius * 3);
+            var lookAt = _ModelSphere.Center;
+            var camPos = _ModelSphere.Center + new Vector3(0, 0, _ModelSphere.Radius * 3);
 
             var camera = Matrix.CreateWorld(camPos, lookAt - camPos, Vector3.UnitY);
 

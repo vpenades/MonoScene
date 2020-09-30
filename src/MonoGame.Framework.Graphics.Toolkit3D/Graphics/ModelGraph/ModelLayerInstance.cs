@@ -18,7 +18,7 @@ namespace Microsoft.Xna.Framework.Graphics
         internal ModelLayerInstance(ModelLayerTemplate parent)
         {
             _Parent = parent;
-
+            
             _Armature = new ArmatureInstance(_Parent._Armature);
             _Armature.SetPoseTransforms();
 
@@ -38,15 +38,15 @@ namespace Microsoft.Xna.Framework.Graphics
         #region data        
 
         private readonly ModelLayerTemplate _Parent;
+
+        private IMeshCollection _Meshes => _Parent.Meshes;
+
         private readonly ArmatureInstance _Armature;
 
         private readonly IDrawableTemplate[] _DrawableTemplates;
         private readonly IMeshTransform[] _DrawableTransforms;
 
-        private Matrix _WorldMatrix;
-
-        // pre-allocated bone arrays to update the IEffectBones
-        private static readonly List<Matrix[]> _BoneArrays = new List<Matrix[]>();
+        private Matrix _WorldMatrix;        
 
         #endregion
 
@@ -106,7 +106,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// </summary>
         /// <param name="nodeIndex">The index of the node/bone.</param>
         /// <returns>A matrix in world space.</returns>
-        public Matrix GetWorldMatrix(int nodeIndex) { return _Armature.LogicalNodes[nodeIndex].ModelMatrix * _WorldMatrix; }
+        public Matrix GetWorldMatrix(int nodeIndex) { return GetModelMatrix(nodeIndex) * _WorldMatrix; }
 
         #endregion
 
@@ -134,7 +134,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// </summary>
         /// <param name="projection">The projection matrix.</param>
         /// <param name="view">The view matrix.</param>        
-        public void Draw(Matrix projection, Matrix view)
+        public void DrawAllParts(Matrix projection, Matrix view)
         {
             foreach (var e in this.Template.SharedEffects)
             {
@@ -152,7 +152,7 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             foreach (var d in DrawableInstances)
             {
-                var mesh = _Parent.Meshes[d.Template.MeshIndex];
+                var mesh = _Meshes[d.Template.MeshIndex];
                 if (mesh.TranslucidEffects.Count == 0) continue;
 
                 SetEffectsTransforms(mesh.TranslucidEffects, _WorldMatrix, d.Transform);
@@ -165,7 +165,7 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             foreach (var d in DrawableInstances)
             {
-                var mesh = _Parent.Meshes[d.Template.MeshIndex];
+                var mesh = _Meshes[d.Template.MeshIndex];
                 if (mesh.OpaqueEffects.Count == 0) continue;
 
                 SetEffectsTransforms(mesh.OpaqueEffects, _WorldMatrix, d.Transform);
@@ -213,6 +213,13 @@ namespace Microsoft.Xna.Framework.Graphics
                 }
             }
         }
+
+        #endregion
+
+        #region effect utils
+
+        // pre-allocated bone arrays to update the IEffectBones
+        private static readonly List<Matrix[]> _BoneArrays = new List<Matrix[]>();
 
         // Since SkinnedEffect has such a flexible and GC friendly API,
         // we have to do this to have a reusable bone matrix pool.

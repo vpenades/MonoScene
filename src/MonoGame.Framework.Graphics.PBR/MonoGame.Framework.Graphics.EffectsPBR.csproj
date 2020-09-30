@@ -11,6 +11,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Effects\Shaders\Resources\*.mgfxo" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="PBREnvironment.cs" />
   </ItemGroup>  
 
   <ItemGroup>

@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonoGame.Framework.Graphics.PBR\MonoGame.Framework.Graphics.PBR.csproj" />
-    <ProjectReference Include="..\MonoGame.Framework.Graphics.Toolkit3D\MonoGame.Framework.Graphics.Toolkit3D.csproj" />
+    <ProjectReference Include="..\MonoGame.Framework.Graphics.PBR\MonoGame.Framework.Graphics.EffectsPBR.csproj" />
+    <ProjectReference Include="..\MonoGame.Framework.Graphics.Toolkit3D\MonoGame.Framework.Graphics.Model3D.csproj" />
   </ItemGroup>
 
   <ItemGroup>

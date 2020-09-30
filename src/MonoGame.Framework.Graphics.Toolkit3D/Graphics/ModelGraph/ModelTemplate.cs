@@ -7,15 +7,12 @@ using MODELMESH = Microsoft.Xna.Framework.Graphics.RuntimeModelMesh;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
-    public class ModelTemplate : IDisposable
+    public class ModelTemplateContent : ModelTemplate, IDisposable
     {
         #region lifecycle
 
-        public ModelTemplate(MeshCollection meshes, ModelLayerTemplate[] layers, int defaultLayer)
-        {            
-            _Layers = layers;
-            _DefaultLayerIndex = defaultLayer;
-
+        public ModelTemplateContent(MeshCollection meshes, ModelLayerTemplate[] layers, int defaultLayer) :base(meshes,layers,defaultLayer)
+        {
             SharedMeshes = meshes;
         }
 
@@ -23,7 +20,6 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             _SharedMeshes?.Dispose();
             _SharedMeshes = null;
-            _Layers = null;
         }
 
         #endregion
@@ -33,12 +29,37 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <summary>
         /// Meshes shared by all the <see cref="_Layers"/>.
         /// </summary>
-        internal MeshCollection _SharedMeshes;        
+        private MeshCollection _SharedMeshes;
+
+        #endregion
+    }
+
+
+    public class ModelTemplate
+    {
+        #region lifecycle
+
+        public ModelTemplate(IMeshCollection meshes, ModelLayerTemplate[] layers, int defaultLayer)
+        {            
+            _Layers = layers;
+            _DefaultLayerIndex = defaultLayer;
+
+            SharedMeshes = meshes;
+        }        
+
+        #endregion
+
+        #region data
+
+        /// <summary>
+        /// Meshes shared by all the <see cref="_Layers"/>.
+        /// </summary>
+        private IMeshCollection _SharedMeshes;        
 
         /// <summary>
         /// Layers available in this template
         /// </summary>
-        internal ModelLayerTemplate[] _Layers;        
+        private ModelLayerTemplate[] _Layers;        
 
         /// <summary>
         /// Default layer index
@@ -53,7 +74,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public ModelLayerTemplate DefaultLayer => _Layers[_DefaultLayerIndex];
 
-        public MeshCollection SharedMeshes
+        public IMeshCollection SharedMeshes
         {
             get => _SharedMeshes;
             set

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 using Microsoft.Xna.Framework.Graphics;
 
@@ -67,15 +68,17 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
                 foreach (var srcPart in srcParts)
                 {
                     var vb = vbuffers[srcPart.PrimitiveBuffers];
-                    var ib = ibuffers[srcPart.PrimitiveBuffers];
+                    var ib = ibuffers[srcPart.PrimitiveBuffers];                    
+
+                    var dstGeo = new MeshGeometry();
+                    dstGeo.SetCullingStates(srcPart.Material.DoubleSided);                    
+                    dstGeo.SetVertexBuffer(vb, srcPart.VertexOffset, srcPart.VertexCount);
+                    dstGeo.SetIndexBuffer(ib, srcPart.TriangleOffset * 3, srcPart.TriangleCount);
 
                     var dstPart = dstMesh.CreateMeshPart();
                     dstPart.Effect = srcPart.Material.PrimitiveEffect;
                     dstPart.Blending = srcPart.Material.PrimitiveBlending;
-                    dstPart.FrontRasterizer = srcPart.Material.DoubleSided ? RasterizerState.CullNone : RasterizerState.CullCounterClockwise;
-                    dstPart.BackRasterizer = srcPart.Material.DoubleSided ? RasterizerState.CullNone : RasterizerState.CullClockwise;                    
-                    dstPart.SetVertexBuffer(vb, srcPart.VertexOffset, srcPart.VertexCount);
-                    dstPart.SetIndexBuffer(ib, srcPart.TriangleOffset * 3, srcPart.TriangleCount);
+                    dstPart.Geometry = dstGeo;
                 }
 
                 return dstMesh;

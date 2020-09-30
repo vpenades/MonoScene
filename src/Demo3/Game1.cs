@@ -45,11 +45,11 @@ namespace Demo3
 
         // these are the actual hardware resources that represent every model's geometry.        
 
-        ModelTemplate _AvodadoTemplate;
-        ModelTemplate _BrainStemTemplate;
-        ModelTemplate _CesiumManTemplate;
-        ModelTemplate _HauntedHouseTemplate;
-        ModelTemplate _SharkTemplate;
+        ModelTemplateContent _AvodadoTemplate;
+        ModelTemplateContent _BrainStemTemplate;
+        ModelTemplateContent _CesiumManTemplate;
+        ModelTemplateContent _HauntedHouseTemplate;
+        ModelTemplateContent _SharkTemplate;
 
         #endregion
 
@@ -57,7 +57,7 @@ namespace Demo3
 
         protected override void LoadContent()
         {
-            ModelTemplate _load(string filePath)
+            ModelTemplateContent _load(string filePath)
             {
                 return Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatGLTF.LoadModel(filePath, this.GraphicsDevice);
             }            

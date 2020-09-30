@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
+    public interface IMeshCollection : IReadOnlyList<RuntimeModelMesh>
+    {
+        Effect[] GetSharedEffects(IEnumerable<int> meshIndices);
+    }
+
     [System.Diagnostics.DebuggerDisplay("{Count} Meshes {SharedEffects.Count} Shared effects.")]
-    public class MeshCollection : IDisposable
+    public class MeshCollection : IDisposable, IMeshCollection
     {
         #region lifecycle
 
@@ -29,7 +35,7 @@ namespace Microsoft.Xna.Framework.Graphics
             }
 
             _Disposables = null;            
-        }
+        }        
 
         #endregion
 
@@ -48,8 +54,25 @@ namespace Microsoft.Xna.Framework.Graphics
         public int Count => _Meshes.Length;
 
         public RuntimeModelMesh this[int index] => _Meshes[index];
+        
+        #endregion
 
-        public IReadOnlyCollection<Effect> SharedEffects => _SharedEffects;
+        #region API
+
+        public IEnumerator<RuntimeModelMesh> GetEnumerator() { return (IEnumerator<RuntimeModelMesh>)_Meshes.GetEnumerator(); }
+
+        IEnumerator IEnumerable.GetEnumerator() { return _Meshes.GetEnumerator(); }
+
+        public Effect[] GetSharedEffects(IEnumerable<int> meshIndices)
+        {
+            // gather all effects used by the meshes indexed by meshIndices.
+
+            return meshIndices
+                .Select(item => _Meshes[item])
+                .SelectMany(item => item.OpaqueEffects.Concat(item.TranslucidEffects))
+                .Distinct()
+                .ToArray();
+        }
 
         #endregion
     }

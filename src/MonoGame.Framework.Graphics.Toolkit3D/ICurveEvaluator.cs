@@ -22,6 +22,9 @@ namespace Microsoft.Xna.Framework
     /// 3- In general, curves can be implemented in so many ways that demand an abstract interface.
     /// After all, animatable objects only need to evaluate the curve at a given time and don't care
     /// about the internal logic of the curve.
+    /// 
+    /// For example: an extreme case of curve implementation is the case of Collada, which has curves controlled
+    /// by actual math formulas. As far as I know, it reached the collada schema, but I don't think nobody ever used it...
     /// </remarks>
     public interface ICurveEvaluator<T>
     {        

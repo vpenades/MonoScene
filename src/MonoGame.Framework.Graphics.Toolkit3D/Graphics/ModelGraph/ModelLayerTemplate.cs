@@ -32,7 +32,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         internal readonly ArmatureTemplate _Armature;
         
-        private MeshCollection _Meshes;        
+        private IMeshCollection _Meshes;        
 
         // this is the collection of "what needs to be rendered", and it binds meshes with armatures
         internal readonly IDrawableTemplate[] _DrawableReferences;
@@ -47,7 +47,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public BoundingSphere ModelBounds { get; set; }
 
-        public MeshCollection Meshes
+        public IMeshCollection Meshes
         {
             get => _Meshes;
             set
@@ -63,12 +63,8 @@ namespace Microsoft.Xna.Framework.Graphics
             {
                 if (_SharedEffects != null) return _SharedEffects;
 
-                // gather all effects used by all the meshes used by all the drawable calls in this layer.
-                _SharedEffects = _DrawableReferences                    
-                    .Select(item => _Meshes[item.MeshIndex])
-                    .SelectMany(item => item.OpaqueEffects.Concat(item.TranslucidEffects))
-                    .Distinct()
-                    .ToArray();
+                var meshIndices = _DrawableReferences.Select(item => item.MeshIndex);
+                _SharedEffects = _Meshes.GetSharedEffects(meshIndices);
 
                 return _SharedEffects;
             }

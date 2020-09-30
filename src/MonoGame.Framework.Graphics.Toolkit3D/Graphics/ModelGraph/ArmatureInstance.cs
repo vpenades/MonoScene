@@ -25,10 +25,12 @@ namespace Microsoft.Xna.Framework.Graphics
             _Template = armature;
             _NodeInstances = new NodeInstance[armature.Count];
 
+            // no need to check arguments since they're supposedly pre-checked by ArmatureTemplate's constructor.
+
             for (var i = 0; i < _NodeInstances.Length; ++i)
             {
                 var n = armature[i];
-                var pidx = armature[i].ParentIndex;
+                var pidx = n.ParentIndex;
                 var p = pidx < 0 ? null : _NodeInstances[pidx];
                 _NodeInstances[i] = new NodeInstance(n, p);
             }            

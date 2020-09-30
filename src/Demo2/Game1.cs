@@ -39,7 +39,7 @@ namespace Demo2
 
         private PBREnvironment _LightsAndFog = PBREnvironment.CreateDefault();
 
-        private ModelTemplate _ModelTemplate;
+        private ModelTemplateContent _ModelTemplate;
 
         #endregion
 

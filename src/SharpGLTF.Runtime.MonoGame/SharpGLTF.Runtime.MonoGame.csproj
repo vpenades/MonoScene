@@ -13,7 +13,8 @@
   </ItemGroup>  
 
   <ItemGroup>
-    <ProjectReference Include="..\MonoGame.Framework.Graphics.PBR\MonoGame.Framework.Graphics.PBR.csproj" />
+    <ProjectReference Include="..\MonoGame.Framework.Graphics.PBR\MonoGame.Framework.Graphics.EffectsPBR.csproj" />
+    <ProjectReference Include="..\MonoGame.Framework.Graphics.Scene3D\MonoGame.Framework.Graphics.Scene3D.csproj" />
   </ItemGroup>  
 
 </Project>
