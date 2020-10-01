@@ -25,7 +25,7 @@ namespace Demo3
         {
             // TODO: Add your initialization logic here
 
-            this.Window.Title = "SharpGLTF - MonoGame Scene";
+            this.Window.Title = "SharpGLTF - MonoGame Demo 3";
             this.Window.AllowUserResizing = true;
             this.Window.AllowAltF4 = true;
 

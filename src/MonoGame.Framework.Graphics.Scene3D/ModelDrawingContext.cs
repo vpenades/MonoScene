@@ -7,7 +7,7 @@ namespace Microsoft.Xna.Framework.Graphics
     /// <summary>
     /// Helper class for rendering <see cref="ModelLayerInstance"/> models.
     /// </summary>
-    public struct ModelDrawingContext
+    public class ModelDrawingContext
     {
         #region lifecycle
 
@@ -17,21 +17,19 @@ namespace Microsoft.Xna.Framework.Graphics
 
             _Device.DepthStencilState = DepthStencilState.Default;            
 
-            float fieldOfView = MathHelper.PiOver4;
-            float nearClipPlane = 1f;
-                    
-            _Projection = CreatePerspectiveFieldOfView(fieldOfView, graphics.Viewport.AspectRatio, nearClipPlane, float.PositiveInfinity);
-
             _View = Matrix.Invert(Matrix.Identity);
             _DistanceComparer = ModelLayerInstance.GetDistanceComparer(-_View.Translation);
         }
-
+        
         #endregion
 
         #region data
 
         private GraphicsDevice _Device;
-        private Matrix _Projection;
+
+        private float _FieldOfView = MathHelper.PiOver4;
+        private float _NearPlane = 1f;
+        
         private Matrix _View;
         private IComparer<ModelLayerInstance> _DistanceComparer;
 
@@ -40,7 +38,29 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #endregion
 
+        #region properties
+
+        public float FieldOfView
+        {
+            get => _FieldOfView;
+            set => _FieldOfView = value;
+        }
+
+        public float NearPlane
+        {
+            get => _NearPlane;
+            set => _NearPlane = value;
+        }
+
+
+        #endregion
+
         #region API
+
+        public Matrix GetProjectionMatrix()
+        {
+            return SceneUtils.CreatePerspectiveFieldOfView(_FieldOfView, _Device.Viewport.AspectRatio, _NearPlane);
+        }
 
         public void SetCamera(Matrix cameraMatrix)
         {
@@ -49,16 +69,15 @@ namespace Microsoft.Xna.Framework.Graphics
             _DistanceComparer = ModelLayerInstance.GetDistanceComparer(-_View.Translation);
         }
 
-        public void SetProjection(Matrix projectionMatrix)
-        {
-            _Projection = projectionMatrix;
-        }
+        
 
         public void DrawMesh(PBREnvironment environment, RuntimeModelMesh mesh, Matrix worldMatrix)
         {
+            var proj = GetProjectionMatrix();
+
             foreach (var e in mesh.OpaqueEffects)
             {               
-                ModelLayerInstance.UpdateProjViewTransforms(e, _Projection, _View);
+                ModelLayerInstance.UpdateProjViewTransforms(e, proj, _View);
                 ModelLayerInstance.UpdateWorldTransforms(e, worldMatrix);
                 environment.ApplyTo(e);
             }
@@ -67,7 +86,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
             foreach (var e in mesh.TranslucidEffects)
             {                
-                ModelLayerInstance.UpdateProjViewTransforms(e, _Projection, _View);
+                ModelLayerInstance.UpdateProjViewTransforms(e, proj, _View);
                 ModelLayerInstance.UpdateWorldTransforms(e, worldMatrix);
                 environment.ApplyTo(e);
             }
@@ -86,13 +105,15 @@ namespace Microsoft.Xna.Framework.Graphics
         /// </remarks>
         public void DrawModelInstance(PBREnvironment environment, ModelLayerInstance modelInstance)
         {
+            var proj = GetProjectionMatrix();
+
             foreach (var e in modelInstance.Template.SharedEffects)
             {
                 environment.ApplyTo(e);
-                ModelLayerInstance.UpdateProjViewTransforms(e, _Projection, _View);
+                ModelLayerInstance.UpdateProjViewTransforms(e, proj, _View);
             }
 
-            modelInstance.DrawAllParts(_Projection, _View);
+            modelInstance.DrawAllParts(proj, _View);
         }
 
         /// <summary>
@@ -113,6 +134,8 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             // todo: fustrum culling goes here
 
+            var proj = GetProjectionMatrix();
+
             _SceneInstances.Clear();
             _SceneInstances.AddRange(modelInstances);
             _SceneInstances.Sort(_DistanceComparer);
@@ -125,7 +148,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
             foreach (var e in _SceneEffects)
             {
-                ModelLayerInstance.UpdateProjViewTransforms(e, _Projection, _View);
+                ModelLayerInstance.UpdateProjViewTransforms(e, proj, _View);
                 // todo: set env.Exposure
                 // todo: set env.AmbientLight
             }
@@ -151,50 +174,6 @@ namespace Microsoft.Xna.Framework.Graphics
             }
         }
 
-        #endregion
-
-        #region helpers
-
-        public static Matrix CreatePerspectiveFieldOfView(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)
-        {
-            CreatePerspectiveFieldOfView(fieldOfView, aspectRatio, nearPlaneDistance, farPlaneDistance, out Matrix m);
-            return m;
-        }
-
-        // Microsoft recently updated this method in System.Numerics.Vectors to support farPlaneDistance infinity
-        // https://github.com/dotnet/runtime/blob/e64bc548c609455652fcd4107f1f4a2ac3084ff3/src/libraries/System.Private.CoreLib/src/System/Numerics/Matrix4x4.cs#L860
-        public static void CreatePerspectiveFieldOfView(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance, out Matrix result)
-        {
-            if (fieldOfView <= 0.0f || fieldOfView >= MathHelper.Pi)
-                throw new ArgumentOutOfRangeException(nameof(fieldOfView));
-
-            if (nearPlaneDistance <= 0.0f)
-                throw new ArgumentOutOfRangeException(nameof(nearPlaneDistance));
-
-            if (farPlaneDistance <= 0.0f)
-                throw new ArgumentOutOfRangeException(nameof(farPlaneDistance));
-
-            if (nearPlaneDistance >= farPlaneDistance)
-                throw new ArgumentOutOfRangeException(nameof(nearPlaneDistance));
-
-            float yScale = 1.0f / (float)Math.Tan(fieldOfView * 0.5f);
-            float xScale = yScale / aspectRatio;            
-
-            result.M11 = xScale;
-            result.M12 = result.M13 = result.M14 = 0.0f;
-
-            result.M22 = yScale;
-            result.M21 = result.M23 = result.M24 = 0.0f;
-
-            result.M31 = result.M32 = 0.0f;
-            float negFarRange = float.IsPositiveInfinity(farPlaneDistance) ? -1.0f : farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
-            result.M33 = negFarRange;
-            result.M34 = -1.0f;
-
-            result.M41 = result.M42 = result.M44 = 0.0f;
-            result.M43 = nearPlaneDistance * negFarRange;            
-        }
-
-        #endregion
+        #endregion        
     }
 }

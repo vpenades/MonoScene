@@ -137,22 +137,22 @@ namespace MonoGameScene
             _HauntedHouse.WorldMatrix = Matrix.CreateScale(20) * Matrix.CreateRotationY(1);
 
             _BrainStem.WorldMatrix = Matrix.CreateTranslation(0, 0.5f, 8);
-            _BrainStem.Controller.SetAnimationFrame(0, 0.7f* animTime);
+            _BrainStem.Controller.Armature.SetAnimationFrame(0, 0.7f* animTime);
 
             _CesiumMan1.WorldMatrix = Matrix.CreateTranslation(-3, 0, 5);
-            _CesiumMan1.Controller.SetAnimationFrame(0, 0.3f);
+            _CesiumMan1.Controller.Armature.SetAnimationFrame(0, 0.3f);
 
             _CesiumMan2.WorldMatrix = Matrix.CreateTranslation(-2, 0, 5);
-            _CesiumMan2.Controller.SetAnimationFrame(0, 0.5f * animTime);
+            _CesiumMan2.Controller.Armature.SetAnimationFrame(0, 0.5f * animTime);
 
             _CesiumMan3.WorldMatrix = Matrix.CreateTranslation(2, 0, 5);
-            _CesiumMan3.Controller.SetAnimationFrame(0, 1.0f * animTime);
+            _CesiumMan3.Controller.Armature.SetAnimationFrame(0, 1.0f * animTime);
 
             _CesiumMan4.WorldMatrix = Matrix.CreateTranslation(3, 0, 5);
-            _CesiumMan4.Controller.SetAnimationFrame(0, 1.5f * animTime);
+            _CesiumMan4.Controller.Armature.SetAnimationFrame(0, 1.5f * animTime);
 
             _Shark.WorldMatrix = Matrix.CreateTranslation(5, 3, -6);
-            _Shark.Controller.SetAnimationFrame(0, 1.0f * animTime);
+            _Shark.Controller.Armature.SetAnimationFrame(0, 1.0f * animTime);
 
             base.Update(gameTime);
         }        

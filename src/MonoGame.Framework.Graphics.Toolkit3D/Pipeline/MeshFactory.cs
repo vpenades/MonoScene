@@ -25,8 +25,9 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         #region data
 
-        private readonly GraphicsDevice _Device;        
+        private readonly GraphicsDevice _Device;
 
+        private MeshPrimitiveMaterial _DefaultMaterial;
         private readonly Dictionary<TMaterial, MeshPrimitiveMaterial> _Materials = new Dictionary<TMaterial, MeshPrimitiveMaterial>();
 
         /// <summary>
@@ -51,6 +52,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         public MeshCollection CreateMeshCollection(IEnumerable<IMeshDecoder<TMaterial>> srcMeshes)
         {
+            if (srcMeshes == null) throw new ArgumentNullException(nameof(srcMeshes));
+            
             _Disposables = new GraphicsResourceTracker();            
 
             int meshIndex = 0;
@@ -63,14 +66,34 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             {
                 foreach (var srcPrim in srcMesh.Primitives)
                 {
+                    if (!srcPrim.TriangleIndices.Any()) continue;
+
                     Type vertexType = GetPreferredVertexType(srcPrim);
 
-                    if (!_Materials.TryGetValue(srcPrim.Material, out MeshPrimitiveMaterial material))
+                    MeshPrimitiveMaterial material = null;
+
+                    // we cannot set a Null Key for a dictionary, so we need to handle null (default) materials separately
+                    if (srcPrim.Material == null) 
                     {
-                        material = ConvertMaterial(srcPrim.Material, srcPrim.JointsWeightsCount > 0);
-                        if (material == null) throw new NullReferenceException("Material conversion failed");
-                        _Materials[srcPrim.Material] = material;
-                    }                    
+                        if (_DefaultMaterial != null) material = _DefaultMaterial;
+                        else
+                        {
+                            material = ConvertMaterial(null, srcPrim.JointsWeightsCount > 0);
+                            if (material == null) throw new NullReferenceException("NULL Material conversion failed");
+                            _DefaultMaterial = material;
+                        }
+                    }
+
+                    // for all other defined materials we follow the dictionary path
+                    else
+                    {
+                        if (!_Materials.TryGetValue(srcPrim.Material, out material))
+                        {
+                            material = ConvertMaterial(srcPrim.Material, srcPrim.JointsWeightsCount > 0);
+                            if (material == null) throw new NullReferenceException("Material conversion failed");
+                            _Materials[srcPrim.Material] = material;
+                        }
+                    }
 
                     meshPrimitiveBuilder.AppendMeshPrimitive(meshIndex, vertexType, srcPrim, material.Effect, material.Blend, material.DoubleSided);
                 }

@@ -63,9 +63,9 @@ namespace SharpGLTF.Runtime
 
         public int IndexOfNode(string nodeName)
         {
-            for(int i=0; i < _Controller.LogicalNodes.Count; ++i)
+            for(int i=0; i < _Controller.Armature.LogicalNodes.Count; ++i)
             {
-                if (_Controller.LogicalNodes[i].Name == nodeName) return i;
+                if (_Controller.Armature.LogicalNodes[i].Name == nodeName) return i;
             }
 
             return -1;
@@ -78,7 +78,7 @@ namespace SharpGLTF.Runtime
         /// <returns>A matrix in model space.</returns>
         public Matrix GetModelMatrix(int nodeIndex)
         {
-            return _Controller.LogicalNodes[nodeIndex].WorldMatrix.ToXna();
+            return _Controller.Armature.LogicalNodes[nodeIndex].ModelMatrix.ToXna();
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace SharpGLTF.Runtime
         /// <returns>A matrix in world space.</returns>
         public Matrix GetWorldMatrix(int nodeIndex)
         {
-            return _Controller.LogicalNodes[nodeIndex].WorldMatrix.ToXna() * _WorldMatrix;
+            return _Controller.Armature.LogicalNodes[nodeIndex].ModelMatrix.ToXna() * _WorldMatrix;
         }
 
         /// <summary>

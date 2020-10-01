@@ -62,7 +62,9 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public void Draw(GraphicsDevice device)
         {
-            bool isMirrorTransform = _Effect is AnimatedEffect animEffect && animEffect.WorldIsMirror;
+            // check if world matrix is a mirror matrix and requires the face culling to be reversed.
+            bool isMirrorTransform = false;
+            if (_Effect is IEffectMatrices ematrices) isMirrorTransform = ematrices.World.Determinant() < 0;
 
             _Geometry.Bind(device, isMirrorTransform);            
 
@@ -77,7 +79,5 @@ namespace Microsoft.Xna.Framework.Graphics
         }
 
         #endregion
-    }
-
-    
+    }    
 }

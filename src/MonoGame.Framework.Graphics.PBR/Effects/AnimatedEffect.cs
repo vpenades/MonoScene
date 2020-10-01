@@ -27,10 +27,7 @@ namespace Microsoft.Xna.Framework.Graphics
         private Matrix _World = Matrix.Identity;
         private Matrix _View = Matrix.Identity;
         private Matrix _Proj = Matrix.Identity;
-
         
-        private bool _WorldIsMirror = false;
-
         private int _BoneCount;
         private readonly Matrix[] _Bones = new Matrix[128];
 
@@ -52,28 +49,21 @@ namespace Microsoft.Xna.Framework.Graphics
         public Matrix World
         {
             get => _World;
-            set
-            {
-                _World = value;
-                _WorldIsMirror = _World.Determinant() < 0;
-            }
+            set => _World = value;
         }
         
         public Matrix View
         {
             get => _View;
-            set { _View = value; }
+            set => _View = value;
         }
 
         public Matrix Projection
         {
             get => _Proj;
-            set { _Proj = value; }
+            set => _Proj = value;
         }
-
-        // True if world matrix is a mirror matrix and requires the RasterizerState to reverse face culling.
-        public bool WorldIsMirror => _WorldIsMirror;
-
+        
         #endregion        
 
         #region API

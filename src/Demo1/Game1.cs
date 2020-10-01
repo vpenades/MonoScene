@@ -17,6 +17,10 @@ namespace Demo1
 
         protected override void Initialize()
         {
+            this.Window.Title = "SharpGLTF - MonoGame Demo 1";
+            this.Window.AllowUserResizing = true;
+            this.Window.AllowAltF4 = true;
+
             base.Initialize();
         }
 
@@ -69,6 +73,7 @@ namespace Demo1
             var mdlX = Matrix.CreateRotationY(0.25f * (float)gameTime.TotalGameTime.TotalSeconds) * Matrix.CreateTranslation(mdlPos);
 
             var dc = new ModelDrawingContext(_Graphics.GraphicsDevice);
+            dc.NearPlane = 0.1f; // we need to make near plane small because the object is very very close.
             dc.SetCamera(camX);
             dc.DrawMesh(_LightsAndFog, _MeshCollection[0], mdlX);
 

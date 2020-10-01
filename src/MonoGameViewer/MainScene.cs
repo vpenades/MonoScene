@@ -6,6 +6,7 @@ using System.Windows.Controls;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 using MonoGame.WpfCore.MonoGameControls;
 
@@ -60,13 +61,21 @@ namespace MonoGameViewer
         {
             SharpGLTF.Schema2.ModelRoot model;
 
-            if (filePath.ToLower().EndsWith(".zip"))
+            try
             {
-                model = SharpGLTF.IO.ZipReader.LoadSchema2(filePath, ValidationMode.TryFix);
+                if (filePath.ToLower().EndsWith(".zip"))
+                {
+                    model = SharpGLTF.IO.ZipReader.LoadSchema2(filePath, ValidationMode.TryFix);
+                }
+                else
+                {
+                    model = SharpGLTF.Schema2.ModelRoot.Load(filePath, ValidationMode.TryFix);
+                }
             }
-            else
+            catch(Exception ex)
             {
-                model = SharpGLTF.Schema2.ModelRoot.Load(filePath, ValidationMode.TryFix);
+                System.Windows.MessageBox.Show(ex.Message, "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                return;
             }
             
             _Model = model;            
@@ -114,7 +123,7 @@ namespace MonoGameViewer
             
 
             var lookAt = _ModelSphere.Center;
-            var camPos = _ModelSphere.Center + new Vector3(0, 0, _ModelSphere.Radius * 3);
+            var camPos = _ModelSphere.Center + new Vector3(0, 0, _ModelSphere.Radius * 2.5f);
 
             var camera = Matrix.CreateWorld(camPos, lookAt - camPos, Vector3.UnitY);
 
@@ -132,6 +141,9 @@ namespace MonoGameViewer
                 _ModelInstance.WorldMatrix = Matrix.CreateFromQuaternion(_Rotation);
 
                 var ctx = new ModelDrawingContext(this.GraphicsDevice);
+
+                ctx.NearPlane = Math.Min(1, _ModelSphere.Radius);
+
                 ctx.SetCamera(camera);                
                 ctx.DrawModelInstance(env, _ModelInstance);
             }
