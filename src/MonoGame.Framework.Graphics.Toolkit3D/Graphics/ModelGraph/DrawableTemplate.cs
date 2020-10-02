@@ -15,7 +15,7 @@ namespace Microsoft.Xna.Framework.Graphics
         string Name { get; }
 
         /// <summary>
-        /// An index into <see cref="ModelLayerTemplate.Meshes"/>
+        /// An index into <see cref="ModelTemplate.Meshes"/>
         /// </summary>
         int MeshIndex { get; }
 

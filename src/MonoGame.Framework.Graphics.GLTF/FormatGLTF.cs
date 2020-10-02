@@ -10,34 +10,34 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 {
     public static class FormatGLTF
     {
-        public static ModelTemplateContent LoadModel(string filePath, GraphicsDevice graphics, bool useBasicEffects = false)
+        public static ModelCollectionContent LoadModel(string filePath, GraphicsDevice graphics, bool useBasicEffects = false)
         {
             var model = SharpGLTF.Schema2.ModelRoot.Load(filePath, SharpGLTF.Validation.ValidationMode.TryFix);
 
             return ReadModel(model, graphics, useBasicEffects);
         }
 
-        public static ModelTemplateContent LoadModel(System.IO.FileInfo finfo, GraphicsDevice graphics, bool useBasicEffects = false)
+        public static ModelCollectionContent LoadModel(System.IO.FileInfo finfo, GraphicsDevice graphics, bool useBasicEffects = false)
         {
             var model = SharpGLTF.Schema2.ModelRoot.Load(finfo.FullName, SharpGLTF.Validation.ValidationMode.TryFix);
 
             return ReadModel(model, graphics, useBasicEffects);
         }
 
-        public static ModelTemplateContent ReadModel(SharpGLTF.Schema2.ModelRoot model, GraphicsDevice graphics, bool useBasicEffects = false)
+        public static ModelCollectionContent ReadModel(SharpGLTF.Schema2.ModelRoot model, GraphicsDevice graphics, bool useBasicEffects = false)
         {
             var factory = useBasicEffects ? (GLTFMeshFactory)new BasicMeshFactory(graphics) : new PBRMeshFactory(graphics);
 
             return ConvertToXna(model, factory);
         }
 
-        public static ModelTemplateContent ConvertToXna(SharpGLTF.Schema2.ModelRoot srcModel, GLTFMeshFactory meshFactory)
+        public static ModelCollectionContent ConvertToXna(SharpGLTF.Schema2.ModelRoot srcModel, GLTFMeshFactory meshFactory)
         {
             if (meshFactory == null) throw new ArgumentNullException();
 
             var meshCollection = meshFactory.CreateMeshCollection(srcModel.LogicalMeshes);
 
-            var layers = new List<ModelLayerTemplate>();
+            var models = new List<ModelTemplate>();
 
             foreach (var scene in srcModel.LogicalScenes)
             {
@@ -49,14 +49,14 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
                     armatureFactory.SetAnimationTrack(i, track.Name, track.Duration);
                 }
 
-                var layer = armatureFactory.CreateModelLayer(scene);
+                var model = armatureFactory.CreateModel(scene);
 
-                layer.ModelBounds = scene.EvaluateBoundingSphere().ToXna();
+                model.ModelBounds = scene.EvaluateBoundingSphere().ToXna();
 
-                layers.Add(layer);
+                models.Add(model);
             }
 
-            return new ModelTemplateContent(meshCollection, layers.ToArray(), srcModel.DefaultScene.LogicalIndex);
+            return new ModelCollectionContent(meshCollection, models.ToArray(), srcModel.DefaultScene.LogicalIndex);
         }       
     }
 }

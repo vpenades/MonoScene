@@ -1,86 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 using System.Text;
+using System.Threading.Tasks;
 
-using MODELMESH = Microsoft.Xna.Framework.Graphics.RuntimeModelMesh;
 
 
 namespace Microsoft.Xna.Framework.Graphics
 {
-    public class ModelTemplateContent : ModelTemplate, IDisposable
-    {
-        #region lifecycle
-
-        public ModelTemplateContent(MeshCollection meshes, ModelLayerTemplate[] layers, int defaultLayer) :base(meshes,layers,defaultLayer)
-        {
-            SharedMeshes = meshes;
-        }
-
-        public void Dispose()
-        {
-            _SharedMeshes?.Dispose();
-            _SharedMeshes = null;
-        }
-
-        #endregion
-
-        #region data
-
-        /// <summary>
-        /// Meshes shared by all the <see cref="_Layers"/>.
-        /// </summary>
-        private MeshCollection _SharedMeshes;
-
-        #endregion
-    }
-
-
+    /// <summary>
+    /// Defines a templatized representation of a <see cref="Schema2.Scene"/> that can be used
+    /// to create <see cref="ModelInstance"/>, which can help render a scene on a client application.
+    /// </summary>
     public class ModelTemplate
     {
-        #region lifecycle
+        #region lifecycle        
 
-        public ModelTemplate(IMeshCollection meshes, ModelLayerTemplate[] layers, int defaultLayer)
-        {            
-            _Layers = layers;
-            _DefaultLayerIndex = defaultLayer;
-
-            SharedMeshes = meshes;
-        }        
+        public ModelTemplate(string modelName, ArmatureTemplate armature, IDrawableTemplate[] drawables)
+        {
+            _ModelName = modelName;
+            _Armature = armature;
+            _DrawableReferences = drawables;            
+        }
 
         #endregion
 
         #region data
 
-        /// <summary>
-        /// Meshes shared by all the <see cref="_Layers"/>.
-        /// </summary>
-        private IMeshCollection _SharedMeshes;        
+        private readonly String _ModelName;        
 
-        /// <summary>
-        /// Layers available in this template
-        /// </summary>
-        private ModelLayerTemplate[] _Layers;        
+        internal readonly ArmatureTemplate _Armature;
+        
+        private IMeshCollection _Meshes;        
 
-        /// <summary>
-        /// Default layer index
-        /// </summary>
-        private readonly int _DefaultLayerIndex;
+        // this is the collection of "what needs to be rendered", and it binds meshes with armatures
+        internal readonly IDrawableTemplate[] _DrawableReferences;
+
+        private Effect[] _SharedEffects;
 
         #endregion
 
         #region properties
 
-        public IReadOnlyList<ModelLayerTemplate> Layers => _Layers;
+        public String Name => _ModelName;        
 
-        public ModelLayerTemplate DefaultLayer => _Layers[_DefaultLayerIndex];
+        public BoundingSphere ModelBounds { get; set; }
 
-        public IMeshCollection SharedMeshes
+        public IMeshCollection Meshes
         {
-            get => _SharedMeshes;
+            get => _Meshes;
             set
             {
-                _SharedMeshes = value;
-                foreach (var layer in _Layers) layer.Meshes = _SharedMeshes;
+                _Meshes = value;
+                _SharedEffects = null;
+            }
+        }
+
+        public IReadOnlyCollection<Effect> SharedEffects
+        {
+            get
+            {
+                if (_SharedEffects != null) return _SharedEffects;
+
+                var meshIndices = _DrawableReferences.Select(item => item.MeshIndex);
+                _SharedEffects = _Meshes.GetSharedEffects(meshIndices);
+
+                return _SharedEffects;
             }
         }
 
@@ -88,7 +74,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region API
 
-        public int IndexOfLayer(string layerName) => Array.FindIndex(_Layers, item => item.Name == layerName);       
+        public ModelInstance CreateInstance() => new ModelInstance(this);
 
         #endregion
     }

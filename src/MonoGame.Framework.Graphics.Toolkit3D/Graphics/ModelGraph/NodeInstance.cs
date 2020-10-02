@@ -8,7 +8,7 @@ using XFORM = Microsoft.Xna.Framework.Matrix;
 namespace Microsoft.Xna.Framework.Graphics
 {
     /// <summary>
-    /// Defines a node of a scene graph in <see cref="ModelLayerInstance"/>
+    /// Defines a node of a scene graph in <see cref="ModelInstance"/>
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public sealed class NodeInstance

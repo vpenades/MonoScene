@@ -5,7 +5,7 @@ using System.Linq;
 namespace Microsoft.Xna.Framework.Graphics
 {
     /// <summary>
-    /// Helper class for rendering <see cref="ModelLayerInstance"/> models.
+    /// Helper class for rendering <see cref="ModelInstance"/> models.
     /// </summary>
     public class ModelDrawingContext
     {
@@ -18,7 +18,7 @@ namespace Microsoft.Xna.Framework.Graphics
             _Device.DepthStencilState = DepthStencilState.Default;            
 
             _View = Matrix.Invert(Matrix.Identity);
-            _DistanceComparer = ModelLayerInstance.GetDistanceComparer(-_View.Translation);
+            _DistanceComparer = ModelInstance.GetDistanceComparer(-_View.Translation);
         }
         
         #endregion
@@ -31,10 +31,10 @@ namespace Microsoft.Xna.Framework.Graphics
         private float _NearPlane = 1f;
         
         private Matrix _View;
-        private IComparer<ModelLayerInstance> _DistanceComparer;
+        private IComparer<ModelInstance> _DistanceComparer;
 
         private static readonly HashSet<Effect> _SceneEffects = new HashSet<Effect>();
-        private static readonly List<ModelLayerInstance> _SceneInstances = new List<ModelLayerInstance>();
+        private static readonly List<ModelInstance> _SceneInstances = new List<ModelInstance>();
 
         #endregion
 
@@ -66,7 +66,7 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             _View = Matrix.Invert(cameraMatrix);
 
-            _DistanceComparer = ModelLayerInstance.GetDistanceComparer(-_View.Translation);
+            _DistanceComparer = ModelInstance.GetDistanceComparer(-_View.Translation);
         }
 
         
@@ -77,8 +77,8 @@ namespace Microsoft.Xna.Framework.Graphics
 
             foreach (var e in mesh.OpaqueEffects)
             {               
-                ModelLayerInstance.UpdateProjViewTransforms(e, proj, _View);
-                ModelLayerInstance.UpdateWorldTransforms(e, worldMatrix);
+                ModelInstance.UpdateProjViewTransforms(e, proj, _View);
+                ModelInstance.UpdateWorldTransforms(e, worldMatrix);
                 environment.ApplyTo(e);
             }
 
@@ -86,8 +86,8 @@ namespace Microsoft.Xna.Framework.Graphics
 
             foreach (var e in mesh.TranslucidEffects)
             {                
-                ModelLayerInstance.UpdateProjViewTransforms(e, proj, _View);
-                ModelLayerInstance.UpdateWorldTransforms(e, worldMatrix);
+                ModelInstance.UpdateProjViewTransforms(e, proj, _View);
+                ModelInstance.UpdateWorldTransforms(e, worldMatrix);
                 environment.ApplyTo(e);
             }
 
@@ -103,14 +103,14 @@ namespace Microsoft.Xna.Framework.Graphics
         /// Rendering models one by one is accepted, but some features like translucent parts sortings will not work
         /// unless you manually render the models in the correct order.
         /// </remarks>
-        public void DrawModelInstance(PBREnvironment environment, ModelLayerInstance modelInstance)
+        public void DrawModelInstance(PBREnvironment environment, ModelInstance modelInstance)
         {
             var proj = GetProjectionMatrix();
 
             foreach (var e in modelInstance.Template.SharedEffects)
             {
                 environment.ApplyTo(e);
-                ModelLayerInstance.UpdateProjViewTransforms(e, proj, _View);
+                ModelInstance.UpdateProjViewTransforms(e, proj, _View);
             }
 
             modelInstance.DrawAllParts(proj, _View);
@@ -130,7 +130,7 @@ namespace Microsoft.Xna.Framework.Graphics
         ///   drawing call.
         /// - Possibility to add shadows, where some instances cast shadows over others.
         /// </remarks>
-        public void DrawSceneInstances(PBREnvironment environment, params ModelLayerInstance[] modelInstances)
+        public void DrawSceneInstances(PBREnvironment environment, params ModelInstance[] modelInstances)
         {
             // todo: fustrum culling goes here
 
@@ -148,7 +148,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
             foreach (var e in _SceneEffects)
             {
-                ModelLayerInstance.UpdateProjViewTransforms(e, proj, _View);
+                ModelInstance.UpdateProjViewTransforms(e, proj, _View);
                 // todo: set env.Exposure
                 // todo: set env.AmbientLight
             }

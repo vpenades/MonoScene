@@ -43,19 +43,19 @@ namespace Demo2
 
         private PBREnvironment _LightsAndFog = PBREnvironment.CreateDefault();
 
-        private ModelTemplateContent _ModelTemplate;
+        private ModelCollectionContent _ModelTemplate;
 
         #endregion
 
         #region Game Loop
 
-        private ModelLayerInstance _ModelView1;
+        private ModelInstance _ModelView1;
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
 
-            if (_ModelView1 == null) _ModelView1 = _ModelTemplate.DefaultLayer.CreateInstance();
+            if (_ModelView1 == null) _ModelView1 = _ModelTemplate.DefaultModel.CreateInstance();
 
             var mdlPos = new Vector3(3.5f, 0, 0);
 

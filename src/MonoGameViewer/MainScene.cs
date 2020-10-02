@@ -19,12 +19,12 @@ namespace MonoGameViewer
         #region data
 
         SharpGLTF.Schema2.ModelRoot _Model;
-        ModelTemplateContent _ModelTemplate;
+        ModelCollectionContent _ModelTemplate;
         BoundingSphere _ModelSphere;
 
         private bool _UseClassicEffects;
 
-        private ModelLayerInstance _ModelInstance;
+        private ModelInstance _ModelInstance;
 
         private Quaternion _Rotation = Quaternion.Identity;
 
@@ -89,7 +89,7 @@ namespace MonoGameViewer
             if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
 
             _ModelTemplate = Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatGLTF.ReadModel(_Model, GraphicsDevice, _UseClassicEffects);
-            _ModelSphere = _ModelTemplate.DefaultLayer.ModelBounds;
+            _ModelSphere = _ModelTemplate.DefaultModel.ModelBounds;
             _ModelInstance = null;
         }
 
@@ -109,7 +109,7 @@ namespace MonoGameViewer
 
         public override void Update(GameTime gameTime)
         {
-            if (_ModelInstance == null && _ModelTemplate != null) _ModelInstance = _ModelTemplate.DefaultLayer.CreateInstance();
+            if (_ModelInstance == null && _ModelTemplate != null) _ModelInstance = _ModelTemplate.DefaultModel.CreateInstance();
         }
 
         public override void Draw(GameTime gameTime)

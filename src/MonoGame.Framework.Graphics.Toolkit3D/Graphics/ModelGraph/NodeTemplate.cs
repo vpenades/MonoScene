@@ -33,12 +33,12 @@ namespace Microsoft.Xna.Framework.Graphics
         #region data
 
         /// <summary>
-        /// the index of this node within <see cref="ModelLayerTemplate._NodeTemplates"/>
+        /// the index of this node within <see cref="ModelTemplate._NodeTemplates"/>
         /// </summary>
         private readonly int _ThisIndex;
 
         /// <summary>
-        /// the index of the parent node within <see cref="ModelLayerTemplate._NodeTemplates"/>
+        /// the index of the parent node within <see cref="ModelTemplate._NodeTemplates"/>
         /// </summary>
         private readonly int _ParentIndex;
         private readonly int[] _ChildIndices;
@@ -61,17 +61,17 @@ namespace Microsoft.Xna.Framework.Graphics
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets the index of the source <see cref="Schema2.Node"/> in <see cref="ModelLayerTemplate._NodeTemplates"/>
+        /// Gets the index of the source <see cref="Schema2.Node"/> in <see cref="ModelTemplate._NodeTemplates"/>
         /// </summary>
         public int ThisIndex => _ThisIndex;
 
         /// <summary>
-        /// Gets the index of the parent <see cref="NodeTemplate"/> in <see cref="ModelLayerTemplate._NodeTemplates"/>
+        /// Gets the index of the parent <see cref="NodeTemplate"/> in <see cref="ModelTemplate._NodeTemplates"/>
         /// </summary>
         public int ParentIndex => _ParentIndex;
 
         /// <summary>
-        /// Gets the list of indices of the children <see cref="NodeTemplate"/> in <see cref="ModelLayerTemplate._NodeTemplates"/>
+        /// Gets the list of indices of the children <see cref="NodeTemplate"/> in <see cref="ModelTemplate._NodeTemplates"/>
         /// </summary>
         public IReadOnlyList<int> ChildIndices => _ChildIndices;
 

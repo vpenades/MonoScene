@@ -68,7 +68,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         #region API
 
-        public ModelLayerTemplate CreateModelLayer(SharpGLTF.Schema2.Scene scene)
+        public ModelTemplate CreateModel(SharpGLTF.Schema2.Scene scene)
         {
             AddSceneRoot(scene);
             var armature = CreateArmature();
@@ -78,7 +78,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
                 .Select(item => CreateDrawable(item))
                 .ToArray();
 
-            return new ModelLayerTemplate(scene.Name, armature, drawables);
+            return new ModelTemplate(scene.Name, armature, drawables);
         }
 
         public void AddSceneRoot(SharpGLTF.Schema2.Scene scene)

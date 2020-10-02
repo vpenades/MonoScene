@@ -5,17 +5,17 @@ using System.Text;
 namespace Microsoft.Xna.Framework.Graphics
 {
     /// <summary>
-    /// Represents the state machine of a specific model layer instance on screen.    
+    /// Represents the state machine of a specific model instance on screen.    
     /// </summary>
     /// <remarks>
-    /// For each <see cref="ModelLayerTemplate"/> you can create
-    /// multiple <see cref="ModelLayerInstance"/> objects.
+    /// For each <see cref="ModelTemplate"/> you can create
+    /// multiple <see cref="ModelInstance"/> objects.
     /// </remarks>
-    public class ModelLayerInstance
+    public class ModelInstance
     {
         #region lifecycle
 
-        internal ModelLayerInstance(ModelLayerTemplate parent)
+        internal ModelInstance(ModelTemplate parent)
         {
             _Parent = parent;
             
@@ -37,7 +37,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region data        
 
-        private readonly ModelLayerTemplate _Parent;
+        private readonly ModelTemplate _Parent;
 
         private IMeshCollection _Meshes => _Parent.Meshes;
 
@@ -55,7 +55,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <summary>
         /// Gets a reference to the template used to create this <see cref="MonoGameModelInstance"/>.
         /// </summary>
-        public ModelLayerTemplate Template => _Parent;
+        public ModelTemplate Template => _Parent;
 
         public ArmatureInstance Armature => _Armature;
 
@@ -274,18 +274,18 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region nested types
 
-        public static IComparer<ModelLayerInstance> GetDistanceComparer(Vector3 origin)
+        public static IComparer<ModelInstance> GetDistanceComparer(Vector3 origin)
         {
             return new _DistanceComparer(origin);
         }
 
-        private struct _DistanceComparer : IComparer<ModelLayerInstance>
+        private struct _DistanceComparer : IComparer<ModelInstance>
         {
             public _DistanceComparer(Vector3 origin) { _Origin = origin; }
 
             private readonly Vector3 _Origin;
 
-            public int Compare(ModelLayerInstance x, ModelLayerInstance y)
+            public int Compare(ModelInstance x, ModelInstance y)
             {
                 var xDist = (x.WorldMatrix.Translation - _Origin).LengthSquared();
                 var yDist = (y.WorldMatrix.Translation - _Origin).LengthSquared();

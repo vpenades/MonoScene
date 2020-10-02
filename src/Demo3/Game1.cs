@@ -45,11 +45,11 @@ namespace Demo3
 
         // these are the actual hardware resources that represent every model's geometry.        
 
-        ModelTemplateContent _AvodadoTemplate;
-        ModelTemplateContent _BrainStemTemplate;
-        ModelTemplateContent _CesiumManTemplate;
-        ModelTemplateContent _HauntedHouseTemplate;
-        ModelTemplateContent _SharkTemplate;
+        ModelCollectionContent _AvodadoTemplate;
+        ModelCollectionContent _BrainStemTemplate;
+        ModelCollectionContent _CesiumManTemplate;
+        ModelCollectionContent _HauntedHouseTemplate;
+        ModelCollectionContent _SharkTemplate;
 
         #endregion
 
@@ -57,7 +57,7 @@ namespace Demo3
 
         protected override void LoadContent()
         {
-            ModelTemplateContent _load(string filePath)
+            ModelCollectionContent _load(string filePath)
             {
                 return Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatGLTF.LoadModel(filePath, this.GraphicsDevice);
             }            
@@ -96,14 +96,14 @@ namespace Demo3
         // these are the scene instances we create for every glTF model we want to render on screen.
         // Instances are designed to be as lightweight as possible, so it should not be a problem to
         // create as many of them as you need at runtime.
-        private ModelLayerInstance _HauntedHouse;
-        private ModelLayerInstance _BrainStem;
-        private ModelLayerInstance _Avocado;
-        private ModelLayerInstance _CesiumMan1;
-        private ModelLayerInstance _CesiumMan2;
-        private ModelLayerInstance _CesiumMan3;
-        private ModelLayerInstance _CesiumMan4;
-        private ModelLayerInstance _Shark;
+        private ModelInstance _HauntedHouse;
+        private ModelInstance _BrainStem;
+        private ModelInstance _Avocado;
+        private ModelInstance _CesiumMan1;
+        private ModelInstance _CesiumMan2;
+        private ModelInstance _CesiumMan3;
+        private ModelInstance _CesiumMan4;
+        private ModelInstance _Shark;
 
         protected override void Update(GameTime gameTime)
         {
@@ -115,16 +115,16 @@ namespace Demo3
 
             // create as many instances as we need from the templates
 
-            if (_Avocado == null) _Avocado = _AvodadoTemplate.DefaultLayer.CreateInstance();
-            if (_HauntedHouse == null) _HauntedHouse = _HauntedHouseTemplate.DefaultLayer.CreateInstance();
-            if (_BrainStem == null) _BrainStem = _BrainStemTemplate.DefaultLayer.CreateInstance();
+            if (_Avocado == null) _Avocado = _AvodadoTemplate.DefaultModel.CreateInstance();
+            if (_HauntedHouse == null) _HauntedHouse = _HauntedHouseTemplate.DefaultModel.CreateInstance();
+            if (_BrainStem == null) _BrainStem = _BrainStemTemplate.DefaultModel.CreateInstance();
 
-            if (_CesiumMan1 == null) _CesiumMan1 = _CesiumManTemplate.DefaultLayer.CreateInstance();
-            if (_CesiumMan2 == null) _CesiumMan2 = _CesiumManTemplate.DefaultLayer.CreateInstance();
-            if (_CesiumMan3 == null) _CesiumMan3 = _CesiumManTemplate.DefaultLayer.CreateInstance();
-            if (_CesiumMan4 == null) _CesiumMan4 = _CesiumManTemplate.DefaultLayer.CreateInstance();
+            if (_CesiumMan1 == null) _CesiumMan1 = _CesiumManTemplate.DefaultModel.CreateInstance();
+            if (_CesiumMan2 == null) _CesiumMan2 = _CesiumManTemplate.DefaultModel.CreateInstance();
+            if (_CesiumMan3 == null) _CesiumMan3 = _CesiumManTemplate.DefaultModel.CreateInstance();
+            if (_CesiumMan4 == null) _CesiumMan4 = _CesiumManTemplate.DefaultModel.CreateInstance();
 
-            if (_Shark == null) _Shark = _SharkTemplate.DefaultLayer.CreateInstance();
+            if (_Shark == null) _Shark = _SharkTemplate.DefaultModel.CreateInstance();
 
             // animate each instance individually.
 

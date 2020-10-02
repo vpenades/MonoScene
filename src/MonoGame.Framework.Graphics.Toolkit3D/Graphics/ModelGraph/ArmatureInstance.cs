@@ -48,12 +48,12 @@ namespace Microsoft.Xna.Framework.Graphics
         #region properties
 
         /// <summary>
-        /// Gets a list of all the <see cref="NodeInstance"/> nodes used by this <see cref="ModelLayerInstance"/>.
+        /// Gets a list of all the <see cref="NodeInstance"/> nodes used by this <see cref="ModelInstance"/>.
         /// </summary>
         public IReadOnlyList<NodeInstance> LogicalNodes => _NodeInstances;
 
         /// <summary>
-        /// Gets all the <see cref="NodeInstance"/> roots used by this <see cref="ModelLayerInstance"/>.
+        /// Gets all the <see cref="NodeInstance"/> roots used by this <see cref="ModelInstance"/>.
         /// </summary>
         public IEnumerable<NodeInstance> VisualNodes => _NodeInstances.Where(item => item.VisualParent == null);
 
