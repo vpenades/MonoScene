@@ -57,10 +57,20 @@ the visual results expected by glTF, but it's also possible to fall back to Basi
 SkinnedEffect, in which case the loader will do a "best effort" to convert the materials from
 PBR to classic diffuse-specular materials.
 
+### Limitations
 
-### limitations
+##### Pipeline
 
-- Right now, It is **not possible** to load glTFs through the content pipeline, glTFs need to be loaded
+Right now, It is **not possible** to load glTFs through the content pipeline, glTFs need to be loaded
 at runtime, so only projects able to consume Pipeline.GLTF library will be able to load glTFs.
+
+##### Animations
+
 - Due to limitations in the rendering API of MonoGame, glTF's morphing features are not supported.
 - Maximum number of bones is limited to 72 bones with SkinnedEffect (as usual) and 128 bones with PBR effects.
+
+##### Textures
+
+Textures are loaded using Monogame's Texture2D.FromStream, which means all of its limitations apply:
+- No Mipmaps
+- glTF texture formats WEBP and Universal Basis KTX2 can't be loaded.
