@@ -27,7 +27,7 @@ namespace Microsoft.Xna.Framework.Graphics
         private Effect _Effect;
         private BlendState _Blend = BlendState.Opaque;
 
-        private MeshGeometry _Geometry;
+        private IMeshGeometry _Geometry;
 
         #endregion
 
@@ -50,7 +50,7 @@ namespace Microsoft.Xna.Framework.Graphics
             set => _Blend = value;
         }
         
-        public MeshGeometry Geometry
+        public IMeshGeometry Geometry
         {
             get => _Geometry;
             set => _Geometry = value;

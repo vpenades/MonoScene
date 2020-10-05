@@ -70,7 +70,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
                     var vb = vbuffers[srcPart.PrimitiveBuffers];
                     var ib = ibuffers[srcPart.PrimitiveBuffers];                    
 
-                    var dstGeo = new MeshGeometry();
+                    var dstGeo = new MeshTriangles();
                     dstGeo.SetCullingStates(srcPart.Material.DoubleSided);                    
                     dstGeo.SetVertexBuffer(vb, srcPart.VertexOffset, srcPart.VertexCount);
                     dstGeo.SetIndexBuffer(ib, srcPart.TriangleOffset * 3, srcPart.TriangleCount);
