@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
-    public interface IMeshCollection : IReadOnlyList<RuntimeModelMesh>
+    public interface IMeshCollection : IReadOnlyList<Mesh>
     {
         Effect[] GetSharedEffects(IEnumerable<int> meshIndices);
     }
@@ -16,7 +16,7 @@ namespace Microsoft.Xna.Framework.Graphics
     {
         #region lifecycle
 
-        internal MeshCollection(RuntimeModelMesh[] meshes, GraphicsResource[] disposables)
+        internal MeshCollection(Mesh[] meshes, GraphicsResource[] disposables)
         {
             _Disposables = disposables;
             _Meshes = meshes;
@@ -43,7 +43,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private GraphicsResource[] _Disposables;
 
-        private readonly RuntimeModelMesh[] _Meshes;
+        private readonly Mesh[] _Meshes;
 
         private readonly Effect[] _SharedEffects;
 
@@ -53,13 +53,13 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public int Count => _Meshes.Length;
 
-        public RuntimeModelMesh this[int index] => _Meshes[index];
+        public Mesh this[int index] => _Meshes[index];
         
         #endregion
 
         #region API
 
-        public IEnumerator<RuntimeModelMesh> GetEnumerator() { return (IEnumerator<RuntimeModelMesh>)_Meshes.GetEnumerator(); }
+        public IEnumerator<Mesh> GetEnumerator() { return (IEnumerator<Mesh>)_Meshes.GetEnumerator(); }
 
         IEnumerator IEnumerable.GetEnumerator() { return _Meshes.GetEnumerator(); }
 

@@ -11,11 +11,11 @@ namespace Microsoft.Xna.Framework.Graphics
     /// <summary>
     /// Replaces <see cref="ModelMesh"/>
     /// </summary>
-    public sealed class RuntimeModelMesh
+    public sealed class Mesh
     {
         #region lifecycle
 
-        public RuntimeModelMesh(GraphicsDevice graphicsDevice)
+        public Mesh(GraphicsDevice graphicsDevice)
         {
             this._GraphicsDevice = graphicsDevice;
         }        
@@ -26,13 +26,13 @@ namespace Microsoft.Xna.Framework.Graphics
 
         internal GraphicsDevice _GraphicsDevice;
 
-        private readonly List<RuntimeModelMeshPart> _Primitives = new List<RuntimeModelMeshPart>();
+        private readonly List<MeshPart> _Primitives = new List<MeshPart>();
         private IReadOnlyList<Effect> _Effects;
 
-        private IReadOnlyList<RuntimeModelMeshPart> _OpaquePrimitives;
+        private IReadOnlyList<MeshPart> _OpaquePrimitives;
         private IReadOnlyList<Effect> _OpaqueEffects;
 
-        private IReadOnlyList<RuntimeModelMeshPart> _TranslucidPrimitives;
+        private IReadOnlyList<MeshPart> _TranslucidPrimitives;
         private IReadOnlyList<Effect> _TranslucidEffects;        
 
         #endregion
@@ -79,9 +79,9 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region API
 
-        public RuntimeModelMeshPart CreateMeshPart()
+        public MeshPart CreateMeshPart()
         {
-            var primitive = new RuntimeModelMeshPart(this);
+            var primitive = new MeshPart(this);
 
             _Primitives.Add(primitive);
 
@@ -99,14 +99,14 @@ namespace Microsoft.Xna.Framework.Graphics
             _TranslucidEffects = null;
         }
 
-        private IReadOnlyList<RuntimeModelMeshPart> GetOpaqueParts()
+        private IReadOnlyList<MeshPart> GetOpaqueParts()
         {
             if (_OpaquePrimitives != null) return _OpaquePrimitives;
             _OpaquePrimitives = _Primitives.Where(item => item.Blending == BlendState.Opaque).ToArray();
             return _OpaquePrimitives;
         }
 
-        private IReadOnlyList<RuntimeModelMeshPart> GetTranslucidParts()
+        private IReadOnlyList<MeshPart> GetTranslucidParts()
         {
             if (_TranslucidPrimitives != null) return _TranslucidPrimitives;
             _TranslucidPrimitives = _Primitives.Where(item => item.Blending != BlendState.Opaque).ToArray();

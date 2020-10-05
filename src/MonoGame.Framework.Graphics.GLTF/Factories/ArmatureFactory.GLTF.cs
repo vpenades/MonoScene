@@ -11,6 +11,15 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 {
     class GLTFArmatureFactory : ArmatureFactory<GLTFNODE>
     {
+        #region constructor
+
+        public GLTFArmatureFactory(SharpGLTF.Schema2.Scene scene)
+        {
+            AddSceneRoot(scene);
+        }
+
+        #endregion
+
         #region overrides
 
         protected override string GetName(GLTFNODE node) { return node.Name; }
@@ -68,11 +77,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         #region API
 
-        public ModelTemplate CreateModel(SharpGLTF.Schema2.Scene scene)
+        public ModelTemplate CreateModel(SharpGLTF.Schema2.Scene scene, ArmatureTemplate armature)
         {
-            AddSceneRoot(scene);
-            var armature = CreateArmature();
-
             var drawables = GLTFNODE.Flatten(scene)
                 .Where(item => item.Mesh != null)
                 .Select(item => CreateDrawable(item))

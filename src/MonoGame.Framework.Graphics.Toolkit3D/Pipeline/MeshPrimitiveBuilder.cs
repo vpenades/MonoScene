@@ -49,7 +49,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             _MeshPrimitives.Add(part);
         }
 
-        internal IReadOnlyDictionary<int, RuntimeModelMesh> CreateRuntimeMeshes(GraphicsDevice device, GraphicsResourceTracker disposables)
+        internal IReadOnlyDictionary<int, Mesh> CreateRuntimeMeshes(GraphicsDevice device, GraphicsResourceTracker disposables)
         {
             // create shared vertex/index buffers
 
@@ -61,9 +61,9 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
             // create RuntimeModelMesh
 
-            RuntimeModelMesh _convert(IEnumerable<_MeshPrimitive> srcParts)
+            Mesh _convert(IEnumerable<_MeshPrimitive> srcParts)
             {
-                var dstMesh = new RuntimeModelMesh(device);
+                var dstMesh = new Mesh(device);
 
                 foreach (var srcPart in srcParts)
                 {

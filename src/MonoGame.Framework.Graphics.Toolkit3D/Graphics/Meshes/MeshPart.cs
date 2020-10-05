@@ -9,11 +9,11 @@ namespace Microsoft.Xna.Framework.Graphics
     /// <summary>
     /// Replaces <see cref="ModelMeshPart"/>.
     /// </summary>    
-    public sealed class RuntimeModelMeshPart
+    public sealed class MeshPart
     {
         #region lifecycle
 
-        internal RuntimeModelMeshPart(RuntimeModelMesh parent)
+        internal MeshPart(Mesh parent)
         {
             _Parent = parent;
         }        
@@ -22,7 +22,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region data
 
-        private readonly RuntimeModelMesh _Parent;
+        private readonly Mesh _Parent;
 
         private Effect _Effect;
         private BlendState _Blend = BlendState.Opaque;

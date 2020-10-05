@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 
-using MODELMESH = Microsoft.Xna.Framework.Graphics.RuntimeModelMesh;
+using MODELMESH = Microsoft.Xna.Framework.Graphics.Mesh;
 
 
 namespace Microsoft.Xna.Framework.Graphics
 {
+    /// <summary>
+    /// Defines a <see cref="ModelCollection"/> super class that has ownership over
+    /// <see cref="MeshCollection"/> resources and it's responsible of disposing them.
+    /// </summary>
     public class ModelCollectionContent : ModelCollection, IDisposable
     {
         #region lifecycle
 
-        public ModelCollectionContent(MeshCollection meshes, ModelTemplate[] models, int defaultModelIndex) :base(meshes,models,defaultModelIndex)
+        public ModelCollectionContent(MeshCollection meshes, ArmatureTemplate[] armatures, ModelTemplate[] models, int defaultModelIndex) :base(meshes, armatures, models,defaultModelIndex)
         {
             SharedMeshes = meshes;
         }
@@ -34,30 +38,39 @@ namespace Microsoft.Xna.Framework.Graphics
         #endregion
     }
 
-
+    /// <summary>
+    /// Defines a collection of <see cref="ModelTemplate"/> objects and their shared resources.
+    /// </summary>
     public class ModelCollection
     {
         #region lifecycle
 
-        public ModelCollection(IMeshCollection meshes, ModelTemplate[] models, int defaultModelIndex)
-        {            
-            _Models = models;
+        public ModelCollection(IMeshCollection meshes, ArmatureTemplate[] armatures, ModelTemplate[] models, int defaultModelIndex)
+        {
+            _SharedArmatures = armatures;
             _DefaultModelIndex = defaultModelIndex;
+            _Models = models;
 
-            SharedMeshes = meshes;
-        }        
+            // must be set after _Models;
+            SharedMeshes = meshes;            
+        }
 
         #endregion
 
         #region data
 
         /// <summary>
-        /// Meshes shared by all the <see cref="_Models"/>.
+        /// Multiple <see cref="ModelTemplate"/> at <see cref="_Models"/> might share the same meshes.
         /// </summary>
-        private IMeshCollection _SharedMeshes;        
+        private IMeshCollection _SharedMeshes;
 
         /// <summary>
-        /// Models available in this template
+        /// Multiple <see cref="ModelTemplate"/> at <see cref="_Models"/> might share the same <see cref="ArmatureTemplate"/>.
+        /// </summary>
+        private ArmatureTemplate[] _SharedArmatures;
+
+        /// <summary>
+        /// Models available in this collection.
         /// </summary>
         private ModelTemplate[] _Models;        
 
@@ -70,6 +83,9 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region properties
 
+        /// <summary>
+        /// Gets or sets the collection of meshes.
+        /// </summary>        
         public IMeshCollection SharedMeshes
         {
             get => _SharedMeshes;
@@ -80,8 +96,14 @@ namespace Microsoft.Xna.Framework.Graphics
             }
         }
 
+        /// <summary>
+        /// Gets the list of models.
+        /// </summary>
         public IReadOnlyList<ModelTemplate> Models => _Models;
 
+        /// <summary>
+        /// Gets the default model.
+        /// </summary>
         public ModelTemplate DefaultModel => _Models[_DefaultModelIndex];        
 
         #endregion

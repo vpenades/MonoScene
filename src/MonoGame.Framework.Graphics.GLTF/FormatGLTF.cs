@@ -38,10 +38,13 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             var meshCollection = meshFactory.CreateMeshCollection(srcModel.LogicalMeshes);
 
             var models = new List<ModelTemplate>();
+            var armatures = new List<ArmatureTemplate>();
+
+            
 
             foreach (var scene in srcModel.LogicalScenes)
             {
-                var armatureFactory = new GLTFArmatureFactory();
+                var armatureFactory = new GLTFArmatureFactory(scene);
 
                 for (int i = 0; i < srcModel.LogicalAnimations.Count; ++i)
                 {
@@ -49,14 +52,15 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
                     armatureFactory.SetAnimationTrack(i, track.Name, track.Duration);
                 }
 
-                var model = armatureFactory.CreateModel(scene);
+                var armature = armatureFactory.CreateArmature();
+                armatures.Add(armature);
 
+                var model = armatureFactory.CreateModel(scene, armature);
                 model.ModelBounds = scene.EvaluateBoundingSphere().ToXna();
-
                 models.Add(model);
             }
 
-            return new ModelCollectionContent(meshCollection, models.ToArray(), srcModel.DefaultScene.LogicalIndex);
+            return new ModelCollectionContent(meshCollection, armatures.ToArray(), models.ToArray(), srcModel.DefaultScene.LogicalIndex);
         }       
     }
 }

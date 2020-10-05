@@ -71,7 +71,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         
 
-        public void DrawMesh(PBREnvironment environment, RuntimeModelMesh mesh, Matrix worldMatrix)
+        public void DrawMesh(PBREnvironment environment, Mesh mesh, Matrix worldMatrix)
         {
             var proj = GetProjectionMatrix();
 
