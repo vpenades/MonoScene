@@ -105,15 +105,61 @@ to draw it on screen (no need to create it per frame, you keep it as that instan
 The instance classes are designed to be as lightweight as possible, they don't have disposable objects, so
 they're easy to create. But even is that is a problem to the GC, pooling strategies can be explored.
 
+Now, a ModelInstance is
+
 ### Armatures and Animations
 
-[TODO]
+[Armatures](ModelGraph/ArmatureTemplate.cs) (or Skeletons), define a collection of Nodes with a hierarchical relationship.
+
+Within an Armature you can find a table of nodes, the table has been flattened and sorted so parent nodes
+must always appear before their children. This makes armature evaluation easier since there's no need
+to traverse a complex hierarchy.
+
+A Specific node can contain either one of these two:
+- A Fixed Transform Matrix
+- A set of properties representing:
+  - S: A Vector3 Scale
+  - R: A Quaternion Rotation
+  - T: A Vector3 Translation
+
+When using the SRT properties, each property can have a list of curves, one for every animation track.
+
+Notice that Armatures are defined by two classes:
+
+- [ArmatureTemplate](ModelGraph/ArmatureTemplate.cs)
+  - Stateless
+  - Represents the initial state of the model
+  - Define the hierarchical relationship between parent and child nodes.
+  - Contains the animation curves for all the animation tracks (which in same cases, can be a LOT of data)
+  - 
+- [ArmatureInstance](ModelGraph/ArmatureInstance.cs)
+  - Statefull and lightwight.
+  - Reference a ArmatureTemplate from where it gets the [ICurveEvaluator interface](../ICurveEvaluator.cs) evaluators.
+  - Contains the evaluated local and world transform matrices for each node.  
+  - Expose APIs to set the node matrices individually, or as a whole, defining an animation track and time.
+  - The collection of world transforms represent the current, evaluated "pose" of the skeleton at a given time.
+  - This object is the one from where the mesh skinning takes the world transform matrices.
+
 
 ### Drawing Commands
 
-[TODO]
+Each ModelTemplate has a list of [DrawableTemplate](ModelGraph/DrawableTemplate.cs) objects.
 
-### Differences with glTF architecture
+A [DrawableTemplate](ModelGraph/DrawableTemplate.cs) can be seen as drawing command, and it basically
+tells to render a specific Mesh from a MeshCollection, in a specific location in the scene, defined
+by one or more nodes:
 
-[TODO]
+```c
+MeshCollection
+                ⬊
+                  DrawableTemplate ⮕ DrawableInstance: Draw Mesh[3] at Node[4].WorldTransform
+                ⬈
+ArmatureInstance
+```
+
+
+
+
+
+
 
