@@ -59,22 +59,26 @@ float4 PsShader(VsOutTexNorm input, bool hasPerturbedNormals, bool hasPrimary, b
     f_primary.a = ProcessAlphaChannel(f_primary.a); // alpha Cutoff & Blend
     f_primary.rgb = sRGBToLinear(f_primary.rgb); // gamma correction
 
+    float4 f_secondary = 1;
+    if (hasSecondary) f_secondary = GetSecondarySample(input.TextureCoordinate0, input.TextureCoordinate1);
+
     // normals
 
     NormalInfo ninfo;
     if (hasPerturbedNormals) ninfo = GetPerturbedNormalSample(input);
     else ninfo = GetGeometricNormalSample(input);
+
+    // material
+
+    MaterialInfo minfo = GetMaterialInfo(ninfo.n, f_primary.rgb, f_secondary);
     
     // calculate ambient light contribution
 
     float3 linearColor = f_primary.rgb * AmbientLight;
 
-    // calculate punctual lights contribution
+    // calculate punctual lights contribution    
 
-    float4 f_secondary = 1;
-    if (hasSecondary) f_secondary = GetSecondarySample(input.TextureCoordinate0, input.TextureCoordinate1);
-
-    linearColor += GetPunctualLightsContrib(input.PositionWS, ninfo, f_primary.rgb, f_secondary);
+    linearColor += GetPunctualLightsContrib(input.PositionWS, ninfo, minfo);
 
     // calculate emissive light contribution    
 

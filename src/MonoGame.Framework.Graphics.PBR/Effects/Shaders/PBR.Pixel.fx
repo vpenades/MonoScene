@@ -2,18 +2,9 @@
 #include "Material.fx"
 #include "PunctualContrib.fx"
 
-// https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L419
-float3 GetPunctualLightsContrib(float3 positionW, NormalInfo normalInfo, float3 primaryColor, float4 secondaryColor)
+
+MaterialInfo GetMaterialInfo(float3 normal, float3 primaryColor, float4 secondaryColor)
 {
-    float3 v = normalize(CameraPosition - positionW);
-    float3 n = normalInfo.n;
-    float3 t = normalInfo.t;
-    float3 b = normalInfo.b;
-
-    float NdotV = clampedDot(n, v);
-    float TdotV = clampedDot(t, v);
-    float BdotV = clampedDot(b, v);    
-
     MaterialInfo materialInfo;
     materialInfo.baseColor = primaryColor.rgb;
 
@@ -48,7 +39,23 @@ float3 GetPunctualLightsContrib(float3 positionW, NormalInfo normalInfo, float3 
     // Anything less than 2% is physically impossible and is instead considered to be shadowing. Compare to "Real-Time-Rendering" 4th editon on page 325.
     materialInfo.f90 = clamp(reflectance * 50.0, 0.0, 1.0);
 
-    materialInfo.n = n;
+    materialInfo.n = normal;
+
+    return materialInfo;
+}
+
+
+// https://github.com/KhronosGroup/glTF-Sample-Viewer/blob/master/src/shaders/pbr.frag#L419
+float3 GetPunctualLightsContrib(float3 positionW, NormalInfo normalInfo, MaterialInfo materialInfo)
+{
+    float3 v = normalize(CameraPosition - positionW);
+    float3 n = normalInfo.n;
+    float3 t = normalInfo.t;
+    float3 b = normalInfo.b;
+
+    float NdotV = clampedDot(n, v);
+    float TdotV = clampedDot(t, v);
+    float BdotV = clampedDot(b, v);    
 
     // lighting
     

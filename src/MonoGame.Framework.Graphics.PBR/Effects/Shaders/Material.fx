@@ -13,8 +13,8 @@ struct MaterialInfo
     float3 f90;                       // reflectance color at grazing angle
     float metallic;
 
-    float3 n;
-    float3 baseColor; // getBaseColor()
+    float3 n; // normal
+    float3 baseColor;
 
     float sheenIntensity;
     float3 sheenColor;
