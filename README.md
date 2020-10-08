@@ -43,6 +43,9 @@ These effects can be used on their own, and dont' require anything from the rest
 Defines a number of classes to represent 3D models, using a new architecture that can handle
 animated models in a modern way.
 
+- [Model Architecture docs (WIP)](src/MonoGame.Framework.Graphics.Toolkit3D/Graphics/ModelArchitecture.md)
+- [Skinning considerations (WIP)](src/MonoGame.Framework.Graphics.Toolkit3D/Graphics/ModelArchitecture.md)
+
 ##### Graphics.Scene3D
 
 This is a package that can be optinally used, and simplifies drawing scenes with multiple objects.
