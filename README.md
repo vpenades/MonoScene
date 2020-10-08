@@ -44,7 +44,7 @@ Defines a number of classes to represent 3D models, using a new architecture tha
 animated models in a modern way.
 
 - [Model Architecture docs (WIP)](src/MonoGame.Framework.Graphics.Toolkit3D/Graphics/ModelArchitecture.md)
-- [Skinning considerations (WIP)](src/MonoGame.Framework.Graphics.Toolkit3D/Graphics/ModelArchitecture.md)
+- [Skinning considerations (WIP)](src/MonoGame.Framework.Graphics.Toolkit3D/Graphics/Skinning.MD)
 
 ##### Graphics.Scene3D
 
