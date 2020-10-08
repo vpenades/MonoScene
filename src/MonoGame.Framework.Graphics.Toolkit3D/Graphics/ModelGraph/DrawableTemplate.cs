@@ -7,6 +7,14 @@ using TRANSFORM = Microsoft.Xna.Framework.Matrix;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
+    /// <summary>
+    /// Defines a drawable object within a model.
+    /// </summary>
+    /// <remarks>
+    /// A <see cref="ModelTemplate"/> has a collection of <see cref="IDrawableTemplate"/> that can be
+    /// seen as a sequence of drawing commands. So to some degree, it binds a visual resource (a mesh)
+    /// with a scene location (the node transform).
+    /// </remarks>
     public interface IDrawableTemplate
     {
         /// <summary>
