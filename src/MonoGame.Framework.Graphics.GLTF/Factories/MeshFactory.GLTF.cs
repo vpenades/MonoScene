@@ -56,7 +56,11 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         {
             if (sampler == null) return SamplerState.LinearWrap;
 
-            return _TextureFactory.UseSampler(sampler.WrapS.ToXna(), sampler.WrapS.ToXna());
+            var filter = (sampler.MagFilter, sampler.MinFilter).ToXna();
+            var addressU = sampler.WrapS.ToXna();
+            var addressV = sampler.WrapT.ToXna();
+
+            return _TextureFactory.UseSampler(addressU, addressV, filter);
         }
 
         #endregion

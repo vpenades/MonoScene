@@ -48,6 +48,8 @@ namespace Microsoft.Xna.Framework.Graphics
         private SamplerState _Sampler = SamplerState.LinearWrap;
         
         private Int32 _TextureSetIndex;
+
+        // this should be defined as a Matrix3x2, but the type is missing in monogame, so...
         private Vector3 _TransformU = Vector3.UnitX;
         private Vector3 _TransformV = Vector3.UnitY;        
 

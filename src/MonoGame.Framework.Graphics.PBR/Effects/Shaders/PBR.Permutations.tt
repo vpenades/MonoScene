@@ -1,4 +1,4 @@
-﻿<#@ template debug="false" hostspecific="false" language="hlsl" #>
+﻿<#@ template debug="false" hostspecific="false" language="c#" #>
 <#@ assembly name="System.Core" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
@@ -12,12 +12,15 @@
 #include "PBR.fx"
 #include "VertexShaders.fx"
 
-<# //---------------------------------------------------
+<# //--------------------------------------------------- Pixel Shader Permutations
 
 var psShaders = new List<string>(); // store pixel shader definitions here
 
-for(int psIdx=0; psIdx < 32; ++psIdx)
+const int PIXELPERMUTATIONS = 32; // replaced with 64 to add the IBL permutation
+
+for(int psIdx=0; psIdx < PIXELPERMUTATIONS; ++psIdx)
 {
+
 
 var PSSHADER = "Ps";
 
@@ -26,6 +29,7 @@ var hasPrimary =(psIdx & 2) != 0;
 var hasSecondary =(psIdx & 4) != 0;
 var hasEmissive =(psIdx & 8) != 0;
 var hasOpacity =(psIdx & 16) != 0;
+var hasIBLight =(psIdx & 32) != 0;
 
 PSSHADER += hasTangents ? "Tangents" : "Normals";
 
@@ -33,12 +37,12 @@ if (hasPrimary) PSSHADER += "Primary";
 if (hasSecondary) PSSHADER += "Secondary";
 if (hasEmissive) PSSHADER += "Emissive";
 if (hasOpacity) PSSHADER += "Opacity";
-// OpacityFromSecondary
-// IBL
+if (hasIBLight) PSSHADER += "IBL";
 
 psShaders.Add(PSSHADER);
 
-#>
+//--------------------------------------------------- #>
+
 float4 <#=PSSHADER#>(VsOutTexNorm input) : COLOR0
 {
 	return PsShader(input
@@ -47,16 +51,26 @@ float4 <#=PSSHADER#>(VsOutTexNorm input) : COLOR0
 	, <#= hasSecondary.ToString().ToLower() #>
 	, <#= hasEmissive.ToString().ToLower() #>
 	, <#= hasOpacity.ToString().ToLower() #>
+ // , <#= hasIBLight.ToString().ToLower() #> // uncomment to add IBL parameter
 	);
 }
 
-<# }
+<# } #>
 
-for(int psIdx=0; psIdx < psShaders.Count; ++psIdx) { var PSSHADER = psShaders[psIdx]; var hasTangents =(psIdx & 1) != 0;
-for(int vsIdx =0; vsIdx < 4; ++vsIdx) {
-var VSSHADER = vsIdx == 0 || vsIdx == 2 ? "VsRigid" : "VsSkinned";
-if (hasTangents) VSSHADER +="Basis";
+
+<# //--------------------------------------------------- Vertex Shader & Technique Permutations
+
+// for each pixel shader permutation, we add 4 techniques: rigid, skinned, rigid+Tbasis, skinned+Tbasis
+
+for(int psIdx=0; psIdx < psShaders.Count; ++psIdx)
+{
+	var PSSHADER = psShaders[psIdx]; var hasTangents =(psIdx & 1) != 0;
+
+	for(int vsIdx =0; vsIdx < 4; ++vsIdx)
+		{
+		var VSSHADER = vsIdx == 0 || vsIdx == 2 ? "VsRigid" : "VsSkinned";
+		if (hasTangents) VSSHADER +="Basis";
 #>
 TECHNIQUE(<#=VSSHADER#>_<#=PSSHADER#>, <#=VSSHADER#>, <#=PSSHADER#> );
 
-<# } } #>
+<#		} } #>

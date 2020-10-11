@@ -49,6 +49,21 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             }
         }
 
+        public static TextureFilter ToXna(this (SharpGLTF.Schema2.TextureInterpolationFilter, SharpGLTF.Schema2.TextureMipMapFilter) mode)
+        {
+            bool isLinear = mode.Item1 != SharpGLTF.Schema2.TextureInterpolationFilter.NEAREST;
+
+            switch(mode.Item2)
+            {
+                case SharpGLTF.Schema2.TextureMipMapFilter.LINEAR: return isLinear ? TextureFilter.Linear : TextureFilter.Point;
+                case SharpGLTF.Schema2.TextureMipMapFilter.NEAREST: return isLinear ? TextureFilter.LinearMipPoint : TextureFilter.Point;                
+            }
+
+            // TODO: convert all values to closest feature in XNA
+
+            return TextureFilter.Linear; // fallback
+        }
+
         public static ICurveEvaluator<Vector3> ToXna(this SharpGLTF.Animations.ICurveSampler<System.Numerics.Vector3> curve)
         {
             if (curve == null) return null;

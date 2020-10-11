@@ -6,6 +6,7 @@
 #include "PBR.fx"
 #include "VertexShaders.fx"
 
+
 float4 PsNormals(VsOutTexNorm input) : COLOR0
 {
 	return PsShader(input
@@ -14,8 +15,10 @@ float4 PsNormals(VsOutTexNorm input) : COLOR0
 	, false
 	, false
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangents(VsOutTexNorm input) : COLOR0
 {
@@ -25,8 +28,10 @@ float4 PsTangents(VsOutTexNorm input) : COLOR0
 	, false
 	, false
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsPrimary(VsOutTexNorm input) : COLOR0
 {
@@ -36,8 +41,10 @@ float4 PsNormalsPrimary(VsOutTexNorm input) : COLOR0
 	, false
 	, false
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsPrimary(VsOutTexNorm input) : COLOR0
 {
@@ -47,8 +54,10 @@ float4 PsTangentsPrimary(VsOutTexNorm input) : COLOR0
 	, false
 	, false
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsSecondary(VsOutTexNorm input) : COLOR0
 {
@@ -58,8 +67,10 @@ float4 PsNormalsSecondary(VsOutTexNorm input) : COLOR0
 	, true
 	, false
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsSecondary(VsOutTexNorm input) : COLOR0
 {
@@ -69,8 +80,10 @@ float4 PsTangentsSecondary(VsOutTexNorm input) : COLOR0
 	, true
 	, false
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsPrimarySecondary(VsOutTexNorm input) : COLOR0
 {
@@ -80,8 +93,10 @@ float4 PsNormalsPrimarySecondary(VsOutTexNorm input) : COLOR0
 	, true
 	, false
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsPrimarySecondary(VsOutTexNorm input) : COLOR0
 {
@@ -91,8 +106,10 @@ float4 PsTangentsPrimarySecondary(VsOutTexNorm input) : COLOR0
 	, true
 	, false
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsEmissive(VsOutTexNorm input) : COLOR0
 {
@@ -102,8 +119,10 @@ float4 PsNormalsEmissive(VsOutTexNorm input) : COLOR0
 	, false
 	, true
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsEmissive(VsOutTexNorm input) : COLOR0
 {
@@ -113,8 +132,10 @@ float4 PsTangentsEmissive(VsOutTexNorm input) : COLOR0
 	, false
 	, true
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsPrimaryEmissive(VsOutTexNorm input) : COLOR0
 {
@@ -124,8 +145,10 @@ float4 PsNormalsPrimaryEmissive(VsOutTexNorm input) : COLOR0
 	, false
 	, true
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsPrimaryEmissive(VsOutTexNorm input) : COLOR0
 {
@@ -135,8 +158,10 @@ float4 PsTangentsPrimaryEmissive(VsOutTexNorm input) : COLOR0
 	, false
 	, true
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsSecondaryEmissive(VsOutTexNorm input) : COLOR0
 {
@@ -146,8 +171,10 @@ float4 PsNormalsSecondaryEmissive(VsOutTexNorm input) : COLOR0
 	, true
 	, true
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsSecondaryEmissive(VsOutTexNorm input) : COLOR0
 {
@@ -157,8 +184,10 @@ float4 PsTangentsSecondaryEmissive(VsOutTexNorm input) : COLOR0
 	, true
 	, true
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsPrimarySecondaryEmissive(VsOutTexNorm input) : COLOR0
 {
@@ -168,8 +197,10 @@ float4 PsNormalsPrimarySecondaryEmissive(VsOutTexNorm input) : COLOR0
 	, true
 	, true
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsPrimarySecondaryEmissive(VsOutTexNorm input) : COLOR0
 {
@@ -179,8 +210,10 @@ float4 PsTangentsPrimarySecondaryEmissive(VsOutTexNorm input) : COLOR0
 	, true
 	, true
 	, false
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -190,8 +223,10 @@ float4 PsNormalsOpacity(VsOutTexNorm input) : COLOR0
 	, false
 	, false
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -201,8 +236,10 @@ float4 PsTangentsOpacity(VsOutTexNorm input) : COLOR0
 	, false
 	, false
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsPrimaryOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -212,8 +249,10 @@ float4 PsNormalsPrimaryOpacity(VsOutTexNorm input) : COLOR0
 	, false
 	, false
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsPrimaryOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -223,8 +262,10 @@ float4 PsTangentsPrimaryOpacity(VsOutTexNorm input) : COLOR0
 	, false
 	, false
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsSecondaryOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -234,8 +275,10 @@ float4 PsNormalsSecondaryOpacity(VsOutTexNorm input) : COLOR0
 	, true
 	, false
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsSecondaryOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -245,8 +288,10 @@ float4 PsTangentsSecondaryOpacity(VsOutTexNorm input) : COLOR0
 	, true
 	, false
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsPrimarySecondaryOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -256,8 +301,10 @@ float4 PsNormalsPrimarySecondaryOpacity(VsOutTexNorm input) : COLOR0
 	, true
 	, false
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsPrimarySecondaryOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -267,8 +314,10 @@ float4 PsTangentsPrimarySecondaryOpacity(VsOutTexNorm input) : COLOR0
 	, true
 	, false
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsEmissiveOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -278,8 +327,10 @@ float4 PsNormalsEmissiveOpacity(VsOutTexNorm input) : COLOR0
 	, false
 	, true
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsEmissiveOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -289,8 +340,10 @@ float4 PsTangentsEmissiveOpacity(VsOutTexNorm input) : COLOR0
 	, false
 	, true
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsPrimaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -300,8 +353,10 @@ float4 PsNormalsPrimaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 	, false
 	, true
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsPrimaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -311,8 +366,10 @@ float4 PsTangentsPrimaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 	, false
 	, true
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsSecondaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -322,8 +379,10 @@ float4 PsNormalsSecondaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 	, true
 	, true
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsSecondaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -333,8 +392,10 @@ float4 PsTangentsSecondaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 	, true
 	, true
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsNormalsPrimarySecondaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -344,8 +405,10 @@ float4 PsNormalsPrimarySecondaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 	, true
 	, true
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
 
 float4 PsTangentsPrimarySecondaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 {
@@ -355,8 +418,11 @@ float4 PsTangentsPrimarySecondaryEmissiveOpacity(VsOutTexNorm input) : COLOR0
 	, true
 	, true
 	, true
+ // , false // uncomment to add IBL parameter
 	);
 }
+
+
 
 TECHNIQUE(VsRigid_PsNormals, VsRigid, PsNormals );
 

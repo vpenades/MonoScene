@@ -58,13 +58,26 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             */
         }
 
-        public SamplerState UseSampler(TextureAddressMode u, TextureAddressMode v)
+        public SamplerState UseSampler(TextureAddressMode u, TextureAddressMode v, TextureFilter filter = TextureFilter.Linear)
         {
-            if (u == v)
+            if (u == v && filter == TextureFilter.Point)
+            {
+                if (u == TextureAddressMode.Wrap) return SamplerState.PointWrap;
+                if (u == TextureAddressMode.Clamp) return SamplerState.PointClamp;
+            }
+
+            if (u == v && filter == TextureFilter.Linear)
             {
                 if (u == TextureAddressMode.Wrap) return SamplerState.LinearWrap;
                 if (u == TextureAddressMode.Clamp) return SamplerState.LinearClamp;
             }
+
+            if (u == v && filter == TextureFilter.Anisotropic)
+            {
+                if (u == TextureAddressMode.Wrap) return SamplerState.AnisotropicWrap;
+                if (u == TextureAddressMode.Clamp) return SamplerState.AnisotropicClamp;
+            }
+
 
             var dstSampler = new SamplerState();
             // _TextureSamplers[gltfSampler] = dstSampler;
@@ -72,6 +85,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
             dstSampler.AddressU = u;
             dstSampler.AddressV = v;
+            dstSampler.Filter = filter;
 
             // ToDo: we also need to set magnification and minification filters.
 
