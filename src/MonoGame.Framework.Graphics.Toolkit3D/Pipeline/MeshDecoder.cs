@@ -86,14 +86,10 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         XYZW GetColor(int vertexIndex, int colorSetIndex);
 
-        VertexSkinning GetSkinWeights(int vertexIndex);
+        Framework.Graphics.VertexInfluences GetSkinWeights(int vertexIndex);
 
         #endregion
     }
 
-    public struct VertexSkinning
-    {
-        public Framework.Graphics.PackedVector.Short4 Indices;
-        public XYZW Weights;
-    }
+    
 }

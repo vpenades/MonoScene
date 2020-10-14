@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-using TRANSFORM = Microsoft.Xna.Framework.Matrix;
 using V3 = Microsoft.Xna.Framework.Vector3;
 using V4 = Microsoft.Xna.Framework.Vector4;
-using SPARSE8 = Microsoft.Xna.Framework.Vector4;
+using TRANSFORM = Microsoft.Xna.Framework.Matrix;
+using VERTEXINFLUENCES = Microsoft.Xna.Framework.Graphics.VertexInfluences;
+using MORPHINFLUENCES = Microsoft.Xna.Framework.Graphics.VertexInfluences;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
@@ -31,7 +32,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// </remarks>
         bool FlipFaces { get; }
 
-        /*
+        
         /// <summary>
         /// Transforms a vertex position from local mesh space to world space.
         /// </summary>
@@ -39,7 +40,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <param name="positionDeltas">The local position deltas of the vertex, one for each morph target, or null.</param>
         /// <param name="skinWeights">The skin weights of the vertex, or default.</param>
         /// <returns>A position in world space.</returns>
-        V3 TransformPosition(V3 position, IReadOnlyList<V3> positionDeltas, in SPARSE8 skinWeights);
+        V3 TransformPosition(V3 position, IReadOnlyList<V3> positionDeltas, in VERTEXINFLUENCES skinWeights);
 
         /// <summary>
         /// Transforms a vertex normal from local mesh space to world space.
@@ -48,7 +49,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <param name="normalDeltas">The local normal deltas of the vertex, one for each morph target, or null.</param>
         /// <param name="skinWeights">The skin weights of the vertex, or default.</param>
         /// <returns>A normal in world space.</returns>
-        V3 TransformNormal(V3 normal, IReadOnlyList<V3> normalDeltas, in SPARSE8 skinWeights);
+        V3 TransformNormal(V3 normal, IReadOnlyList<V3> normalDeltas, in VERTEXINFLUENCES skinWeights);
 
         /// <summary>
         /// Transforms a vertex tangent from local mesh space to world space.
@@ -57,10 +58,10 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <param name="tangentDeltas">The local tangent deltas of the vertex, one for each morph target, or null.</param>
         /// <param name="skinWeights">The skin weights of the vertex, or default.</param>
         /// <returns>A tangent in world space.</returns>
-        V4 TransformTangent(V4 tangent, IReadOnlyList<V3> tangentDeltas, in SPARSE8 skinWeights);
+        V4 TransformTangent(V4 tangent, IReadOnlyList<V3> tangentDeltas, in VERTEXINFLUENCES skinWeights);
 
         V4 MorphColors(V4 color, IReadOnlyList<V4> morphTargets);
-        */
+        
     }
 
     abstract class MeshMorphTransform
@@ -72,7 +73,7 @@ namespace Microsoft.Xna.Framework.Graphics
             Update(default, false);
         }
 
-        protected MeshMorphTransform(SPARSE8 morphWeights, bool useAbsoluteMorphTargets)
+        protected MeshMorphTransform(MORPHINFLUENCES morphWeights, bool useAbsoluteMorphTargets)
         {
             Update(morphWeights, useAbsoluteMorphTargets);
         }
@@ -86,7 +87,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// - Index of value <see cref="COMPLEMENT_INDEX"/> points to the Mesh master positions.
         /// - All other indices point to Mesh MorphTarget[index] positions.
         /// </summary>
-        private SPARSE8 _Weights;
+        private MORPHINFLUENCES _Weights;
 
         public const int COMPLEMENT_INDEX = 65536;
 
@@ -103,7 +104,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <summary>
         /// Gets the current morph weights to use for morph target blending. <see cref="COMPLEMENT_INDEX"/> represents the index for the base geometry.
         /// </summary>
-        public SPARSE8 MorphWeights => _Weights;
+        public MORPHINFLUENCES MorphWeights => _Weights;
 
         /// <summary>
         /// Gets a value indicating whether morph target values are absolute, and not relative to the master value.
@@ -114,14 +115,14 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region API
 
-        public void Update(SPARSE8 morphWeights, bool useAbsoluteMorphTargets = false)
+        public void Update(MORPHINFLUENCES morphWeights, bool useAbsoluteMorphTargets = false)
         {
             /*
             _AbsoluteMorphTargets = useAbsoluteMorphTargets;
 
             if (morphWeights.IsWeightless)
             {
-                _Weights = SPARSE8.Create((COMPLEMENT_INDEX, 1));
+                _Weights = MORPHINFLUENCES.Create((COMPLEMENT_INDEX, 1));
                 return;
             }
 
@@ -216,7 +217,7 @@ namespace Microsoft.Xna.Framework.Graphics
             Update(worldMatrix);
         }
 
-        public MeshRigidTransform(TRANSFORM worldMatrix, SPARSE8 morphWeights, bool useAbsoluteMorphs)
+        public MeshRigidTransform(TRANSFORM worldMatrix, MORPHINFLUENCES morphWeights, bool useAbsoluteMorphs)
         {
             Update(morphWeights, useAbsoluteMorphs);
             Update(worldMatrix);
@@ -262,29 +263,29 @@ namespace Microsoft.Xna.Framework.Graphics
             _FlipFaces = determinant3x3 < 0;
         }
 
-        /*
-        public V3 TransformPosition(V3 position, IReadOnlyList<V3> morphTargets, in SPARSE8 skinWeights)
+        
+        public V3 TransformPosition(V3 position, IReadOnlyList<V3> morphTargets, in VERTEXINFLUENCES skinWeights)
         {
             position = MorphVectors(position, morphTargets);
 
             return V3.Transform(position, _WorldMatrix);
         }
 
-        public V3 TransformNormal(V3 normal, IReadOnlyList<V3> morphTargets, in SPARSE8 skinWeights)
+        public V3 TransformNormal(V3 normal, IReadOnlyList<V3> morphTargets, in VERTEXINFLUENCES skinWeights)
         {
             normal = MorphVectors(normal, morphTargets);
 
             return V3.Normalize(V3.TransformNormal(normal, _WorldMatrix));
         }
 
-        public V4 TransformTangent(V4 tangent, IReadOnlyList<V3> morphTargets, in SPARSE8 skinWeights)
+        public V4 TransformTangent(V4 tangent, IReadOnlyList<V3> morphTargets, in VERTEXINFLUENCES skinWeights)
         {
             var t = MorphVectors(new V3(tangent.X, tangent.Y, tangent.Z), morphTargets);
 
             t = V3.Normalize(V3.TransformNormal(t, _WorldMatrix));
 
             return new V4(t, tangent.W);
-        }*/
+        }
 
         #endregion
     }
@@ -295,13 +296,13 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public MeshSkinTransform() { }
 
-        public MeshSkinTransform(TRANSFORM[] invBindMatrix, TRANSFORM[] currWorldMatrix, SPARSE8 morphWeights, bool useAbsoluteMorphTargets)
+        public MeshSkinTransform(TRANSFORM[] invBindMatrix, TRANSFORM[] currWorldMatrix, MORPHINFLUENCES morphWeights, bool useAbsoluteMorphTargets)
         {
             Update(morphWeights, useAbsoluteMorphTargets);
             Update(invBindMatrix, currWorldMatrix);
         }
 
-        public MeshSkinTransform(int count, Func<int, TRANSFORM> invBindMatrix, Func<int, TRANSFORM> currWorldMatrix, SPARSE8 morphWeights, bool useAbsoluteMorphTargets)
+        public MeshSkinTransform(int count, Func<int, TRANSFORM> invBindMatrix, Func<int, TRANSFORM> currWorldMatrix, MORPHINFLUENCES morphWeights, bool useAbsoluteMorphTargets)
         {
             Update(morphWeights, useAbsoluteMorphTargets);
             Update(count, invBindMatrix, currWorldMatrix);
@@ -317,10 +318,13 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region properties
 
+        public bool Visible => true;
+        public bool FlipFaces => false;
+
         /// <summary>
         /// Gets the collection of the current, final matrices to use for skinning
         /// </summary>
-        public IReadOnlyList<TRANSFORM> SkinMatrices => _SkinTransforms;
+        public IReadOnlyList<TRANSFORM> SkinMatrices => _SkinTransforms;        
 
         #endregion
 
@@ -351,17 +355,10 @@ namespace Microsoft.Xna.Framework.Graphics
             {
                 _SkinTransforms[i] = invBindMatrix(i) * currWorldMatrix(i);
             }
-        }
-
-        public bool Visible => true;
-
-        public bool FlipFaces => false;
-
-        /*
-        public V3 TransformPosition(V3 localPosition, IReadOnlyList<V3> morphTargets, in SPARSE8 skinWeights)
+        }        
+        
+        public V3 TransformPosition(V3 localPosition, IReadOnlyList<V3> morphTargets, in VERTEXINFLUENCES skinWeights)
         {
-            Guard.NotNull(skinWeights, nameof(skinWeights));
-
             localPosition = MorphVectors(localPosition, morphTargets);
 
             var worldPosition = V3.Zero;
@@ -376,10 +373,8 @@ namespace Microsoft.Xna.Framework.Graphics
             return worldPosition;
         }
 
-        public V3 TransformNormal(V3 localNormal, IReadOnlyList<V3> morphTargets, in SPARSE8 skinWeights)
+        public V3 TransformNormal(V3 localNormal, IReadOnlyList<V3> morphTargets, in VERTEXINFLUENCES skinWeights)
         {
-            Guard.NotNull(skinWeights, nameof(skinWeights));
-
             localNormal = MorphVectors(localNormal, morphTargets);
 
             var worldNormal = V3.Zero;
@@ -392,10 +387,8 @@ namespace Microsoft.Xna.Framework.Graphics
             return V3.Normalize(localNormal);
         }
 
-        public V4 TransformTangent(V4 localTangent, IReadOnlyList<V3> morphTargets, in SPARSE8 skinWeights)
+        public V4 TransformTangent(V4 localTangent, IReadOnlyList<V3> morphTargets, in VERTEXINFLUENCES skinWeights)
         {
-            Guard.NotNull(skinWeights, nameof(skinWeights));
-
             var localTangentV = MorphVectors(new V3(localTangent.X, localTangent.Y, localTangent.Z), morphTargets);
 
             var worldTangent = V3.Zero;
@@ -408,7 +401,7 @@ namespace Microsoft.Xna.Framework.Graphics
             worldTangent = V3.Normalize(worldTangent);
 
             return new V4(worldTangent, localTangent.W);
-        }*/
+        }
 
         #endregion        
     }

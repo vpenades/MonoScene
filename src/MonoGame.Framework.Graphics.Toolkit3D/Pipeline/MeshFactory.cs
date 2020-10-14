@@ -19,6 +19,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         public MeshFactory(GraphicsDevice device)
         {
             _Device = device;
+
+            _TextureFactory = new ImageFileTextureFactory(_Device);
         }
 
         #endregion
@@ -28,7 +30,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         private readonly GraphicsDevice _Device;
 
         private MeshPrimitiveMaterial _DefaultMaterial;
-        private readonly Dictionary<TMaterial, MeshPrimitiveMaterial> _Materials = new Dictionary<TMaterial, MeshPrimitiveMaterial>();
+        private readonly Dictionary<TMaterial, MeshPrimitiveMaterial> _Materials = new Dictionary<TMaterial, MeshPrimitiveMaterial>();        
 
         /// <summary>
         /// Gathers all disposable resources shared by the collection of meshes:
@@ -41,6 +43,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         /// </summary>
         private GraphicsResourceTracker _Disposables;
 
+        private ImageFileTextureFactory _TextureFactory;
+
         #endregion
 
         #region properties
@@ -49,6 +53,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         #endregion
 
         #region API
+
+        protected TextureFactory<Byte[]> FileContentTextureFactory => _TextureFactory;
 
         public MeshCollection CreateMeshCollection(IEnumerable<IMeshDecoder<TMaterial>> srcMeshes)
         {
@@ -119,8 +125,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         }
 
         protected abstract MeshPrimitiveMaterial ConvertMaterial(TMaterial material, bool mustSupportSkinning);
-        
-        #endregion
+
+        #endregion        
     }
 
     public class MeshPrimitiveMaterial

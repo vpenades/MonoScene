@@ -18,6 +18,7 @@ namespace MonoGameViewer
     {
         #region data
 
+        bool _IsAssimp;
         SharpGLTF.Schema2.ModelRoot _Model;
         ModelCollectionContent _ModelTemplate;
         BoundingSphere _ModelSphere;
@@ -27,6 +28,7 @@ namespace MonoGameViewer
         private ModelInstance _ModelInstance;
 
         private Quaternion _Rotation = Quaternion.Identity;
+        private float _Zoom = 2.5f;
 
         private readonly GlobalLight _GlobalLight = new GlobalLight();
         private readonly PunctualLight[] _PunctualLights = new PunctualLight[] { PunctualLight.CreateDefault(0), PunctualLight.CreateDefault(1), PunctualLight.CreateDefault(2) };
@@ -59,32 +61,38 @@ namespace MonoGameViewer
 
         public void LoadModel(string filePath)
         {
-            SharpGLTF.Schema2.ModelRoot model;
-
             try
             {
-                if (filePath.ToLower().EndsWith(".zip"))
+                var fp = filePath.ToLower();
+
+                if (fp.EndsWith(".zip"))
                 {
-                    model = SharpGLTF.IO.ZipReader.LoadSchema2(filePath, ValidationMode.TryFix);
+                    _Model = SharpGLTF.IO.ZipReader.LoadSchema2(filePath, ValidationMode.TryFix);
+                    _IsAssimp = false;
                 }
-                else
+                else if (fp.EndsWith(".glb") || fp.EndsWith(".gltf"))
                 {
-                    model = SharpGLTF.Schema2.ModelRoot.Load(filePath, ValidationMode.TryFix);
+                    _Model = SharpGLTF.Schema2.ModelRoot.Load(filePath, ValidationMode.TryFix);
+                    _IsAssimp = false;
+                }
+                else if (fp.EndsWith(".obj") || fp.EndsWith(".blend") || fp.EndsWith(".fbx"))
+                {
+                    _IsAssimp = true;
+                    _ModelTemplate = Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatAssimp.LoadModel(filePath, GraphicsDevice, _UseClassicEffects);
+                    _ModelSphere = _ModelTemplate.DefaultModel.ModelBounds;
+                    _ModelInstance = null;
                 }
             }
-            catch(Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.Message, "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
-                return;
-            }
+            catch(Exception ex) { System.Windows.MessageBox.Show(ex.Message, "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error); return; }
+
             
-            _Model = model;            
 
             _ProcessModel();
         }
 
         private void _ProcessModel()
         {
+            if (_IsAssimp) return;
             if (_Model == null) return;
             if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
 
@@ -107,9 +115,21 @@ namespace MonoGameViewer
             _Rotation.Normalize();
         }
 
+        public void ZoomModel(float z)
+        {
+            _Zoom += z * 0.001f;
+            if (_Zoom < 0.0001f) _Zoom = 0.0001f;
+        }
+
         public override void Update(GameTime gameTime)
         {
-            if (_ModelInstance == null && _ModelTemplate != null) _ModelInstance = _ModelTemplate.DefaultModel.CreateInstance();
+            if (_ModelInstance == null && _ModelTemplate != null)
+            {
+                _ModelInstance = _ModelTemplate.DefaultModel.CreateInstance();
+
+                _Rotation = Quaternion.Identity;
+                _Zoom = 2.5f;
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -123,7 +143,7 @@ namespace MonoGameViewer
             
 
             var lookAt = _ModelSphere.Center;
-            var camPos = _ModelSphere.Center + new Vector3(0, 0, _ModelSphere.Radius * 2.5f);
+            var camPos = _ModelSphere.Center + new Vector3(0, 0, _ModelSphere.Radius * _Zoom);
 
             var camera = Matrix.CreateWorld(camPos, lookAt - camPos, Vector3.UnitY);
 

@@ -11,10 +11,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Effects\Shaders\Resources\*.mgfxo" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="PBREnvironment.cs" />
   </ItemGroup>  
 
   <ItemGroup>
@@ -23,6 +19,10 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MonoGame.Framework.Graphics.Content3D\MonoGame.Framework.Graphics.Content3D.csproj" />
   </ItemGroup>
 
   <ItemGroup>

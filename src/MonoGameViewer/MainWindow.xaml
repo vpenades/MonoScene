@@ -40,7 +40,8 @@
             </StackPanel>
         </ScrollViewer>
 
-        <monoGameControls:MonoGameContentControl MouseMove="_OnMouseMove" />
+        <monoGameControls:MonoGameContentControl MouseMove="_OnMouseMove" MouseWheel="_OnMouseWheel" />
+        
     </DockPanel>
     
     

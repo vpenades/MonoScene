@@ -32,7 +32,9 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         public Texture2D UseTexture(TTexture image, string name = null)
         {
-            if (_Device == null) throw new InvalidOperationException();            
+            if (_Device == null) throw new InvalidOperationException();
+
+            if (image == null) return null;
 
             if (_Textures.TryGetValue(image, out Texture2D tex)) return tex;
 
@@ -93,6 +95,22 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         }
 
         #endregion        
+    }
+
+    public sealed class ImageFileTextureFactory : TextureFactory<Byte[]>
+    {
+        public ImageFileTextureFactory(GraphicsDevice device) : base(device)
+        {
+            
+        }
+
+        protected override Texture2D ConvertTexture(byte[] image)
+        {
+            using(var s = new System.IO.MemoryStream(image))
+            {
+                return Texture2D.FromStream(this.Device, s);
+            }
+        }
     }
 
     public sealed class SolidColorTextureFactory : TextureFactory<Color>

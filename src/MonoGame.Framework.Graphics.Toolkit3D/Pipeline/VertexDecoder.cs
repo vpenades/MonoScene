@@ -34,7 +34,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
             var dst = new TVertex[srcMesh.VertexCount];
 
-            VertexSkinning skinning = default; // skin joints indices            
+            VertexInfluences skinning = default; // skin joints indices            
 
             for (int i = 0; i < dst.Length; ++i)
             {

@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MonoGame.Framework.Graphics.GLTF\MonoGame.Framework.Pipeline.GLTF.csproj" />
     <ProjectReference Include="..\MonoGame.Framework.Graphics.Scene3D\MonoGame.Framework.Graphics.Scene3D.csproj" />
+    <ProjectReference Include="..\MonoGame.Framework.Pipeline.Assimp\MonoGame.Framework.Pipeline.Assimp.csproj" />
   </ItemGroup>
 
 

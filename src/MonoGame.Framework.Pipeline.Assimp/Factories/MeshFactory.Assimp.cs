@@ -1,24 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework.Graphics;
 
-using GLTFMATERIAL = SharpGLTF.Schema2.Material;
-
 namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 {
-    /// <summary>
-    /// Gltf loading factory using in built monogame's effects like <see cref="BasicEffect"/> and <see cref="SkinnedEffect"/>
-    /// </summary>
-    /// <remarks>
-    /// Monogame's BasicEffect and SkinnedEffect use Phong's shading, while glTF uses PBR shading,
-    /// so given monogame's limitations, we try to guess the most appropiate values to have a
-    /// reasonably good looking renders.
-    /// 
-    /// Also, for SkinnedEffect, skinning is limited to 72 bones.
-    /// </remarks>
-    public class BasicMeshFactory : GLTFMeshFactory
+    public abstract class AssimpMeshFactory : MeshFactory<Assimp.Material>
+    {
+        #region lifecycle
+
+        protected AssimpMeshFactory(GraphicsDevice device)
+            : base(device) { }
+
+        #endregion        
+
+        #region mesh converters
+
+        public MeshCollection CreateMeshCollection(IEnumerable<Assimp.Mesh> logicalMeshes, Func<int, Assimp.Material> mats)
+        {
+            var meshes = logicalMeshes
+                .Select(item => new _MeshDecoder<Assimp.Material>(item, mats(item.MaterialIndex)))
+                .Cast<IMeshDecoder<Assimp.Material>>()
+                .ToArray();
+
+            return CreateMeshCollection(meshes);
+        }
+
+        protected override MeshPrimitiveMaterial ConvertMaterial(Assimp.Material srcMaterial, bool isSkinned)
+        {
+            var matContent = srcMaterial.ToXna();
+
+            var effect = ConvertMaterial(matContent, isSkinned);
+
+            var material = new MeshPrimitiveMaterial();
+
+            material.Effect = effect;
+            material.DoubleSided = srcMaterial.HasTwoSided;
+            material.Blend = matContent.Mode == MaterialBlendMode.Blend ? BlendState.NonPremultiplied : BlendState.Opaque;
+
+            return material;
+        }
+
+        protected abstract Effect ConvertMaterial(MaterialContent srcMaterial, bool isSkinned);
+
+        #endregion        
+    }
+
+    public class BasicMeshFactory : AssimpMeshFactory
     {
         #region lifecycle
 
@@ -29,7 +59,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         #region API
 
-        protected override Type GetPreferredVertexType(IMeshPrimitiveDecoder<GLTFMATERIAL> srcPrim)
+        protected override Type GetPreferredVertexType(IMeshPrimitiveDecoder<Assimp.Material> srcPrim)
         {
             return srcPrim.JointsWeightsCount > 0 ? typeof(VertexBasicSkinned) : typeof(VertexPositionNormalTexture);
         }
@@ -87,5 +117,24 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         }
 
         #endregion
+    }
+
+    public class PBRMeshFactory : AssimpMeshFactory
+    {
+        #region lifecycle
+
+        public PBRMeshFactory(GraphicsDevice device)
+            : base(device) { }
+
+        #endregion
+
+        #region API
+        
+        protected override Effect ConvertMaterial(MaterialContent srcMaterial, bool mustSupportSkinning)
+        {
+            return PBREffectsFactory.CreatePBREffect(srcMaterial, mustSupportSkinning, Device, tobj => FileContentTextureFactory.UseTexture(tobj as Byte[]));
+        }
+
+        #endregion        
     }
 }

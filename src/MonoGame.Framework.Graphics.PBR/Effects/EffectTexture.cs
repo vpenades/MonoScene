@@ -75,10 +75,11 @@ namespace Microsoft.Xna.Framework.Graphics
             set => _TextureSetIndex = value;
         }
 
-        public (Vector3, Vector3) Transform
+        // this should be defined as a Matrix3x2, but the type is missing in monogame, so...
+        public (Vector3 U, Vector3 V) Transform
         {
             get => (_TransformU,_TransformV);
-            set { _TransformU = value.Item1; _TransformV = value.Item2; }
+            set { _TransformU = value.U; _TransformV = value.V; }
         }        
 
         #endregion
@@ -132,9 +133,4 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #endregion
     }
-
-    
-
-
-
 }

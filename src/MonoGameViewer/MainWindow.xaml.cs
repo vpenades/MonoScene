@@ -36,7 +36,7 @@ namespace MonoGameViewer
                 if (fe.DataContext is MainScene scene)
                 {
                     var dlg = new OpenFileDialog();
-                    dlg.Filter = "glTF Files|*.gltf;*.glb;*.gltf.zip;*.vrm";
+                    dlg.Filter = "3D Files|*.gltf;*.glb;*.gltf.zip;*.vrm;*.blend;*.obj;*.fbx";
                     dlg.RestoreDirectory = true;
                     if (!dlg.ShowDialog().Value) return;
 
@@ -62,6 +62,17 @@ namespace MonoGameViewer
                 if (fe.DataContext is MainScene scene)
                 {
                     scene.RotateModel((float)delta.X* speed, (float)delta.Y* speed);                    
+                }
+            }
+        }
+
+        private void _OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (sender is FrameworkElement fe)
+            {
+                if (fe.DataContext is MainScene scene)
+                {
+                    scene.ZoomModel(e.Delta);
                 }
             }
         }

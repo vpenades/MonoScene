@@ -4,6 +4,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
+using VERTEXINFLUENCES = Microsoft.Xna.Framework.Graphics.VertexInfluences;
+
 namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 {
     readonly struct _MeshDecoder<TMaterial> : IMeshDecoder<TMaterial>
@@ -83,7 +85,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         public Vector3 GetPosition(int vertexIndex) { return _Source.GetPosition(vertexIndex).ToXna(); }
         public Vector3 GetNormal(int vertexIndex) { return _Source.GetNormal(vertexIndex).ToXna(); }
         public Vector4 GetTangent(int vertexIndex) { return _Source.GetTangent(vertexIndex).ToXna(); }
-        public VertexSkinning GetSkinWeights(int vertexIndex)
+        public VERTEXINFLUENCES GetSkinWeights(int vertexIndex)
         {
             var sparse = _Source
                 .GetSkinWeights(vertexIndex)
@@ -92,11 +94,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             var indices = new Vector4(sparse.Index0, sparse.Index1, sparse.Index2, sparse.Index3);
             var weights = new Vector4(sparse.Weight0, sparse.Weight1, sparse.Weight2, sparse.Weight3);
 
-            return new VertexSkinning
-            {
-                Indices = new Framework.Graphics.PackedVector.Short4(indices),
-                Weights = weights
-            };
+            return new VERTEXINFLUENCES(indices, weights);
         }
 
         
