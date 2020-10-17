@@ -11,6 +11,9 @@ using XYZW = Microsoft.Xna.Framework.Vector4;
 
 namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 {
+    
+
+
     public abstract class MeshFactory<TMaterial>
         where TMaterial : class
     {
@@ -127,6 +130,68 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         protected abstract MeshPrimitiveMaterial ConvertMaterial(TMaterial material, bool mustSupportSkinning);
 
         #endregion        
+    }
+
+    public class MeshFactory : MeshFactory<MaterialContent>
+    {
+        public MeshFactory(GraphicsDevice device) : base(device)
+        {
+        }
+
+        protected override MeshPrimitiveMaterial ConvertMaterial(MaterialContent srcMaterial, bool isSkinned)
+        {
+            AnimatedEffect effect = CreateEffect(srcMaterial, isSkinned);
+
+            var material = new MeshPrimitiveMaterial();
+
+            material.Effect = effect;
+            material.DoubleSided = srcMaterial.DoubleSided;
+            material.Blend = srcMaterial.Mode == MaterialBlendMode.Blend ? BlendState.NonPremultiplied : BlendState.Opaque;
+
+            return material;
+        }
+
+        protected virtual AnimatedEffect CreateEffect(MaterialContent srcMaterial, bool isSkinned)
+        {
+            return PBREffectsFactory.CreatePBREffect(srcMaterial, isSkinned, Device, tobj => FileContentTextureFactory.UseTexture(tobj as Byte[]));
+        }
+
+        public static IEnumerable<(Vector3 A,Vector3 B,Vector3 C)> EvaluateTriangles(ModelInstance instance, IReadOnlyList<IMeshDecoder<MaterialContent>> meshes)
+        {
+            foreach(var drawable in instance.DrawableInstances)
+            {
+                var srcMesh = meshes[drawable.Template.MeshIndex];
+                var srcXfrm = drawable.Transform;
+
+                foreach(var prim in srcMesh.Primitives)
+                {
+                    foreach (var (idx0, idx1, idx2) in prim.TriangleIndices)
+                    {
+                        var pos0 = prim.GetPosition(idx0);
+                        var pos1 = prim.GetPosition(idx1);
+                        var pos2 = prim.GetPosition(idx2);
+
+                        var sjw0 = prim.GetSkinWeights(idx0);
+                        var sjw1 = prim.GetSkinWeights(idx1);
+                        var sjw2 = prim.GetSkinWeights(idx2);
+
+                        var a = srcXfrm.TransformPosition(pos0, null, sjw0);
+                        var b = srcXfrm.TransformPosition(pos1, null, sjw1);
+                        var c = srcXfrm.TransformPosition(pos2, null, sjw2);
+
+                        yield return (a, b, c);
+                    }
+                }
+            }
+        }
+
+        public static BoundingSphere EvaluateBoundingSphere(ModelInstance instance, IReadOnlyList<IMeshDecoder<MaterialContent>> meshes)
+        {
+            var triangles = EvaluateTriangles(instance, meshes)
+                .SelectMany(item => new[] { item.A, item.B, item.C });
+
+            return BoundingSphere.CreateFromPoints(triangles);
+        }
     }
 
     public class MeshPrimitiveMaterial

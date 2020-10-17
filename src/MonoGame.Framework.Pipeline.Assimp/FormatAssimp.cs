@@ -19,16 +19,18 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         public static ModelCollectionContent ReadModel(Assimp.Scene scene, GraphicsDevice graphics, bool useBasicEffects = false)
         {
-            AssimpMeshFactory meshFactory = useBasicEffects ? (AssimpMeshFactory)new BasicMeshFactory(graphics) : new PBRMeshFactory(graphics);
+            MeshFactory meshFactory = new MeshFactory(graphics);
 
             return ConvertToXna(scene, meshFactory);
         }
 
-        public static ModelCollectionContent ConvertToXna(Assimp.Scene scene, AssimpMeshFactory meshFactory)
+        public static ModelCollectionContent ConvertToXna(Assimp.Scene scene, MeshFactory meshFactory)
         {
             if (meshFactory == null) throw new ArgumentNullException();
 
-            var meshCollection = meshFactory.CreateMeshCollection(scene.Meshes, idx => scene.Materials[idx]);
+            var dstMeshes = scene.Meshes.ToXna(scene.Materials);
+
+            var meshCollection = meshFactory.CreateMeshCollection(dstMeshes);
             
             var models = new List<ModelTemplate>();
             var armatures = new List<ArmatureTemplate>();
@@ -38,8 +40,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             armatures.Add(armature);
 
             var model = armatureFactory.CreateModel(scene, armature);
-            // model.ModelBounds = scene.EvaluateBoundingSphere().ToXna();
-            model.ModelBounds = new BoundingSphere(Vector3.Zero, 1000); // temporary hack
+            model.ModelBounds = MeshFactory.EvaluateBoundingSphere(model.CreateInstance(), dstMeshes);
             models.Add(model);            
 
             return new ModelCollectionContent(meshCollection, armatures.ToArray(), models.ToArray(), 0);            

@@ -69,6 +69,20 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             return dstMaterial;
         }
 
+        public static IReadOnlyList<IMeshDecoder<MaterialContent>> ToXna(this IReadOnlyList<Assimp.Mesh> srcMeshes, IReadOnlyList<Assimp.Material> srcMaterials)
+        {
+            var dstMaterials = srcMaterials
+                .Select(item => item.ToXna())
+                .ToArray();
+
+            var dstMeshes = srcMeshes
+                .Select(item => new _MeshDecoder<MaterialContent>(item, dstMaterials[item.MaterialIndex]))
+                .Cast<IMeshDecoder<MaterialContent>>()
+                .ToArray();
+
+            return dstMeshes;
+        }
+
         private static void SetTexture(MaterialContent dstMaterial, string slot, Assimp.TextureSlot srcSlot)
         {
             var dstChannel = dstMaterial.UseChannel(slot);
