@@ -40,6 +40,13 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         #region API
 
+        public ModelTemplate CreateModel(Assimp.Scene scene, ArmatureTemplate armature, IReadOnlyList<IMeshDecoder<MaterialContent>> meshDecoders)
+        {
+            var model = CreateModel(scene, armature);
+            model.ModelBounds = MeshFactory.EvaluateBoundingSphere(model.CreateInstance(), meshDecoders);
+            return model;
+        }
+
         public ModelTemplate CreateModel(Assimp.Scene scene, ArmatureTemplate armature)
         {
             var drawables = Flatten(scene.RootNode)

@@ -80,6 +80,13 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         #region API
 
+        public ModelTemplate CreateModel(SharpGLTF.Schema2.Scene scene, ArmatureTemplate armature, IReadOnlyList<IMeshDecoder<MaterialContent>> meshDecoders)
+        {
+            var model = CreateModel(scene, armature);
+            model.ModelBounds = MeshFactory.EvaluateBoundingSphere(model.CreateInstance(), meshDecoders);
+            return model;
+        }
+
         public ModelTemplate CreateModel(SharpGLTF.Schema2.Scene scene, ArmatureTemplate armature)
         {
             var drawables = GLTFNODE.Flatten(scene)

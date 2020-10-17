@@ -19,19 +19,21 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         public static ModelCollectionContent ReadModel(Assimp.Scene scene, GraphicsDevice graphics, bool useBasicEffects = false)
         {
-            MeshFactory meshFactory = new MeshFactory(graphics);
+            var factory = useBasicEffects ? (MeshFactory)new ClassicMeshFactory(graphics) : new PBRMeshFactory(graphics);
 
-            return ConvertToXna(scene, meshFactory);
+            return ConvertToXna(scene, factory);
         }
 
         public static ModelCollectionContent ConvertToXna(Assimp.Scene scene, MeshFactory meshFactory)
         {
             if (meshFactory == null) throw new ArgumentNullException();
 
-            var dstMeshes = scene.Meshes.ToXna(scene.Materials);
+            // create a mesh decoder for each mesh
 
-            var meshCollection = meshFactory.CreateMeshCollection(dstMeshes);
-            
+            var meshDecoders = scene.Meshes.ToXna(scene.Materials);            
+
+            // build the armatures and models
+
             var models = new List<ModelTemplate>();
             var armatures = new List<ArmatureTemplate>();
 
@@ -39,9 +41,15 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             var armature = armatureFactory.CreateArmature();
             armatures.Add(armature);
 
-            var model = armatureFactory.CreateModel(scene, armature);
-            model.ModelBounds = MeshFactory.EvaluateBoundingSphere(model.CreateInstance(), dstMeshes);
-            models.Add(model);            
+            var model = armatureFactory.CreateModel(scene, armature, meshDecoders);            
+
+            models.Add(model);
+
+            // convert mesh decoders to actual XNA mesh resources
+
+            var meshCollection = meshFactory.CreateMeshCollection(meshDecoders);
+
+            // coalesce all resources into a container class:
 
             return new ModelCollectionContent(meshCollection, armatures.ToArray(), models.ToArray(), 0);            
         }

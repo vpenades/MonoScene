@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,11 +27,11 @@ namespace Demo1
 
         protected override void LoadContent()
         {
-            var gltfModel = SharpGLTF.Schema2.ModelRoot.Load("Content\\WaterBottle.glb");
+            var gltfModel = SharpGLTF.Schema2.ModelRoot.Load("Content\\WaterBottle.glb");            
 
             var factory = new Microsoft.Xna.Framework.Content.Pipeline.Graphics.PBRMeshFactory(this.GraphicsDevice);
 
-            _MeshCollection = factory.CreateMeshCollection(gltfModel.LogicalMeshes);
+            _MeshCollection = Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatGLTF.ConvertToXna(gltfModel.LogicalMeshes.Take(1), factory);
         }
 
         protected override void UnloadContent()

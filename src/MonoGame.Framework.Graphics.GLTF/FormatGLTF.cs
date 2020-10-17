@@ -53,18 +53,28 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         public static ModelCollectionContent ReadModel(SharpGLTF.Schema2.ModelRoot model, GraphicsDevice graphics, bool useBasicEffects = false)
         {
-            var factory = useBasicEffects ? (GLTFMeshFactory)new BasicMeshFactory(graphics) : new PBRMeshFactory(graphics);
+            var factory = useBasicEffects ? (MeshFactory)new ClassicMeshFactory(graphics) : new PBRMeshFactory(graphics);
 
             return ConvertToXna(model, factory);
         }
 
-        public static ModelCollectionContent ConvertToXna(SharpGLTF.Schema2.ModelRoot srcModel, GLTFMeshFactory meshFactory)
+        public static MeshCollection ConvertToXna(IEnumerable<SharpGLTF.Schema2.Mesh> meshes, MeshFactory meshFactory)
         {
             if (meshFactory == null) throw new ArgumentNullException();
 
             // build the meshes
 
-            var meshCollection = meshFactory.CreateMeshCollection(srcModel.LogicalMeshes);
+            var meshDecoders = meshes.ToXna();
+            return meshFactory.CreateMeshCollection(meshDecoders);
+        }
+
+        public static ModelCollectionContent ConvertToXna(SharpGLTF.Schema2.ModelRoot srcModel, MeshFactory meshFactory)
+        {
+            if (meshFactory == null) throw new ArgumentNullException();
+
+            // create a mesh decoder for each mesh
+
+            var meshDecoders = srcModel.LogicalMeshes.ToXna();            
 
             // build the armatures and models
 
@@ -81,13 +91,17 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
                     armatureFactory.SetAnimationTrack(i, track.Name, track.Duration);
                 }
 
+                // TODO: check if we can share armatures
                 var armature = armatureFactory.CreateArmature();
                 armatures.Add(armature);
 
-                var model = armatureFactory.CreateModel(scene, armature);
-                model.ModelBounds = scene.EvaluateBoundingSphere().ToXna();
+                var model = armatureFactory.CreateModel(scene, armature, meshDecoders);                
                 models.Add(model);
             }
+
+            // convert mesh decoders to actual XNA mesh resources
+
+            var meshCollection = meshFactory.CreateMeshCollection(meshDecoders);
 
             // coalesce all resources into a container class:
 

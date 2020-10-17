@@ -17,11 +17,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         public static Vector3 ToXnaVector(this Assimp.Color3D v) { return new Vector3(v.R, v.G, v.B); }
         public static Vector4 ToXnaVector(this Assimp.Color4D v) { return new Vector4(v.R, v.G, v.B, v.A); }
 
-
-
-        public static Quaternion ToXna(this Assimp.Quaternion q) { return new Quaternion(q.X, q.Y, q.Z, q.W); }
-
-        
+        public static Quaternion ToXna(this Assimp.Quaternion q) { return new Quaternion(q.X, q.Y, q.Z, q.W); }        
 
         public static Matrix ToXna(this Assimp.Matrix4x4 m)
         {
@@ -41,7 +37,6 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
             return (u, v);
         }
-
 
         public static MaterialContent ToXna(this Assimp.Material srcMaterial)
         {
@@ -89,7 +84,5 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
             dstChannel.VertexIndexSet = srcSlot.UVIndex;            
         }
-
-
     }
 }

@@ -10,6 +10,11 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
     [System.Diagnostics.DebuggerDisplay("{Name} - {TargetEffectName}")]
     public class MaterialContent
     {
+        #region lifecycle
+        public MaterialContent() { }
+
+        #endregion
+
         #region data
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.RootHidden)]

@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.Graphics.ModelGraph;
 
 using SharpGLTF.Runtime;
+
+using GLTFMATERIAL = SharpGLTF.Schema2.Material;
 
 namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 {
@@ -84,7 +85,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             return TextureFilter.Linear; // fallback
         }
 
-        public static MaterialContent ToXna(this SharpGLTF.Schema2.Material srcMaterial)
+        public static MaterialContent ToXna(this GLTFMATERIAL srcMaterial)
         {
             var dstMaterial = new MaterialContent();
             dstMaterial.Name = srcMaterial.Name;
@@ -138,6 +139,26 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
                 AddressW = TextureAddressMode.Wrap,
                 Filter = (srcSampler.MagFilter, srcSampler.MinFilter).ToXna()
             };
+        }
+
+        public static IReadOnlyList<IMeshDecoder<MaterialContent>> ToXna(this IEnumerable<SharpGLTF.Schema2.Mesh> srcMeshes)
+        {
+            if (!srcMeshes.Any()) return Array.Empty<IMeshDecoder<MaterialContent>>();
+
+            if (srcMeshes.GroupBy(item => item.LogicalParent).Count() > 1) throw new ArgumentException(nameof(srcMeshes));
+
+            var srcMaterials = srcMeshes.First().LogicalParent.LogicalMaterials;
+
+            var dstMaterials = srcMaterials
+                .Select(item => item.ToXna())
+                .ToArray();
+
+            var dstMeshes = srcMeshes
+                .Select(item => new _MeshDecoder(item.Decode(), dstMaterials))
+                .Cast<IMeshDecoder<MaterialContent>>()
+                .ToArray();
+
+            return dstMeshes;
         }
 
         private static float[] ParamToArray(this SharpGLTF.Schema2.MaterialChannel srcChannel)
