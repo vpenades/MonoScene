@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using Microsoft.Xna.Framework.Graphics;
@@ -10,9 +12,34 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 {
     public static class FormatGLTF
     {
+        public static ModelCollectionContent LoadModelFromEmbeddedResource(Assembly assembly, string resourcePath, GraphicsDevice graphics, bool useBasicEffects = false)
+        {
+            resourcePath = assembly
+                .GetManifestResourceNames()
+                .FirstOrDefault(item => item.EndsWith(resourcePath));
+
+            using(var s = assembly.GetManifestResourceStream(resourcePath))
+            {
+                return ReadModel(s, graphics, useBasicEffects);
+            }            
+        }
+
+        /// <summary>
+        /// Loads a glTF or a glb from the file system.
+        /// </summary>
         public static ModelCollectionContent LoadModel(string filePath, GraphicsDevice graphics, bool useBasicEffects = false)
         {
             var model = SharpGLTF.Schema2.ModelRoot.Load(filePath, SharpGLTF.Validation.ValidationMode.TryFix);
+
+            return ReadModel(model, graphics, useBasicEffects);
+        }
+
+        /// <summary>
+        /// Loads a glb from the file system (no, plain glTFs can't be loaded from stream)
+        /// </summary>
+        public static ModelCollectionContent ReadModel(System.IO.Stream glbModelStream, GraphicsDevice graphics, bool useBasicEffects = false)
+        {
+            var model = SharpGLTF.Schema2.ModelRoot.ReadGLB(glbModelStream, SharpGLTF.Validation.ValidationMode.TryFix);
 
             return ReadModel(model, graphics, useBasicEffects);
         }
@@ -35,12 +62,14 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         {
             if (meshFactory == null) throw new ArgumentNullException();
 
+            // build the meshes
+
             var meshCollection = meshFactory.CreateMeshCollection(srcModel.LogicalMeshes);
 
-            var models = new List<ModelTemplate>();
-            var armatures = new List<ArmatureTemplate>();
+            // build the armatures and models
 
-            
+            var armatures = new List<ArmatureTemplate>();
+            var models = new List<ModelTemplate>();            
 
             foreach (var scene in srcModel.LogicalScenes)
             {
@@ -59,6 +88,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
                 model.ModelBounds = scene.EvaluateBoundingSphere().ToXna();
                 models.Add(model);
             }
+
+            // coalesce all resources into a container class:
 
             return new ModelCollectionContent(meshCollection, armatures.ToArray(), models.ToArray(), srcModel.DefaultScene.LogicalIndex);
         }       
