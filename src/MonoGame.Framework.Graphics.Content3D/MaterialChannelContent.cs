@@ -18,24 +18,27 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         {
             switch (key)
             {
-                case "Emissive": return new float[] { 0, 0, 0 };
-
                 case "Normal":                
                 case "Occlusion":
-                    return new float[] { 1 };
+                case "ClearCoat":
+                case "ClearCoatNormal":
+                case "ClearCoatRoughness":
+                    return new float[] { 1 }; // Amount/Scale/Factor
+
+                case "Emissive": return new float[] { 0, 0, 0 }; // RGB
 
                 case "BaseColor":
                 case "Diffuse":
-                    return new float[] { 1, 1, 1, 1 };
+                    return new float[] { 1, 1, 1, 1 }; // RGBA
 
                 case "MetallicRoughness":
-                    return new float[] { 1, 1 };
+                    return new float[] { 1, 1 }; // R:Metallic G:Roughness
 
                 case "SpecularGlossiness":
-                    return new float[] { 1, 1, 1, 1 };
-                
-                default: throw new NotImplementedException();
+                    return new float[] { 1, 1, 1, 1 }; // RGB:Specular, A:Glossiness                
             }
+
+            throw new NotImplementedException();
         }
 
         #endregion

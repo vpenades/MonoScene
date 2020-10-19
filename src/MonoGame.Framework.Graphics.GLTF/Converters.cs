@@ -168,6 +168,9 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             {
                 case "Normal":
                 case "Occlusion":
+                case "ClearCoat":
+                case "ClearCoatNormal":
+                case "ClearCoatRoughness":
                     return new float[] { val.X };
 
                 case "MetallicRoughness":
