@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.IO;
 using System.Linq;
 
 using Microsoft.Xna.Framework;
@@ -27,7 +28,7 @@ namespace Demo1
 
         protected override void LoadContent()
         {
-            var gltfModel = SharpGLTF.Schema2.ModelRoot.Load("Content\\WaterBottle.glb");            
+            var gltfModel = SharpGLTF.Schema2.ModelRoot.Load($"Content{Path.DirectorySeparatorChar}WaterBottle.glb");            
 
             var factory = new Microsoft.Xna.Framework.Content.Pipeline.Graphics.PBRMeshFactory(this.GraphicsDevice);
 
