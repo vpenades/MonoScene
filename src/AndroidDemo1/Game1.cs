@@ -25,7 +25,7 @@ namespace AndroidDemo1
         protected override void LoadContent()
         {
             var thisAssembly = typeof(Game1).Assembly;
-            _ModelTemplate = Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatGLTF.LoadModelFromEmbeddedResource(thisAssembly,"CesiumMan.glb", this.GraphicsDevice);
+            _ModelTemplate = Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatGLTF.LoadModelFromEmbeddedResource(thisAssembly,"CesiumMan.glb", this.GraphicsDevice);
         }
 
         protected override void UnloadContent()
@@ -44,7 +44,7 @@ namespace AndroidDemo1
 
         private PBREnvironment _LightsAndFog = PBREnvironment.CreateDefault();
 
-        private ModelCollectionContent _ModelTemplate;
+        private DeviceModelCollection _ModelTemplate;
 
         #endregion
 

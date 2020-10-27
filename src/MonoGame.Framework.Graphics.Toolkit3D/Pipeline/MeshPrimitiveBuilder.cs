@@ -5,7 +5,7 @@ using System.Threading;
 
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
+namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 {
     /// <summary>
     /// Accumulates all the primitives of all the meshes of a model, so they can be optimized/batched.

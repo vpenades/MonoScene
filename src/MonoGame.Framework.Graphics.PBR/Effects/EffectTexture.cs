@@ -4,8 +4,22 @@ using System.Text;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
+    
     public abstract class EffectTexture2D
     {
+        #region
+
+        protected virtual string DebuggerDisplay()
+        {
+            var txt = string.Empty;
+
+            if (_Texture != null) txt += $"UVSet{_TextureSetIndex}-Tex({_Texture.Width},{_Texture.Height})";
+
+            return txt;
+        }
+
+        #endregion
+
         #region lifecycle
 
         static EffectTexture2D()
@@ -103,29 +117,39 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region nested
 
+        [System.Diagnostics.DebuggerDisplay("{DebuggerDisplay(),nq}")]
         public sealed class Scalar1 : EffectTexture2D
         {
+            protected override string DebuggerDisplay() { return base.DebuggerDisplay() + $" x {Scale}"; }
+
             internal Scalar1(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
             public float Scale { get; set; }
             internal override void Apply() { base.Apply(); _TextureScale.SetValue(Scale); }
         }
 
+        [System.Diagnostics.DebuggerDisplay("{DebuggerDisplay(),nq}")]
         public sealed class Scalar2 : EffectTexture2D
         {
+            protected override string DebuggerDisplay() { return base.DebuggerDisplay() + $" x <{Scale.X},{Scale.Y}>"; }
+
             internal Scalar2(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
             public Vector2 Scale { get; set; }
             internal override void Apply() { base.Apply(); _TextureScale.SetValue(Scale); }
         }
 
+        [System.Diagnostics.DebuggerDisplay("{DebuggerDisplay(),nq}")]
         public sealed class Scalar3 : EffectTexture2D
         {
+            protected override string DebuggerDisplay() { return base.DebuggerDisplay() + $" x <{Scale.X},{Scale.Y},{Scale.Z}>"; }
             internal Scalar3(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
             public Vector3 Scale { get; set; }
             internal override void Apply() { base.Apply(); _TextureScale.SetValue(Scale); }
         }
 
+        [System.Diagnostics.DebuggerDisplay("{DebuggerDisplay(),nq}")]
         public sealed class Scalar4 : EffectTexture2D
         {
+            protected override string DebuggerDisplay() { return base.DebuggerDisplay() + $" x <{Scale.X},{Scale.Y},{Scale.Z},{Scale.W}>"; }
             internal Scalar4(GraphicsDevice gd, EffectParameterCollection parameters, string name, int samplerIdx) : base(gd, parameters, name, samplerIdx) { }
             public Vector4 Scale { get; set; }
             internal override void Apply() { base.Apply(); _TextureScale.SetValue(Scale); }

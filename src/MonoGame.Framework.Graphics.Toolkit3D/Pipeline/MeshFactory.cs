@@ -9,7 +9,7 @@ using XY = Microsoft.Xna.Framework.Vector2;
 using XYZ = Microsoft.Xna.Framework.Vector3;
 using XYZW = Microsoft.Xna.Framework.Vector4;
 
-namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
+namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 {
     public abstract class MeshFactory<TMaterial>
         where TMaterial : class
@@ -28,8 +28,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         #region data
 
         private readonly GraphicsDevice _Device;
-
-        private MeshPrimitiveMaterial _DefaultMaterial;
+        
         private readonly Dictionary<TMaterial, MeshPrimitiveMaterial> _Materials = new Dictionary<TMaterial, MeshPrimitiveMaterial>();        
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         /// - Custom <see cref="BlendState"/>
         /// - Custom <see cref="SamplerState"/>
         /// </summary>
-        private GraphicsResourceTracker _Disposables;
+        internal GraphicsResourceTracker _Disposables;
 
         private ImageFileTextureFactory _TextureFactory;
 
@@ -54,75 +53,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
 
         #region API
 
-        protected TextureFactory<Byte[]> FileContentTextureFactory => _TextureFactory;
-
-        public MeshCollection CreateMeshCollection(IEnumerable<IMeshDecoder<TMaterial>> srcMeshes)
-        {
-            if (srcMeshes == null) throw new ArgumentNullException(nameof(srcMeshes));
-            
-            _Disposables = new GraphicsResourceTracker();            
-
-            int meshIndex = 0;
-
-            var meshPrimitiveBuilder = new MeshPrimitiveBuilder();
-
-            // aggregate the primitives of all meshes, so the builder can determine the shared resources
-
-            foreach (var srcMesh in srcMeshes)
-            {
-                foreach (var srcPrim in srcMesh.Primitives)
-                {
-                    if (!srcPrim.TriangleIndices.Any()) continue;
-
-                    Type vertexType = GetPreferredVertexType(srcPrim);
-
-                    MeshPrimitiveMaterial material = null;
-
-                    // we cannot set a Null Key for a dictionary, so we need to handle null (default) materials separately
-                    if (srcPrim.Material == null) 
-                    {
-                        if (_DefaultMaterial != null) material = _DefaultMaterial;
-                        else
-                        {
-                            material = ConvertMaterial(null, srcPrim.JointsWeightsCount > 0);
-                            if (material == null) throw new NullReferenceException("NULL Material conversion failed");
-                            _DefaultMaterial = material;
-                        }
-                    }
-
-                    // for all other defined materials we follow the dictionary path
-                    else
-                    {
-                        if (!_Materials.TryGetValue(srcPrim.Material, out material))
-                        {
-                            material = ConvertMaterial(srcPrim.Material, srcPrim.JointsWeightsCount > 0);
-                            if (material == null) throw new NullReferenceException("Material conversion failed");
-                            _Materials[srcPrim.Material] = material;
-                        }
-                    }
-
-                    meshPrimitiveBuilder.AppendMeshPrimitive(meshIndex, vertexType, srcPrim, material.Effect, material.Blend, material.DoubleSided);
-                }
-
-                ++meshIndex;
-            }
-
-            // Create the runtime meshes
-
-            var dstMeshes = meshPrimitiveBuilder.CreateRuntimeMeshes(_Device, _Disposables)
-                .OrderBy(item => item.Key)
-                .Select(item => item.Value)
-                .ToArray();
-
-            _Materials.Clear();
-
-            return new MeshCollection(dstMeshes, _Disposables.Disposables.ToArray());
-        }
-
-        protected virtual Type GetPreferredVertexType(IMeshPrimitiveDecoder<TMaterial> srcPrim)
-        {
-            return srcPrim.JointsWeightsCount > 0 ? typeof(VertexSkinned) : typeof(VertexRigid);
-        }
+        protected TextureFactory<Byte[]> FileContentTextureFactory => _TextureFactory;        
 
         protected abstract MeshPrimitiveMaterial ConvertMaterial(TMaterial material, bool mustSupportSkinning);
 
@@ -193,18 +124,71 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             return BoundingSphere.CreateFromPoints(triangles);
         }
 
+        public MeshCollection CreateMeshCollection(MeshCollectionContent srcMeshes)
+        {
+            if (srcMeshes == null) throw new ArgumentNullException(nameof(srcMeshes));
+            _Disposables = new GraphicsResourceTracker();
+
+            var vertexBuffers = srcMeshes.SharedVertexBuffers
+                .Select(item => item.CreateVertexBuffer(Device))
+                .ToArray();
+
+            var indexBuffers = srcMeshes.SharedIndexBuffers
+                .Select(item => item.CreateIndexBuffer(Device))
+                .ToArray();            
+
+            _Disposables.AddDisposables(vertexBuffers);
+            _Disposables.AddDisposables(indexBuffers);
+
+            // There isn't an exact match between content materials and effects,
+            // because depending on the effects we choose, we have to split
+            // between effects supporting skinning or not.            
+            var rigidEffects = new Dictionary<MaterialContent, Effect>();
+            var skinnedEffects = new Dictionary<MaterialContent, Effect>();
+
+            Effect useEffect(MaterialContent srcMaterial, bool isSkinned)
+            {
+                var dict = isSkinned ? skinnedEffects : rigidEffects;
+                if (dict.TryGetValue(srcMaterial, out Effect effect)) return effect;
+                dict[srcMaterial] = effect = CreateEffect(srcMaterial, isSkinned);
+                _Disposables.AddDisposable(effect);
+                return effect;
+            }
+
+            var dstMeshes = new List<Mesh>();
+
+            foreach(var srcMesh in srcMeshes.Meshes)
+            {
+                var dstMesh = new Mesh(Device);
+
+                foreach(var srcPart in srcMesh.Parts)
+                {
+                    var srcMaterial = srcMeshes.SharedMaterials[srcPart.MaterialIndex];
+                    var hasSkin = srcMeshes.SharedVertexBuffers[srcPart.Geometry.VertexBufferIndex].HasSkinning;
+
+                    var dstGeometry = MeshTriangles.CreateFrom(srcPart.Geometry, vertexBuffers, indexBuffers);
+                    dstGeometry.SetCullingStates(srcMaterial.DoubleSided);                    
+
+                    var dstPart = dstMesh.CreateMeshPart();
+                    dstPart.Effect = useEffect(srcMaterial, hasSkin);
+                    dstPart.Blending = srcMaterial.Mode == MaterialBlendMode.Blend ? BlendState.NonPremultiplied : BlendState.Opaque;
+                    dstPart.Geometry = dstGeometry;
+                }
+
+                dstMeshes.Add(dstMesh);
+            }
+
+            return new MeshCollection(dstMeshes.ToArray(), _Disposables.Disposables.ToArray());
+        }
+
         #endregion
     }
 
     public class PBRMeshFactory : MeshFactory
     {
-        #region lifecycle
-
-        public PBRMeshFactory(GraphicsDevice device) : base(device)
-        {
-        }
-
-        #endregion
+        public PBRMeshFactory(GraphicsDevice device)
+            : base(device) { }
+        
         protected override Effect CreateEffect(MaterialContent srcMaterial, bool isSkinned)
         {
             return PBREffectsFactory.CreatePBREffect(srcMaterial, isSkinned, Device, tobj => FileContentTextureFactory.UseTexture(tobj as Byte[]));
@@ -215,72 +199,19 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
     {
         #region lifecycle
 
-        public ClassicMeshFactory(GraphicsDevice device) : base(device)
-        {
-        }
+        public ClassicMeshFactory(GraphicsDevice device)
+            : base(device) { }
 
         #endregion
 
-        #region API
-
-        protected override Type GetPreferredVertexType(IMeshPrimitiveDecoder<MaterialContent> srcPrim)
-        {
-            return srcPrim.JointsWeightsCount > 0 ? typeof(VertexBasicSkinned) : typeof(VertexPositionNormalTexture);
-        }
+        #region API        
 
         protected override Effect CreateEffect(MaterialContent srcMaterial, bool mustSupportSkinning)
         {
             return PBREffectsFactory.CreateClassicEffect(srcMaterial, mustSupportSkinning, Device, tobj => FileContentTextureFactory.UseTexture(tobj as Byte[]));
         }
 
-        #endregion
-
-        #region vertex types
-
-        struct VertexBasicSkinned : IVertexType
-        {
-            #region static
-
-            private static VertexDeclaration _VDecl = CreateVertexDeclaration();
-
-            public static VertexDeclaration CreateVertexDeclaration()
-            {
-                int offset = 0;
-
-                var a = new VertexElement(offset, VertexElementFormat.Vector3, VertexElementUsage.Position, 0);
-                offset += 3 * 4;
-
-                var b = new VertexElement(offset, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0);
-                offset += 3 * 4;
-
-                var c = new VertexElement(offset, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0);
-                offset += 2 * 4;
-
-                var d = new VertexElement(offset, VertexElementFormat.Byte4, VertexElementUsage.BlendIndices, 0);
-                offset += 4 * 1;
-
-                var e = new VertexElement(offset, VertexElementFormat.Vector4, VertexElementUsage.BlendWeight, 0);
-                offset += 4 * 4;
-
-                return new VertexDeclaration(a, b, c, d, e);
-            }
-
-            #endregion
-
-            #region data
-
-            public VertexDeclaration VertexDeclaration => _VDecl;
-
-            public Vector3 Position;
-            public Vector3 Normal;
-            public Vector2 TextureCoordinate;
-            public Framework.Graphics.PackedVector.Byte4 BlendIndices;
-            public Vector4 BlendWeight;
-
-            #endregion
-        }
-
-        #endregion
+        #endregion        
     }
 
     public class MeshPrimitiveMaterial

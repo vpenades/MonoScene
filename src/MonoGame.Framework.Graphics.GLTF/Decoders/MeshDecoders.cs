@@ -4,9 +4,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-using VERTEXINFLUENCES = Microsoft.Xna.Framework.Graphics.VertexInfluences;
+using VERTEXINFLUENCES = Microsoft.Xna.Framework.Graphics.PackedVector.VertexInfluences;
 
-namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
+namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 {
     readonly struct _MeshDecoder : IMeshDecoder<MaterialContent>        
     {

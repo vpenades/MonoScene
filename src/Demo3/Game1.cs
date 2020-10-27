@@ -45,11 +45,11 @@ namespace Demo3
 
         // these are the actual hardware resources that represent every model's geometry.        
 
-        ModelCollectionContent _AvodadoTemplate;
-        ModelCollectionContent _BrainStemTemplate;
-        ModelCollectionContent _CesiumManTemplate;
-        ModelCollectionContent _HauntedHouseTemplate;
-        ModelCollectionContent _SharkTemplate;
+        DeviceModelCollection _AvodadoTemplate;
+        DeviceModelCollection _BrainStemTemplate;
+        DeviceModelCollection _CesiumManTemplate;
+        DeviceModelCollection _HauntedHouseTemplate;
+        DeviceModelCollection _SharkTemplate;
 
         #endregion
 
@@ -57,9 +57,9 @@ namespace Demo3
 
         protected override void LoadContent()
         {
-            ModelCollectionContent _load(string filePath)
+            DeviceModelCollection _load(string filePath)
             {
-                return Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatGLTF.LoadModel(filePath, this.GraphicsDevice);
+                return Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatGLTF.LoadModel(filePath, this.GraphicsDevice);
             }            
 
             _AvodadoTemplate = _load("Content\\Avocado.glb");

@@ -35,6 +35,11 @@ namespace Microsoft.Xna.Framework.Graphics
             _Disposables.Add(resource);
         }
 
+        public void AddDisposables(IEnumerable<GraphicsResource> resources)
+        {
+            foreach (var r in resources) AddDisposable(r);
+        }
+
         #endregion
     }
 }

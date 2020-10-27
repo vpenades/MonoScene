@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
+namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 {
     public static class FormatAssimp
     {
-        public static ModelCollectionContent LoadModel(string filePath, GraphicsDevice graphics, bool useBasicEffects = false)
+        public static DeviceModelCollection LoadModel(string filePath, GraphicsDevice graphics, bool useBasicEffects = false)
         {
             var context = new Assimp.AssimpContext();
 
@@ -17,20 +17,26 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             return ReadModel(scene, graphics, useBasicEffects);
         }
 
-        public static ModelCollectionContent ReadModel(Assimp.Scene scene, GraphicsDevice graphics, bool useBasicEffects = false)
+        public static DeviceModelCollection ReadModel(Assimp.Scene scene, GraphicsDevice graphics, bool useBasicEffects = false)
         {
             var factory = useBasicEffects ? (MeshFactory)new ClassicMeshFactory(graphics) : new PBRMeshFactory(graphics);
 
             return ConvertToXna(scene, factory);
         }
 
-        public static ModelCollectionContent ConvertToXna(Assimp.Scene scene, MeshFactory meshFactory)
+        public static DeviceModelCollection ConvertToXna(Assimp.Scene scene, MeshFactory meshFactory)
         {
             if (meshFactory == null) throw new ArgumentNullException();
 
+            return ConvertToContent(scene).ToDeviceModelCollection(meshFactory);
+        }
+
+        public static ModelCollectionContent ConvertToContent(Assimp.Scene scene)
+        {
             // create a mesh decoder for each mesh
 
-            var meshDecoders = scene.Meshes.ToXna(scene.Materials);            
+            var meshDecoders = scene.Meshes.ToXna(scene.Materials);
+            var meshContent = MeshCollectionContent.CreateFromMeshes(meshDecoders);
 
             // build the armatures and models
 
@@ -41,17 +47,13 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             var armature = armatureFactory.CreateArmature();
             armatures.Add(armature);
 
-            var model = armatureFactory.CreateModel(scene, armature, meshDecoders);            
+            var model = armatureFactory.CreateModel(scene, armature, meshDecoders);
 
-            models.Add(model);
-
-            // convert mesh decoders to actual XNA mesh resources
-
-            var meshCollection = meshFactory.CreateMeshCollection(meshDecoders);
+            models.Add(model);            
 
             // coalesce all resources into a container class:
 
-            return new ModelCollectionContent(meshCollection, armatures.ToArray(), models.ToArray(), 0);            
+            return new ModelCollectionContent(meshContent, armatures.ToArray(), models.ToArray(), 0);
         }
     }
 }

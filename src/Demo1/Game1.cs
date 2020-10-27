@@ -28,11 +28,12 @@ namespace Demo1
 
         protected override void LoadContent()
         {
-            var gltfModel = SharpGLTF.Schema2.ModelRoot.Load($"Content{Path.DirectorySeparatorChar}WaterBottle.glb");            
+            var gltfModel = SharpGLTF.Schema2.ModelRoot.Load($"Content{Path.DirectorySeparatorChar}WaterBottle.glb");
 
-            var factory = new Microsoft.Xna.Framework.Content.Pipeline.Graphics.PBRMeshFactory(this.GraphicsDevice);
+            var contentMeshes = Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatGLTF.ReadMeshContent(gltfModel.LogicalMeshes.Take(1));
 
-            _MeshCollection = Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatGLTF.ConvertToXna(gltfModel.LogicalMeshes.Take(1), factory);
+            var factory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.PBRMeshFactory(this.GraphicsDevice);            
+            _MeshCollection = factory.CreateMeshCollection(contentMeshes);
         }
 
         protected override void UnloadContent()

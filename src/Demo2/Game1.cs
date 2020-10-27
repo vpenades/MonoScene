@@ -24,7 +24,7 @@ namespace Demo2
 
         protected override void LoadContent()
         {
-            _ModelTemplate = Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatGLTF.LoadModel("Content\\CesiumMan.glb", this.GraphicsDevice);            
+            _ModelTemplate = Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatGLTF.LoadModel("Content\\CesiumMan.glb", this.GraphicsDevice);            
         }
 
         protected override void UnloadContent()
@@ -43,7 +43,7 @@ namespace Demo2
 
         private PBREnvironment _LightsAndFog = PBREnvironment.CreateDefault();
 
-        private ModelCollectionContent _ModelTemplate;
+        private DeviceModelCollection _ModelTemplate;
 
         #endregion
 

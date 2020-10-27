@@ -6,8 +6,6 @@ using System.Linq;
 using TRANSFORM = Microsoft.Xna.Framework.Matrix;
 using SPARSE8 = Microsoft.Xna.Framework.Vector4;
 
-using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
-
 namespace Microsoft.Xna.Framework.Graphics
 {
     /// <summary>

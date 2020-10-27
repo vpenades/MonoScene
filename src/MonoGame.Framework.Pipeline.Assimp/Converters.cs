@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.Graphics.ModelGraph;
 
-namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
+namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 {
     static class Converters
     {

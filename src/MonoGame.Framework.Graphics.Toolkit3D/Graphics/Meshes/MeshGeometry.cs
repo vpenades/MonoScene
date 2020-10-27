@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using Microsoft.Xna.Framework.Content.Runtime.Graphics;
+
 namespace Microsoft.Xna.Framework.Graphics
 {
     public interface IMeshGeometry
@@ -12,7 +14,18 @@ namespace Microsoft.Xna.Framework.Graphics
 
     public class MeshTriangles : IMeshGeometry
     {
-        #region lifecycle       
+        #region lifecycle
+
+        public static MeshTriangles CreateFrom(MeshGeometryContent content, IReadOnlyList<VertexBuffer> vb, IReadOnlyList<IndexBuffer> ib)
+        {
+            var tris = new MeshTriangles();
+
+            tris.SetVertexBuffer(vb[content.VertexBufferIndex], content.VertexOffset, content.VertexCount);
+            tris.SetIndexBuffer(ib[content.IndexBufferIndex], content.IndexOffset, content.PrimitiveCount);
+            tris.SetCullingStates(false);
+
+            return tris;
+        }
 
         public void SetVertexBuffer(VertexBuffer vb, int offset, int count)
         {
@@ -39,17 +52,19 @@ namespace Microsoft.Xna.Framework.Graphics
         #region data
 
         // state used for normal rendering
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private RasterizerState _FrontRasterizer = RasterizerState.CullCounterClockwise;
 
         // state used for mirrored tranform. This must be the same as _FrontRasterizer with reversed CullMode.
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private RasterizerState _BackRasterizer = RasterizerState.CullClockwise;
-
-        private IndexBuffer _SharedIndexBuffer;
-        private int _IndexOffset;
+        
+        private IndexBuffer _SharedIndexBuffer;        
+        private int _IndexOffset;        
         private int _PrimitiveCount;
-
-        private VertexBuffer _SharedVertexBuffer;
-        private int _VertexOffset;
+        
+        private VertexBuffer _SharedVertexBuffer;        
+        private int _VertexOffset;        
         private int _VertexCount;
 
         #endregion
@@ -67,7 +82,7 @@ namespace Microsoft.Xna.Framework.Graphics
             get => _BackRasterizer;
             set => _BackRasterizer = value;
         }
-
+        
         #endregion
 
         #region API
@@ -85,6 +100,14 @@ namespace Microsoft.Xna.Framework.Graphics
             device.DrawIndexedPrimitives(PrimitiveType.TriangleList, _VertexOffset, _IndexOffset, _PrimitiveCount);            
         }
 
+        public TVertex[] TryGetVertices<TVertex>()
+            where TVertex:struct,IVertexType
+        {
+            var data = new TVertex[_VertexCount];
+            _SharedVertexBuffer.GetData<TVertex>(data, _VertexOffset, _VertexCount);
+            return data;
+        }
+        
         #endregion
     }
 

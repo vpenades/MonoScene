@@ -14,7 +14,7 @@ using XYZW = Microsoft.Xna.Framework.Vector4;
 using PACKED = Microsoft.Xna.Framework.Graphics.PackedVector;
 
 
-namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
+namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 {
     static class VertexDecoder
     {
@@ -30,11 +30,13 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         {
             var declaration = default(TVertex).VertexDeclaration;
 
-            if (sizeof(TVertex) != declaration.VertexStride) throw new ArgumentException(nameof(TVertex));
+            var vsize = sizeof(TVertex);
+
+            if (vsize != declaration.VertexStride) throw new ArgumentException(nameof(TVertex));
 
             var dst = new TVertex[srcMesh.VertexCount];
 
-            VertexInfluences skinning = default; // skin joints indices            
+            PACKED.VertexInfluences skinning = default; // skin joints indices            
 
             for (int i = 0; i < dst.Length; ++i)
             {

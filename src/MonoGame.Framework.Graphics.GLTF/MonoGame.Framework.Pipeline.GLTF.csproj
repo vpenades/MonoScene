@@ -3,9 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Microsoft.Xna.Framework.Content.Pipeline.Graphics</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>  
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MonoGame.Framework.Graphics.Content3D\MonoGame.Framework.Graphics.Content3D.csproj" />
     <ProjectReference Include="..\MonoGame.Framework.Graphics.PBR\MonoGame.Framework.Graphics.EffectsPBR.csproj" />
     <ProjectReference Include="..\MonoGame.Framework.Graphics.Toolkit3D\MonoGame.Framework.Graphics.Model3D.csproj" />
   </ItemGroup>

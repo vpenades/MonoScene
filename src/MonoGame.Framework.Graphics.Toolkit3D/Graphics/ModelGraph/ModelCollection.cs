@@ -11,11 +11,11 @@ namespace Microsoft.Xna.Framework.Graphics
     /// Defines a <see cref="ModelCollection"/> super class that has ownership over
     /// <see cref="MeshCollection"/> resources and it's responsible of disposing them.
     /// </summary>
-    public class ModelCollectionContent : ModelCollection, IDisposable
+    public class DeviceModelCollection : ModelCollection, IDisposable
     {
         #region lifecycle
 
-        public ModelCollectionContent(MeshCollection meshes, ArmatureTemplate[] armatures, ModelTemplate[] models, int defaultModelIndex) :base(meshes, armatures, models,defaultModelIndex)
+        public DeviceModelCollection(MeshCollection meshes, ArmatureTemplate[] armatures, ModelTemplate[] models, int defaultModelIndex) :base(meshes, armatures, models,defaultModelIndex)
         {
             SharedMeshes = meshes;
         }

@@ -5,8 +5,8 @@ using System.Text;
 using V3 = Microsoft.Xna.Framework.Vector3;
 using V4 = Microsoft.Xna.Framework.Vector4;
 using TRANSFORM = Microsoft.Xna.Framework.Matrix;
-using VERTEXINFLUENCES = Microsoft.Xna.Framework.Graphics.VertexInfluences;
-using MORPHINFLUENCES = Microsoft.Xna.Framework.Graphics.VertexInfluences;
+using VERTEXINFLUENCES = Microsoft.Xna.Framework.Graphics.PackedVector.VertexInfluences;
+using MORPHINFLUENCES = Microsoft.Xna.Framework.Graphics.PackedVector.VertexInfluences;
 
 namespace Microsoft.Xna.Framework.Graphics
 {

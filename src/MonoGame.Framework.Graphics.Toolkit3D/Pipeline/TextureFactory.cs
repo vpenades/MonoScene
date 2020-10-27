@@ -4,7 +4,7 @@ using System.Text;
 
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
+namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 {
     public abstract class TextureFactory<TTexture>
     {

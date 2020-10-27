@@ -20,7 +20,7 @@ namespace MonoGameViewer
 
         bool _IsAssimp;
         SharpGLTF.Schema2.ModelRoot _Model;
-        ModelCollectionContent _ModelTemplate;
+        DeviceModelCollection _ModelTemplate;
         BoundingSphere _ModelSphere;
 
         private bool _UseClassicEffects;
@@ -78,15 +78,13 @@ namespace MonoGameViewer
                 else if (fp.EndsWith(".obj") || fp.EndsWith(".blend") || fp.EndsWith(".fbx"))
                 {
                     _IsAssimp = true;
-                    _ModelTemplate = Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatAssimp.LoadModel(filePath, GraphicsDevice, _UseClassicEffects);
+                    _ModelTemplate = Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatAssimp.LoadModel(filePath, GraphicsDevice, _UseClassicEffects);
                     _ModelSphere = _ModelTemplate.DefaultModel.ModelBounds;
                     _ModelInstance = null;
                 }
             }
             catch(Exception ex) { System.Windows.MessageBox.Show(ex.Message, "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error); return; }
-
             
-
             _ProcessModel();
         }
 
@@ -96,9 +94,11 @@ namespace MonoGameViewer
             if (_Model == null) return;
             if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
 
-            _ModelTemplate = Microsoft.Xna.Framework.Content.Pipeline.Graphics.FormatGLTF.ReadModel(_Model, GraphicsDevice, _UseClassicEffects);
+            _ModelTemplate = Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatGLTF.ReadModel(_Model, GraphicsDevice, _UseClassicEffects);
             _ModelSphere = _ModelTemplate.DefaultModel.ModelBounds;
             _ModelInstance = null;
+
+            GC.Collect();
         }
 
         public override void UnloadContent()
@@ -107,7 +107,6 @@ namespace MonoGameViewer
 
             _ModelTemplate?.Dispose(); _ModelTemplate = null;
         }
-
 
         public void RotateModel(float x, float y)
         {
@@ -138,9 +137,7 @@ namespace MonoGameViewer
 
             if (_ModelInstance == null) return;
 
-            _ModelInstance.Armature.SetAnimationFrame(0, (float)gameTime.TotalGameTime.TotalSeconds);
-
-            
+            _ModelInstance.Armature.SetAnimationFrame(0, (float)gameTime.TotalGameTime.TotalSeconds);            
 
             var lookAt = _ModelSphere.Center;
             var camPos = _ModelSphere.Center + new Vector3(0, 0, _ModelSphere.Radius * _Zoom);

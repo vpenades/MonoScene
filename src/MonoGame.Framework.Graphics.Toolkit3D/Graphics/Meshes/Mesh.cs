@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Microsoft.Xna.Framework.Graphics
     /// <summary>
     /// Replaces <see cref="ModelMesh"/>
     /// </summary>
-    public sealed class Mesh
+    public sealed class Mesh : IReadOnlyList<MeshPart>
     {
         #region lifecycle
 
@@ -24,22 +25,32 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region data
 
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         internal GraphicsDevice _GraphicsDevice;
 
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private readonly List<MeshPart> _Primitives = new List<MeshPart>();
+
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private IReadOnlyList<Effect> _Effects;
 
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private IReadOnlyList<MeshPart> _OpaquePrimitives;
+
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private IReadOnlyList<Effect> _OpaqueEffects;
 
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private IReadOnlyList<MeshPart> _TranslucidPrimitives;
+
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private IReadOnlyList<Effect> _TranslucidEffects;        
 
         #endregion
 
         #region  properties
         public string Name { get; set; }
-        public object Tag { get; set; }
+        public object Tag { get; set; }        
 
         public IReadOnlyCollection<Effect> OpaqueEffects
         {
@@ -73,7 +84,11 @@ namespace Microsoft.Xna.Framework.Graphics
 
                 return _TranslucidEffects;
             }
-        }        
+        }
+
+        public int Count => _Primitives.Count;
+
+        public MeshPart this[int index] => _Primitives[index];
 
         #endregion
 
@@ -126,6 +141,10 @@ namespace Microsoft.Xna.Framework.Graphics
 
             foreach (var part in GetTranslucidParts()) part.Draw(_GraphicsDevice);
         }
+
+        public IEnumerator<MeshPart> GetEnumerator() { return _Primitives.GetEnumerator(); }
+
+        IEnumerator IEnumerable.GetEnumerator() { return _Primitives.GetEnumerator(); }
 
         #endregion
     }

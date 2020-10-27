@@ -9,7 +9,7 @@ using SharpGLTF.Runtime;
 
 using GLTFMATERIAL = SharpGLTF.Schema2.Material;
 
-namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
+namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 {
     static class Converters
     {
@@ -141,7 +141,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             };
         }
 
-        public static IReadOnlyList<IMeshDecoder<MaterialContent>> ToXna(this IEnumerable<SharpGLTF.Schema2.Mesh> srcMeshes)
+        public static IReadOnlyList<IMeshDecoder<MaterialContent>> ToXnaDecoders(this IEnumerable<SharpGLTF.Schema2.Mesh> srcMeshes)
         {
             if (!srcMeshes.Any()) return Array.Empty<IMeshDecoder<MaterialContent>>();
 
