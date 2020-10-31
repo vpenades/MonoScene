@@ -100,6 +100,26 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region API
 
+        internal static int GetMinimumVertexUVSets(EffectTexture2D a, EffectTexture2D b, EffectTexture2D c)
+        {
+            int count = 0;
+            count = Math.Max(count, a.Texture == null ? 0 : a.SetIndex);
+            count = Math.Max(count, b.Texture == null ? 0 : b.SetIndex);
+            count = Math.Max(count, c.Texture == null ? 0 : c.SetIndex);
+            return count;
+        }
+
+        internal static int GetMinimumVertexUVSets(EffectTexture2D a, EffectTexture2D b, EffectTexture2D c, EffectTexture2D d, EffectTexture2D e)
+        {
+            int count = 0;
+            count = Math.Max(count, a.Texture == null ? 0 : a.SetIndex);
+            count = Math.Max(count, b.Texture == null ? 0 : b.SetIndex);
+            count = Math.Max(count, c.Texture == null ? 0 : c.SetIndex);
+            count = Math.Max(count, d.Texture == null ? 0 : d.SetIndex);
+            count = Math.Max(count, e.Texture == null ? 0 : e.SetIndex);
+            return count;
+        }
+
         internal virtual void Apply()
         {
             if (_TextureMap == null) return;

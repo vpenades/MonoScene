@@ -32,6 +32,9 @@ namespace Microsoft.Xna.Framework.Graphics
 
                     data = mem.ToArray();
                     _Shaders[name] = data;
+
+                    // DebugEffect.DebugCode(data, 0, data.Length);
+
                     return data;
                 }
             }

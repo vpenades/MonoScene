@@ -5,8 +5,8 @@
 // https://github.com/KhronosGroup/glTF-Sample-Viewer/tree/master/src/shaders
 
 #include "MacrosSM4.fxh"
-#include "ToneMapping.fx"
-#include "Alpha.fx"
+#include "Utils/ToneMapping.fx"
+#include "Utils/Alpha.fx"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CONSTANTS

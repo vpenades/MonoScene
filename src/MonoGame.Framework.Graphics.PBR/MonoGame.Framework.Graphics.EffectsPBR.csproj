@@ -26,23 +26,72 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Effects\Shaders\PBR.Permutations.tt">
-      <LastGenOutput>PBR.Permutations.fx</LastGenOutput>
+    <None Update="Effects\Shaders\Techniques.PBR.Old.tt">
+      <LastGenOutput>Techniques.PBR.Old.fx</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="Effects\Shaders\PBR.Permutations.fx">
-      <DependentUpon>PBR.Permutations.tt</DependentUpon>
+    <None Update="Effects\Shaders\Techniques.PBR.Old.fx">
+      <DependentUpon>Techniques.PBR.Old.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </None>    
   </ItemGroup>
+  
   <ItemGroup>
-    <None Update="Effects\Shaders\Unlit.Permutations.tt">
-      <LastGenOutput>Unlit.Permutations.fx</LastGenOutput>
+    <None Update="Effects\Shaders\Techniques.Unlit.Old.tt">
+      <LastGenOutput>Techniques.Unlit.Old.fx</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>    
-    <None Update="Effects\Shaders\Unlit.Permutations.fx">
-      <DependentUpon>Unlit.Permutations.tt</DependentUpon>
+    <None Update="Effects\Shaders\Techniques.Unlit.Old.fx">
+      <DependentUpon>Techniques.Unlit.Old.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </None>        
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Effects\Shaders\VertexShadersStructs.tt">
+      <LastGenOutput>VertexShadersStructs.fx</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Effects\Shaders\VertexShadersStructs.fx">
+      <DependentUpon>VertexShadersStructs.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Effects\Shaders\VertexShadersCode.tt">
+      <LastGenOutput>VertexShadersCode.fx</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Effects\Shaders\VertexShadersCode.fx">
+      <DependentUpon>VertexShadersCode.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Effects\Shaders\Techniques.Unlit.tt">
+      <LastGenOutput>Techniques.Unlit.fx</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Effects\Shaders\Techniques.Unlit.fx">
+      <DependentUpon>Techniques.Unlit.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Effects\Shaders\Techniques.PBR.tt">
+      <LastGenOutput>Techniques.PBR.fx</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Effects\Shaders\Techniques.PBR.fx">
+      <DependentUpon>Techniques.PBR.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </None>
@@ -50,6 +99,6 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
+  </ItemGroup>  
 
 </Project>

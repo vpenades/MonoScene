@@ -39,38 +39,6 @@ namespace AndroidDemo1
 			{
 			}
 		}
-		
-		public partial class Drawable
-		{
-			
-			// aapt resource value: 0x7F010000
-			public const int Icon = 2130771968;
-			
-			static Drawable()
-			{
-				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
-			}
-			
-			private Drawable()
-			{
-			}
-		}
-		
-		public partial class String
-		{
-			
-			// aapt resource value: 0x7F020000
-			public const int app_name = 2130837504;
-			
-			static String()
-			{
-				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
-			}
-			
-			private String()
-			{
-			}
-		}
 	}
 }
 #pragma warning restore 1591

@@ -39,23 +39,9 @@ namespace Microsoft.Xna.Framework.Graphics
             _DiffuseMap.Apply();
             _SpecularGlossinessMap.Apply();            
 
-            var shaderIndex = RecalculateAll();
-            CurrentTechnique = Techniques[shaderIndex];
-        }
-
-        private int RecalculateAll()
-        {
-            int techniqueIndex = 0;
-            if (BoneCount != 0) techniqueIndex += 1;
-
-            if (NormalMap.Texture != null) techniqueIndex += 4;
-            if (DiffuseMap.Texture != null) techniqueIndex += 8;
-            if (SpecularGlossinessMap.Texture != null) techniqueIndex += 16;
-            if (EmissiveMap.Texture != null) techniqueIndex += 32;
-            if (OcclusionMap.Texture != null) techniqueIndex += 64;
-
-            return techniqueIndex;
-        }
+            var pbrTechnique = new PBRTechniqueIndexOld(BoneCount, NormalMap, DiffuseMap, SpecularGlossinessMap, EmissiveMap, OcclusionMap);
+            CurrentTechnique = Techniques[pbrTechnique.Index];
+        }        
 
         #endregion
     }

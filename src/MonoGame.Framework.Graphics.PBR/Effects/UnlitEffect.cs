@@ -68,25 +68,58 @@ namespace Microsoft.Xna.Framework.Graphics
 
             _BaseColorMap.Apply();
             _EmissiveMap.Apply();
-            _OcclusionMap.Apply();
+            _OcclusionMap.Apply();            
 
-            var shaderIndex = RecalculateAll();
+            var techniqueIdx = new UnlitTechniqueOld(BoneCount, _BaseColorMap, EmissiveMap, OcclusionMap);
 
-            CurrentTechnique = Techniques[shaderIndex];
-        }
-
-        private int RecalculateAll()
-        {
-            int techniqueIndex = 0;
-            if (BoneCount != 0) techniqueIndex += 1;
-            
-            if (_BaseColorMap.Texture != null) techniqueIndex += 4;            
-            if (EmissiveMap.Texture != null) techniqueIndex += 8;
-            if (OcclusionMap.Texture != null) techniqueIndex += 16;
-
-            return techniqueIndex;
-        }
+            CurrentTechnique = Techniques[techniqueIdx.Index];
+        }        
 
         #endregion
+    }
+
+    readonly struct UnlitTechnique
+    {
+        public UnlitTechnique(int BoneCount, EffectTexture2D diffuse, EffectTexture2D emissive, EffectTexture2D opacity)
+        {
+            bool hasSkin = BoneCount > 0;
+
+            bool hasDiffuse = diffuse.Texture != null;
+            bool hasEmissive = emissive.Texture != null;
+            bool hasOpacity = opacity.Texture != null;
+
+            var uvsets = EffectTexture2D.GetMinimumVertexUVSets(diffuse, emissive, opacity);
+
+            int vrtMats = 0; // 0=Color, 1=UV0, 2=Color+UV0, 3=Color+UV0+UV1
+            if (uvsets == 1) vrtMats = 2;
+            if (uvsets == 2) vrtMats = 3;
+
+            Index = (hasSkin ? 1 : 0)
+                + vrtMats * 2
+                + (hasDiffuse ? 8 : 0)
+                + (hasEmissive ? 16 : 0)
+                + (hasOpacity ? 32 : 0);
+        }
+
+        public readonly int Index;
+    }
+
+    readonly struct UnlitTechniqueOld
+    {
+        public UnlitTechniqueOld(int BoneCount, EffectTexture2D diffuse, EffectTexture2D emissive, EffectTexture2D opacity)
+        {
+            bool hasSkin = BoneCount > 0;
+            bool hasDiffuse = diffuse.Texture != null;
+            bool hasEmissive = emissive.Texture != null;
+            bool hasOpacity = opacity.Texture != null;            
+
+            Index = (hasSkin ? 1 : 0)
+                // 2 was reserved for morphing
+                + (hasDiffuse ? 4 : 0)
+                + (hasEmissive ? 8 : 0)
+                + (hasOpacity ? 16 : 0);
+        }
+
+        public readonly int Index;
     }
 }

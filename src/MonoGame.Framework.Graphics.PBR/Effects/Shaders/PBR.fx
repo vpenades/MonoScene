@@ -2,10 +2,10 @@
 
 #include "MacrosSM4.fxh"
 
-#include "Functions.fx"
+#include "Utils/Functions.fx"
 #include "BDRF.fx"
-#include "ToneMapping.fx"
-#include "Alpha.fx"
+#include "Utils/ToneMapping.fx"
+#include "Utils/Alpha.fx"
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

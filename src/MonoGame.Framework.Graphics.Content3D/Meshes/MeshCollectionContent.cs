@@ -24,7 +24,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
                 var hasSkin = srcMesh.Primitives.Any(item => item.JointsWeightsCount > 0);
 
                 builder.AppendMesh(srcMesh);
-            }
+            }            
 
             var dstMeshes = new MeshCollectionContent();
             
@@ -113,6 +113,8 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
                 int ibIndex = _UseIndexBuffer();
 
                 var geometry = CreateGeometry(vbIndex, ibIndex, prim, vdecl);
+                if (geometry == null) continue;
+
                 dstMesh.AddMeshPart(geometry, _UseMaterialIndex(prim.Material));
             }
 
@@ -123,6 +125,8 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
         {
             var partVertices = primitive.ToXnaVertices(vdecl);
             var partTriangles = primitive.TriangleIndices.ToList();
+
+            if (partTriangles.Count == 0) return null;
 
             var vRange = _VertexBuffers[vbIndex].AddVertices(partVertices, vdecl);
             var iRange = _IndexBuffers[ibIndex].AddTriangleIndices(partTriangles);
