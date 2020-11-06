@@ -83,4 +83,4 @@ Textures are loaded using Monogame's Texture2D.FromStream, which means all of it
 
 - [MonoGame](https://github.com/MonoGame/MonoGame)
 - [PBR Shaders from Khronos Viewer](https://github.com/KhronosGroup/glTF-Sample-Viewer)
-- [SharlGLTF library](https://github.com/vpenades/SharpGLTF)
+- [SharpGLTF library](https://github.com/vpenades/SharpGLTF)
