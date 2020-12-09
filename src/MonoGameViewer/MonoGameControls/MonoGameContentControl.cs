@@ -24,7 +24,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -42,8 +41,6 @@ namespace MonoGame.WpfCore.MonoGameControls
         private SharpDX.Direct3D9.Texture _renderTargetD3D9;
         private bool _isFirstLoad = true;
         private bool _isInitialized;
-
-        private int _Multisampling = 8;
 
         public MonoGameContentControl()
         {
@@ -108,7 +105,7 @@ namespace MonoGame.WpfCore.MonoGameControls
 
         private void Start()
         {
-            if (_isInitialized)
+            if(_isInitialized)
                 return;
 
             if (Application.Current.MainWindow == null)
@@ -125,7 +122,7 @@ namespace MonoGame.WpfCore.MonoGameControls
                     _isFirstLoad = false;
                 }
             };
-
+            
             _direct3DImage = new D3DImage();
 
             AddChild(new Image { Source = _direct3DImage, Stretch = Stretch.None });
@@ -141,7 +138,7 @@ namespace MonoGame.WpfCore.MonoGameControls
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-
+            
             // sometimes OnRenderSizeChanged happens before OnLoaded.
             Start();
             ResetBackBufferReference();
@@ -200,10 +197,10 @@ namespace MonoGame.WpfCore.MonoGameControls
                 return null;
 
             if (GraphicsDevice == null)
-                return null;            
+                return null;
 
             var renderTarget = new RenderTarget2D(GraphicsDevice, actualWidth, actualHeight,
-                false, SurfaceFormat.Bgra32, DepthFormat.Depth24Stencil8, _Multisampling,
+                false, SurfaceFormat.Bgra32, DepthFormat.Depth24Stencil8, 1,
                 RenderTargetUsage.PlatformContents, true);
 
             var handle = renderTarget.GetSharedHandle();

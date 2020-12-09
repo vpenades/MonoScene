@@ -39,7 +39,7 @@ namespace Microsoft.Xna.Framework.Graphics
             _DiffuseMap.Apply();
             _SpecularGlossinessMap.Apply();            
 
-            var pbrTechnique = new PBRTechniqueIndexOld(BoneCount, NormalMap, DiffuseMap, SpecularGlossinessMap, EmissiveMap, OcclusionMap);
+            var pbrTechnique = new PBRTechniqueIndex(BoneCount, NormalMap, DiffuseMap, SpecularGlossinessMap, EmissiveMap, OcclusionMap);
             CurrentTechnique = Techniques[pbrTechnique.Index];
         }        
 

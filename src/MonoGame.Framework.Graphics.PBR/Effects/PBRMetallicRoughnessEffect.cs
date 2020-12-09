@@ -39,7 +39,7 @@ namespace Microsoft.Xna.Framework.Graphics
             _BaseColorMap.Apply();
             _MetalRoughnessMap.Apply();            
 
-            var pbrTechnique = new PBRTechniqueIndexOld(BoneCount, NormalMap, BaseColorMap, MetalRoughnessMap, EmissiveMap, OcclusionMap);
+            var pbrTechnique = new PBRTechniqueIndex(BoneCount, NormalMap, BaseColorMap, MetalRoughnessMap, EmissiveMap, OcclusionMap);
             CurrentTechnique = Techniques[pbrTechnique.Index];
         }        
 

@@ -2,6 +2,21 @@
 
 ![MonoGame Demo](MonoGameDemoPBR.jpg)
 
+### Temporary pre-requirements
+
+During the development of this project, I stumbled upon a limitation of
+Monogame regarding some shader limitations that have been recently
+addressed.
+
+To continue developing this library, now it is required to use the
+development branch nugets of monogame, which supports FX Objects version
+10.
+
+So until monogame publishes a new official release, at which point I
+will switch back to the public packages, I temporarily discourage using
+this library for purposes other than research... That is... unless
+you're also using the development branch nugets.
+
 ### Overview
 
 This is an example of loading and rendering glTF files with MonoGame.

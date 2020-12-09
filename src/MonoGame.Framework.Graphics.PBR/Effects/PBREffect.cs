@@ -156,41 +156,20 @@ namespace Microsoft.Xna.Framework.Graphics
             if (uvsets == 1) vrtMats = 2;
             if (uvsets == 2) vrtMats = 3;
 
-            Index = (hasSkin ? 1 : 0)
+            var vertexMask 
+                = (hasSkin ? 1 : 0)
                 + (hasNormals ? 2 : 0)
-                + vrtMats * 4
-                + (hasPrimary ? 16 : 0)
-                + (hasSecondary ? 32 : 0)
-                + (hasEmissive ? 64 : 0)
-                + (hasOpacity ? 128 : 0);            
+                + vrtMats * 4;
+
+            var pixelMask
+                = (hasPrimary ? 1 : 0)
+                + (hasSecondary ? 2 : 0)
+                + (hasEmissive ? 4 : 0)
+                + (hasOpacity ? 8 : 0);
+
+            Index = vertexMask + pixelMask * 16;
         }
 
         public readonly int Index;
     }
-
-    readonly struct PBRTechniqueIndexOld
-    {
-        public PBRTechniqueIndexOld(int BoneCount, EffectTexture2D normals, EffectTexture2D primary, EffectTexture2D secondary, EffectTexture2D emissive, EffectTexture2D opacity)
-        {
-            bool hasSkin = BoneCount > 0;
-
-            bool hasNormals = normals.Texture != null;
-            bool hasPrimary = primary.Texture != null;
-            bool hasSecondary = primary.Texture != null;
-            bool hasEmissive = emissive.Texture != null;
-            bool hasOpacity = opacity.Texture != null;            
-
-            Index = (hasSkin ? 1 : 0)
-                // 2 was reserved for morphing
-                + (hasNormals ? 4 : 0)                
-                + (hasPrimary ? 8 : 0)
-                + (hasSecondary ? 16 : 0)
-                + (hasEmissive ? 32 : 0)
-                + (hasOpacity ? 64 : 0);
-        }
-
-        public readonly int Index;
-    }
-
-
 }
