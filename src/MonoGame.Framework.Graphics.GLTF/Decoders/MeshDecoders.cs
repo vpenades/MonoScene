@@ -86,9 +86,9 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 
         #region vertex API
 
-        public Vector3 GetPosition(int vertexIndex) { return _Source.GetPosition(vertexIndex).ToXna(); }
-        public Vector3 GetNormal(int vertexIndex) { return _Source.GetNormal(vertexIndex).ToXna(); }
-        public Vector4 GetTangent(int vertexIndex) { return _Source.GetTangent(vertexIndex).ToXna(); }
+        public Vector3 GetPosition(int vertexIndex) { return _Source.GetPosition(vertexIndex); }
+        public Vector3 GetNormal(int vertexIndex) { return _Source.GetNormal(vertexIndex); }
+        public Vector4 GetTangent(int vertexIndex) { return _Source.GetTangent(vertexIndex); }
         public VERTEXINFLUENCES GetSkinWeights(int vertexIndex)
         {
             var sparse = _Source
@@ -103,8 +103,8 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 
         
 
-        public Vector4 GetColor(int vertexIndex, int colorSetIndex) { return _Source.GetColor(vertexIndex, colorSetIndex).ToXna(); }
-        public Vector2 GetTextureCoord(int vertexIndex, int textureSetIndex) { return _Source.GetTextureCoord(vertexIndex, textureSetIndex).ToXna(); }
+        public Vector4 GetColor(int vertexIndex, int colorSetIndex) { return _Source.GetColor(vertexIndex, colorSetIndex); }
+        public Vector2 GetTextureCoord(int vertexIndex, int textureSetIndex) { return _Source.GetTextureCoord(vertexIndex, textureSetIndex); }
 
 
         public IReadOnlyList<Vector3> GetNormalDeltas(int vertexIndex) { throw new NotImplementedException(); }

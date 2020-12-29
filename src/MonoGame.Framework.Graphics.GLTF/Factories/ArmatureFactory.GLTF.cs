@@ -29,7 +29,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 
         protected override IEnumerable<GLTFNODE> GetChildren(GLTFNODE node) { return node.VisualChildren; }
 
-        protected override Matrix GetLocalMatrix(GLTFNODE node) { return node.LocalMatrix.ToXna(); }        
+        protected override Matrix GetLocalMatrix(GLTFNODE node) { return node.LocalMatrix; }        
 
         protected override AnimatableProperty<Vector3> GetScale(GLTFNODE node)
         {
@@ -121,7 +121,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
                 {
                     var (joint, inverseBindMatrix) = node.Skin.GetJoint(i);
 
-                    bones[i] = (joint, inverseBindMatrix.ToXna());
+                    bones[i] = (joint, inverseBindMatrix);
                 }
 
                 return CreateSkinnedDrawable(node.Mesh.LogicalIndex, node, bones);

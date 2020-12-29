@@ -9,7 +9,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
         public _GltfSamplerVector3(SharpGLTF.Animations.ICurveSampler<System.Numerics.Vector3> source) { _Source = source; }
 
         private readonly SharpGLTF.Animations.ICurveSampler<System.Numerics.Vector3> _Source;
-        public Vector3 Evaluate(float offset) { return _Source.GetPoint(offset).ToXna(); }
+        public Vector3 Evaluate(float offset) { return _Source.GetPoint(offset); }
     }
 
     readonly struct _GltfSamplerQuaternion : ICurveEvaluator<Quaternion>
@@ -17,6 +17,6 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
         public _GltfSamplerQuaternion(SharpGLTF.Animations.ICurveSampler<System.Numerics.Quaternion> source) { _Source = source; }
 
         private readonly SharpGLTF.Animations.ICurveSampler<System.Numerics.Quaternion> _Source;
-        public Quaternion Evaluate(float offset) { return _Source.GetPoint(offset).ToXna(); }
+        public Quaternion Evaluate(float offset) { return _Source.GetPoint(offset); }
     }
 }
