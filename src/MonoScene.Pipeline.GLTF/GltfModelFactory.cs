@@ -104,7 +104,7 @@ namespace MonoScene.Graphics.Pipeline
 
             // build the armatures and models
 
-            var armatures = new List<ArmatureTemplate>();
+            var armatures = new List<ArmatureContent>();
             var models = new List<ModelTemplate>();
 
             foreach (var scene in srcModel.LogicalScenes)

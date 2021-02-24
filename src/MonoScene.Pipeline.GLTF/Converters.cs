@@ -73,10 +73,11 @@ namespace MonoScene.Graphics.Pipeline
             return TextureFilter.Linear; // fallback
         }
 
-        public static MaterialContent ToXna(this GLTFMATERIAL srcMaterial)
+        public static MaterialContent ToXna(this GLTFMATERIAL srcMaterial, Converter<SharpGLTF.Schema2.ExtraProperties, Object> tagConverter)
         {
             var dstMaterial = new MaterialContent();
             dstMaterial.Name = srcMaterial.Name;
+            dstMaterial.Tag = tagConverter?.Invoke(srcMaterial);
 
             dstMaterial.DoubleSided = srcMaterial.DoubleSided;
 
@@ -138,7 +139,7 @@ namespace MonoScene.Graphics.Pipeline
             var srcMaterials = srcMeshes.First().LogicalParent.LogicalMaterials;
 
             var dstMaterials = srcMaterials
-                .Select(item => item.ToXna())
+                .Select(item => item.ToXna(tagConverter))
                 .ToArray();
 
             var dstMeshes = srcMeshes

@@ -73,13 +73,9 @@ namespace MonoScene.Graphics.Content
     /// <summary>
     /// Represents a Mesh, made of multiple <see cref="MeshPartContent"/>
     /// </summary>
-    public class MeshContent
+    public class MeshContent : BaseContent
     {
-        private readonly List<MeshPartContent> _Primitives = new List<MeshPartContent>();
-
-        public string Name { get; set; }
-
-        public Object Tag { get; set; }
+        private readonly List<MeshPartContent> _Primitives = new List<MeshPartContent>();        
 
         public IReadOnlyList<MeshPartContent> Parts => _Primitives;
 

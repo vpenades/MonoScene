@@ -5,8 +5,16 @@ using System.Text;
 
 namespace MonoScene.Graphics.Content
 {
+    /// <summary>
+    /// Represents a material, defined as a collection of <see cref="MaterialChannelContent"/> elements.
+    /// </summary>
+    /// <remarks>
+    /// Unlike MonoGame's native <see cref="Microsoft.Xna.Framework.Graphics.Model"/>,<br/>
+    /// this material architecture does not store any <see cref="Microsoft.Xna.Framework.Graphics.Effect"/>,<br/>
+    /// which must be created and assigned at load time.
+    /// </remarks>
     [System.Diagnostics.DebuggerDisplay("{Name} - {TargetEffectName}")]
-    public class MaterialContent
+    public class MaterialContent : BaseContent
     {
         #region lifecycle
         public MaterialContent() { }
@@ -21,11 +29,6 @@ namespace MonoScene.Graphics.Content
         #endregion
 
         #region properties
-
-        /// <summary>
-        /// The name of this material, or NULL
-        /// </summary>
-        public string Name { get; set; }
         
         /// <summary>
         /// This defined the shading profile for this material. Loading from glTF we can find:

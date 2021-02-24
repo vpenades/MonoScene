@@ -108,14 +108,14 @@ namespace MonoScene.Graphics.Pipeline
 
         #region API
 
-        public ModelTemplate CreateModel(SharpGLTF.Schema2.Scene scene, ArmatureTemplate armature, IReadOnlyList<IMeshDecoder<MaterialContent>> meshDecoders)
+        public ModelTemplate CreateModel(SharpGLTF.Schema2.Scene scene, ArmatureContent armature, IReadOnlyList<IMeshDecoder<MaterialContent>> meshDecoders)
         {
             var model = CreateModel(scene, armature);
             model.ModelBounds = MeshFactory.EvaluateBoundingSphere(model.CreateInstance(), meshDecoders);
             return model;
         }
 
-        public ModelTemplate CreateModel(SharpGLTF.Schema2.Scene scene, ArmatureTemplate armature)
+        public ModelTemplate CreateModel(SharpGLTF.Schema2.Scene scene, ArmatureContent armature)
         {
             var drawables = GLTFNODE.Flatten(scene)
                 .Where(item => item.Mesh != null)

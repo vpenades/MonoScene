@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-using Microsoft.Xna.Framework.Graphics;
+using TEXFILTER = Microsoft.Xna.Framework.Graphics.TextureFilter;
+using TEXADDRESS = Microsoft.Xna.Framework.Graphics.TextureAddressMode;
+using TEXSAMPLER = Microsoft.Xna.Framework.Graphics.SamplerState;
 
 namespace MonoScene.Graphics.Content
 {
@@ -22,14 +24,14 @@ namespace MonoScene.Graphics.Content
             };
         }
 
-        public TextureFilter Filter { get; set; }
-        public TextureAddressMode AddressU { get; set; }
-        public TextureAddressMode AddressV { get; set; }
-        public TextureAddressMode AddressW { get; set; }
+        public TEXFILTER Filter { get; set; }
+        public TEXADDRESS AddressU { get; set; }
+        public TEXADDRESS AddressV { get; set; }
+        public TEXADDRESS AddressW { get; set; }
 
-        public SamplerState CreateState()
+        public TEXSAMPLER CreateState()
         {
-            return new SamplerState()
+            return new TEXSAMPLER()
             {
                 Filter = this.Filter,
                 AddressU = this.AddressU,
@@ -38,26 +40,26 @@ namespace MonoScene.Graphics.Content
             };
         }
 
-        public SamplerState TryGetPredefinedSampler()
+        public TEXSAMPLER TryGetPredefinedSampler()
         {
             if (AddressU != AddressV) return null;
 
-            if (Filter == TextureFilter.Point)
+            if (Filter == TEXFILTER.Point)
             {
-                if (AddressU == TextureAddressMode.Clamp) return SamplerState.PointClamp;
-                if (AddressU == TextureAddressMode.Wrap) return SamplerState.PointWrap;
+                if (AddressU == TEXADDRESS.Clamp) return TEXSAMPLER.PointClamp;
+                if (AddressU == TEXADDRESS.Wrap) return TEXSAMPLER.PointWrap;
             }
 
-            if (Filter == TextureFilter.Linear)
+            if (Filter == TEXFILTER.Linear)
             {
-                if (AddressU == TextureAddressMode.Clamp) return SamplerState.LinearClamp;
-                if (AddressU == TextureAddressMode.Wrap) return SamplerState.LinearWrap;
+                if (AddressU == TEXADDRESS.Clamp) return TEXSAMPLER.LinearClamp;
+                if (AddressU == TEXADDRESS.Wrap) return TEXSAMPLER.LinearWrap;
             }
 
-            if (Filter == TextureFilter.Anisotropic)
+            if (Filter == TEXFILTER.Anisotropic)
             {
-                if (AddressU == TextureAddressMode.Clamp) return SamplerState.AnisotropicClamp;
-                if (AddressU == TextureAddressMode.Wrap) return SamplerState.AnisotropicWrap;
+                if (AddressU == TEXADDRESS.Clamp) return TEXSAMPLER.AnisotropicClamp;
+                if (AddressU == TEXADDRESS.Wrap) return TEXSAMPLER.AnisotropicWrap;
             }
 
             return null;

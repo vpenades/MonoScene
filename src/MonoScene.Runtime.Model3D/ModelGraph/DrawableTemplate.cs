@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
+using MonoScene.Graphics.Content;
+
 using XNAMAT = Microsoft.Xna.Framework.Matrix;
 
 namespace MonoScene.Graphics
@@ -42,7 +44,7 @@ namespace MonoScene.Graphics
     /// This class is the 'glue' that binds a mesh with a <see cref="NodeTemplate"/> so we
     /// can calculate the local transform matrix of the mesh we want to render.
     /// </remarks>    
-    abstract class DrawableTemplate : Content.BaseContent, IDrawableTemplate
+    abstract class DrawableTemplate : BaseContent, IDrawableTemplate
     {
         #region lifecycle
 
@@ -85,7 +87,7 @@ namespace MonoScene.Graphics
     {
         #region lifecycle
 
-        public RigidDrawableTemplate(int meshIndex, NodeTemplate node)
+        public RigidDrawableTemplate(int meshIndex, NodeContent node)
             : base(node.Name, meshIndex)
         {
             _NodeIndex = node.ThisIndex;
@@ -122,7 +124,7 @@ namespace MonoScene.Graphics
     {
         #region lifecycle
 
-        public SkinnedDrawableTemplate(int meshIndex, NodeTemplate morphNode, string ownerNname, (NodeTemplate, XNAMAT)[] skinNodes)
+        public SkinnedDrawableTemplate(int meshIndex, NodeContent morphNode, string ownerNname, (NodeContent, XNAMAT)[] skinNodes)
             : base(ownerNname, meshIndex)
         {
             // _MorphNodeIndex = indexFunc(morphNode);

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MonoScene.Graphics
+namespace MonoScene.Graphics.Content
 {
-    public class AnimationTrackInfo : Content.BaseContent
+    [System.Diagnostics.DebuggerDisplay("{Name} {Duration}s")]
+    public class AnimationTrackInfo : BaseContent
     {
         public AnimationTrackInfo(string name, object tag, float duration)
             : base(name, tag)

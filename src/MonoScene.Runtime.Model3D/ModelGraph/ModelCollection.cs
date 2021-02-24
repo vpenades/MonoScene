@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using MonoScene.Graphics.Content;
+
 using MODELMESH = MonoScene.Graphics.Mesh;
 
 
@@ -15,7 +17,8 @@ namespace MonoScene.Graphics
     {
         #region lifecycle
 
-        public DeviceModelCollection(MeshCollection meshes, ArmatureTemplate[] armatures, ModelTemplate[] models, int defaultModelIndex) :base(meshes, armatures, models,defaultModelIndex)
+        public DeviceModelCollection(MeshCollection meshes, ArmatureContent[] armatures, ModelTemplate[] models, int defaultModelIndex)
+            : base(meshes, armatures, models,defaultModelIndex)
         {
             SharedMeshes = meshes;
         }
@@ -45,7 +48,7 @@ namespace MonoScene.Graphics
     {
         #region lifecycle
 
-        public ModelCollection(IMeshCollection meshes, ArmatureTemplate[] armatures, ModelTemplate[] models, int defaultModelIndex)
+        public ModelCollection(IMeshCollection meshes, ArmatureContent[] armatures, ModelTemplate[] models, int defaultModelIndex)
         {
             _SharedArmatures = armatures;
             _DefaultModelIndex = defaultModelIndex;
@@ -67,7 +70,7 @@ namespace MonoScene.Graphics
         /// <summary>
         /// Multiple <see cref="ModelTemplate"/> at <see cref="_Models"/> might share the same <see cref="ArmatureTemplate"/>.
         /// </summary>
-        private ArmatureTemplate[] _SharedArmatures;
+        private ArmatureContent[] _SharedArmatures;
 
         /// <summary>
         /// Models available in this collection.

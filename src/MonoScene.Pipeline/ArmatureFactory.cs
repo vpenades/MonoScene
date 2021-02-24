@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using MonoScene.Graphics.Content;
+
 using XNAV3 = Microsoft.Xna.Framework.Vector3;
 using XNAMAT = Microsoft.Xna.Framework.Matrix;
 using XNAQUAT = Microsoft.Xna.Framework.Quaternion;
@@ -14,8 +16,8 @@ namespace MonoScene.Graphics.Pipeline
         #region data
 
         private readonly List<AnimationTrackInfo> _AnimationTracks = new List<AnimationTrackInfo>();
-        private readonly List<NodeTemplate> _Nodes = new List<NodeTemplate>();
-        private readonly Dictionary<TNode, NodeTemplate> _Map = new Dictionary<TNode, NodeTemplate>();
+        private readonly List<NodeContent> _Nodes = new List<NodeContent>();
+        private readonly Dictionary<TNode, NodeContent> _Map = new Dictionary<TNode, NodeContent>();
 
         #endregion
 
@@ -37,12 +39,12 @@ namespace MonoScene.Graphics.Pipeline
         protected abstract Object GetTag(TNode node);
         protected abstract IEnumerable<TNode> GetChildren(TNode node);
         protected abstract XNAMAT GetLocalMatrix(TNode node);
-        protected abstract AnimatableProperty<XNAV3> GetScale(TNode node);
-        protected abstract AnimatableProperty<XNAQUAT> GetRotation(TNode node);
-        protected abstract AnimatableProperty<XNAV3> GetTranslation(TNode node);
+        protected abstract Content.AnimatableProperty<XNAV3> GetScale(TNode node);
+        protected abstract Content.AnimatableProperty<XNAQUAT> GetRotation(TNode node);
+        protected abstract Content.AnimatableProperty<XNAV3> GetTranslation(TNode node);
 
 
-        public NodeTemplate GetNode(TNode srcNode) => _Map[srcNode];
+        public NodeContent GetNode(TNode srcNode) => _Map[srcNode];
 
         public IDrawableTemplate CreateRigidDrawable(int meshIndex, TNode node)
         {
@@ -62,7 +64,7 @@ namespace MonoScene.Graphics.Pipeline
             return d;
         }
 
-        public ArmatureTemplate CreateArmature() { return new ArmatureTemplate(_Nodes.ToArray(), _AnimationTracks.ToArray()); }
+        public ArmatureContent CreateArmature() { return new ArmatureContent(_Nodes.ToArray(), _AnimationTracks.ToArray()); }
 
         #endregion
 
@@ -86,7 +88,7 @@ namespace MonoScene.Graphics.Pipeline
                 childIndices.Add(childIndex);
             }
             
-            var dst = new NodeTemplate(thisIdx, parentIndex, childIndices.ToArray());
+            var dst = new NodeContent(thisIdx, parentIndex, childIndices.ToArray());
             dst.Name = GetName(src);
             dst.Tag = GetTag(src);
 

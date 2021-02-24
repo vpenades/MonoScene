@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using MonoScene.Graphics.Content;
+
 using XFORM = Microsoft.Xna.Framework.Matrix;
 
 namespace MonoScene.Graphics
 {
     /// <summary>
-    /// Represents a specific and independent state of a <see cref="ArmatureTemplate"/>.
+    /// Represents a specific and independent state of a <see cref="Content.ArmatureContent"/>.
     /// </summary>
     /// <remarks>
     /// An <see cref="ArmatureTemplate"/> represents the layout, graph and initial state of a skeleton, and it's a READ ONLY OBJECT.
@@ -20,7 +22,7 @@ namespace MonoScene.Graphics
     {
         #region lifecycle
 
-        internal ArmatureInstance(ArmatureTemplate armature)
+        internal ArmatureInstance(ArmatureContent armature)
         {
             _Template = armature;
             _NodeInstances = new NodeInstance[armature.Count];
@@ -40,7 +42,7 @@ namespace MonoScene.Graphics
 
         #region data
 
-        private ArmatureTemplate _Template;
+        private ArmatureContent _Template;
         private NodeInstance[] _NodeInstances;              
 
         #endregion

@@ -63,7 +63,7 @@ namespace MonoScene.Graphics.Pipeline
             // build the armatures and models
 
             var models = new List<ModelTemplate>();
-            var armatures = new List<ArmatureTemplate>();
+            var armatures = new List<ArmatureContent>();
 
             var armatureFactory = new AssimpArmatureFactory(scene);
             var armature = armatureFactory.CreateArmature();

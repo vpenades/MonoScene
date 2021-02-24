@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.Text;
 
+using MonoScene.Graphics.Content;
+
 using XFORM = Microsoft.Xna.Framework.Matrix;
 // using SPARSE8 = Microsoft.Xna.Framework.Vector4;
 
 namespace MonoScene.Graphics
 {
     /// <summary>
-    /// Defines a node of a scene graph in <see cref="ModelInstance"/>
+    /// Represents a hierarchical element within an <see cref="ArmatureInstance"/>, mirroring a <see cref="NodeContent"/>.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public sealed class NodeInstance
     {
         #region lifecycle
 
-        internal NodeInstance(NodeTemplate template, NodeInstance parent)
+        internal NodeInstance(NodeContent template, NodeInstance parent)
         {
             _Template = template;
             _Parent = parent;
@@ -25,7 +27,7 @@ namespace MonoScene.Graphics
 
         #region data
 
-        private readonly NodeTemplate _Template;
+        private readonly NodeContent _Template;
         private readonly NodeInstance _Parent;
 
         private XFORM _LocalMatrix;
@@ -73,6 +75,9 @@ namespace MonoScene.Graphics
         /// <summary>
         /// Gets a value indicating whether any of the transforms down the node tree graph has been modified.
         /// </summary>
+        /// <remarks>
+        /// When this is true, we need to recalculate our <see cref="ModelMatrix"/>.
+        /// </remarks>
         private bool _TransformChainIsDirty
         {
             get

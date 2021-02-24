@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MonoScene.Graphics
+namespace MonoScene.Graphics.Content
 {
-    public class ArmatureTemplate
+    /// <summary>
+    /// Represents a collection of hierarchically connected <see cref="NodeContent"/> elements.
+    /// </summary>
+    public class ArmatureContent
     {
         #region lifecycle
 
         /// <summary>
-        /// Creates an armature from an array of <see cref="NodeTemplate"/>
+        /// Creates an armature from an array of <see cref="NodeContent"/>
         /// </summary>
-        /// <param name="nodes">a flattened array of <see cref="NodeTemplate"/> objects.</param>
+        /// <param name="nodes">a flattened array of <see cref="NodeContent"/> objects.</param>
         /// <param name="atracks">animation tracks info</param>
-        internal ArmatureTemplate(NodeTemplate[] nodes, AnimationTrackInfo[] atracks)
+        public ArmatureContent(NodeContent[] nodes, AnimationTrackInfo[] atracks)
         {
             if (nodes == null) throw new ArgumentNullException(nameof(nodes));
 
@@ -43,7 +46,7 @@ namespace MonoScene.Graphics
 
         #region data
 
-        private readonly NodeTemplate[] _NodeTemplates;
+        private readonly NodeContent[] _NodeTemplates;
         private readonly AnimationTrackInfo[] _AnimationTracks;
 
         #endregion
@@ -52,7 +55,7 @@ namespace MonoScene.Graphics
 
         public int Count => _NodeTemplates.Length;
 
-        public NodeTemplate this[int index] => _NodeTemplates[index];
+        public NodeContent this[int index] => _NodeTemplates[index];
 
         public IReadOnlyList<AnimationTrackInfo> Animations => _AnimationTracks;
 

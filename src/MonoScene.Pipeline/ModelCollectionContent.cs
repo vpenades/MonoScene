@@ -13,7 +13,7 @@ namespace MonoScene.Graphics.Pipeline
     {
         #region constructor
 
-        public ModelCollectionContent(MeshCollectionContent meshes, ArmatureTemplate[] armatures, ModelTemplate[] models, int defaultModelIndex)
+        public ModelCollectionContent(MeshCollectionContent meshes, ArmatureContent[] armatures, ModelTemplate[] models, int defaultModelIndex)
         {
             _SharedMeshes = meshes;
             _SharedArmatures = armatures;
@@ -33,7 +33,7 @@ namespace MonoScene.Graphics.Pipeline
         /// <summary>
         /// Multiple <see cref="ModelTemplate"/> at <see cref="_Models"/> might share the same <see cref="ArmatureTemplate"/>.
         /// </summary>
-        private ArmatureTemplate[] _SharedArmatures;
+        private ArmatureContent[] _SharedArmatures;
 
         /// <summary>
         /// Models available in this collection.
