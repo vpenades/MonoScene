@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonoScene.Model3D\MonoScene.Runtime.Model3D.csproj" />
+    <ProjectReference Include="..\MonoScene.Runtime.Model3D\MonoScene.Runtime.Model3D.csproj" />
   </ItemGroup>
 
   <ItemGroup>    

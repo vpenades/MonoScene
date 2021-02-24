@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj" />
     <ProjectReference Include="..\MonoScene.Pipeline.Assimp\MonoScene.Pipeline.Assimp.csproj" />
-    <ProjectReference Include="..\MonoScene.Scene3D\MonoScene.Runtime.Scene3D.csproj" />
+    <ProjectReference Include="..\MonoScene.Runtime.Scene3D\MonoScene.Runtime.Scene3D.csproj" />
 
   </ItemGroup>
 

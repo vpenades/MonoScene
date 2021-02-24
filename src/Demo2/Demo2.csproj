@@ -26,7 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj" />
-    <ProjectReference Include="..\MonoScene.Scene3D\MonoScene.Runtime.Scene3D.csproj" />
+    <ProjectReference Include="..\MonoScene.Runtime.Scene3D\MonoScene.Runtime.Scene3D.csproj" />
   </ItemGroup>
 
   <ItemGroup>

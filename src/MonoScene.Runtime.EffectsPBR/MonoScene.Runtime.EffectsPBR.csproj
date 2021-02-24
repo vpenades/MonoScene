@@ -18,7 +18,7 @@
   </ItemGroup>  
 
   <ItemGroup>
-    <ProjectReference Include="..\MonoScene.Content3D\MonoScene.Runtime.Content.csproj" />
+    <ProjectReference Include="..\MonoScene.Runtime.Content\MonoScene.Runtime.Content.csproj" />
   </ItemGroup>
 
   <ItemGroup>

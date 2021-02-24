@@ -12,8 +12,8 @@
   </ItemGroup>  
 
   <ItemGroup>
-    <ProjectReference Include="..\MonoScene.EffectsPBR\MonoScene.Runtime.EffectsPBR.csproj" />
-    <ProjectReference Include="..\MonoScene.Model3D\MonoScene.Runtime.Model3D.csproj" />
+    <ProjectReference Include="..\MonoScene.Runtime.EffectsPBR\MonoScene.Runtime.EffectsPBR.csproj" />
+    <ProjectReference Include="..\MonoScene.Runtime.Model3D\MonoScene.Runtime.Model3D.csproj" />
   </ItemGroup>
 
 </Project>

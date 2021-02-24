@@ -18,7 +18,7 @@
   </ItemGroup>  
 
   <ItemGroup>
-    <ProjectReference Include="..\MonoScene.EffectsPBR\MonoScene.Runtime.EffectsPBR.csproj" />
+    <ProjectReference Include="..\MonoScene.Runtime.EffectsPBR\MonoScene.Runtime.EffectsPBR.csproj" />
   </ItemGroup>  
 
 </Project>

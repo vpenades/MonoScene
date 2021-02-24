@@ -8,13 +8,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo1", "Demo1\Demo1.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Pipeline.GLTF", "MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj", "{C8AC1020-FE76-4BF5-9767-F63554900091}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Runtime.EffectsPBR", "MonoScene.EffectsPBR\MonoScene.Runtime.EffectsPBR.csproj", "{2563EE5B-0B4A-4EC1-BF78-8F270CACAB59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Runtime.EffectsPBR", "MonoScene.Runtime.EffectsPBR\MonoScene.Runtime.EffectsPBR.csproj", "{2563EE5B-0B4A-4EC1-BF78-8F270CACAB59}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Runtime.Content", "MonoScene.Content3D\MonoScene.Runtime.Content.csproj", "{41112F36-3213-4C3F-8ECC-616F1B502B6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Runtime.Content", "MonoScene.Runtime.Content\MonoScene.Runtime.Content.csproj", "{41112F36-3213-4C3F-8ECC-616F1B502B6A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Runtime.Model3D", "MonoScene.Model3D\MonoScene.Runtime.Model3D.csproj", "{7B9B380E-D9AA-44F4-ABD3-36255EEE9F4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Runtime.Model3D", "MonoScene.Runtime.Model3D\MonoScene.Runtime.Model3D.csproj", "{7B9B380E-D9AA-44F4-ABD3-36255EEE9F4A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Runtime.Scene3D", "MonoScene.Scene3D\MonoScene.Runtime.Scene3D.csproj", "{486A02BA-D0C2-4EBB-B17A-DAC9C32A8C99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Runtime.Scene3D", "MonoScene.Runtime.Scene3D\MonoScene.Runtime.Scene3D.csproj", "{486A02BA-D0C2-4EBB-B17A-DAC9C32A8C99}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo2", "Demo2\Demo2.csproj", "{B3D0B09B-1DF1-49CB-B84F-6047C49550CC}"
 EndProject

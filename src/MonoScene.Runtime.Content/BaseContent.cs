@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MonoScene.Graphics
+namespace MonoScene.Graphics.Content
 {
-    public abstract class BaseTemplate
+    public abstract class BaseContent
     {
-        public BaseTemplate() { }
+        public BaseContent() { }
 
-        public BaseTemplate(string name) { Name = name; }
+        public BaseContent(string name) { Name = name; }
 
-        public BaseTemplate(string name, Object tag) { Name = name; Tag = tag; }
+        public BaseContent(string name, Object tag) { Name = name; Tag = tag; }
 
         public string Name { get; set; }
 
