@@ -17,10 +17,10 @@ namespace MonoScene.Graphics.Content
         {
             return new SamplerStateContent
             {
-                AddressU = TextureAddressMode.Wrap,
-                AddressV = TextureAddressMode.Wrap,
-                AddressW = TextureAddressMode.Wrap,
-                Filter = TextureFilter.Linear
+                AddressU = TEXADDRESS.Wrap,
+                AddressV = TEXADDRESS.Wrap,
+                AddressW = TEXADDRESS.Wrap,
+                Filter = TEXFILTER.Linear
             };
         }
 
