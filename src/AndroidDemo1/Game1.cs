@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using MonoScene.Graphics;
+
 namespace AndroidDemo1
 {
     public class Game1 : Game
@@ -24,7 +26,7 @@ namespace AndroidDemo1
 
         protected override void LoadContent()
         {
-            var factory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.GltfModelFactory(this.GraphicsDevice);
+            var factory = new MonoScene.Graphics.Pipeline.GltfModelFactory(this.GraphicsDevice);
 
             var thisAssembly = typeof(Game1).Assembly;
             _ModelTemplate = factory.LoadModelFromEmbeddedResource(thisAssembly, "CesiumMan.glb");

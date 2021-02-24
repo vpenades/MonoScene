@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using MonoScene.Graphics;
+
 namespace Demo1
 {
     public class Game1 : Game
@@ -28,13 +30,13 @@ namespace Demo1
 
         protected override void LoadContent()
         {
-            var gltfFactory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.GltfModelFactory(this.GraphicsDevice);
+            var gltfFactory = new MonoScene.Graphics.Pipeline.GltfModelFactory(this.GraphicsDevice);
 
             var modelPath = SharpGLTF.Schema2.ModelRoot.Load($"Content{Path.DirectorySeparatorChar}WaterBottle.glb");
 
             var contentMeshes = gltfFactory.ReadMeshContent(modelPath.LogicalMeshes.Take(1));
 
-            var factory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.PBRMeshFactory(this.GraphicsDevice);            
+            var factory = new MonoScene.Graphics.Pipeline.PBRMeshFactory(this.GraphicsDevice);            
             _MeshCollection = factory.CreateMeshCollection(contentMeshes);
         }
 

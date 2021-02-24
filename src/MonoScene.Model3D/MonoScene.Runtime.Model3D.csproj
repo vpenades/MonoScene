@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>MonoScene.Graphics</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>  
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>MonoScene.Pipeline</_Parameter1>
+    </AssemblyAttribute>    
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.1825-develop" PrivateAssets="all" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+  </ItemGroup>  
+
+  <ItemGroup>
+    <ProjectReference Include="..\MonoScene.EffectsPBR\MonoScene.Runtime.EffectsPBR.csproj" />
+  </ItemGroup>  
+
+</Project>

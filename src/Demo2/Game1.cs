@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using MonoScene.Graphics;
+
 namespace Demo2
 {
     public class Game1 : Game
@@ -24,7 +26,7 @@ namespace Demo2
 
         protected override void LoadContent()
         {
-            var factory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.GltfModelFactory(this.GraphicsDevice);
+            var factory = new MonoScene.Graphics.Pipeline.GltfModelFactory(this.GraphicsDevice);
 
             _ModelTemplate = factory.LoadModel("Content\\CesiumMan.glb");            
         }

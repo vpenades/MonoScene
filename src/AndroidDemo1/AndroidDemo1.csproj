@@ -75,25 +75,25 @@
     <PackageReference Include="MonoGame.Framework.Android" Version="3.8.1.1825-develop" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MonoGame.Framework.Graphics.Content3D\MonoGame.Framework.Graphics.Content3D.csproj">
-      <Project>{580c945b-b122-40d5-9d90-2efde63b68ff}</Project>
-      <Name>MonoGame.Framework.Graphics.Content3D</Name>
+    <ProjectReference Include="..\MonoScene.Content3D\MonoScene.Runtime.Content.csproj">
+      <Project>{41112F36-3213-4C3F-8ECC-616F1B502B6A}</Project>
+      <Name>MonoScene.Runtime.Content</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoGame.Framework.Graphics.GLTF\MonoGame.Framework.Pipeline.GLTF.csproj">
-      <Project>{b3e6cda2-f721-430e-bd3c-55d78e6b8c6d}</Project>
-      <Name>MonoGame.Framework.Pipeline.GLTF</Name>
+    <ProjectReference Include="..\MonoScene.EffectsPBR\MonoScene.Runtime.EffectsPBR.csproj">
+      <Project>{2563EE5B-0B4A-4EC1-BF78-8F270CACAB59}</Project>
+      <Name>MonoScene.Runtime.EffectsPBR</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoGame.Framework.Graphics.PBR\MonoGame.Framework.Graphics.EffectsPBR.csproj">
-      <Project>{6d3141b5-4747-4d58-b773-4ea96da8887b}</Project>
-      <Name>MonoGame.Framework.Graphics.EffectsPBR</Name>
+    <ProjectReference Include="..\MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj">
+      <Project>{c8ac1020-fe76-4bf5-9767-f63554900091}</Project>
+      <Name>MonoScene.Pipeline.GLTF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoGame.Framework.Graphics.Scene3D\MonoGame.Framework.Graphics.Scene3D.csproj">
-      <Project>{844f2dcb-b4f3-48bd-9412-d326008c3a1a}</Project>
-      <Name>MonoGame.Framework.Graphics.Scene3D</Name>
+    <ProjectReference Include="..\MonoScene.Scene3D\MonoScene.Runtime.Scene3D.csproj">
+      <Project>{486A02BA-D0C2-4EBB-B17A-DAC9C32A8C99}</Project>
+      <Name>MonoScene.Runtime.Scene3D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoGame.Framework.Graphics.Toolkit3D\MonoGame.Framework.Graphics.Model3D.csproj">
-      <Project>{50241c0b-7275-4b2d-aa65-6d2eb643d138}</Project>
-      <Name>MonoGame.Framework.Graphics.Model3D</Name>
+    <ProjectReference Include="..\MonoScene.Model3D\MonoScene.Runtime.Model3D.csproj">
+      <Project>{7B9B380E-D9AA-44F4-ABD3-36255EEE9F4A}</Project>
+      <Name>MonoScene.Runtime.Model3D</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

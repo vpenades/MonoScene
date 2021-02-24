@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using MonoScene.Graphics;
+
 namespace Demo3
 {
     /// <summary>
@@ -57,7 +59,7 @@ namespace Demo3
 
         protected override void LoadContent()
         {
-            var gltfFactory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.GltfModelFactory(this.GraphicsDevice);                  
+            var gltfFactory = new MonoScene.Graphics.Pipeline.GltfModelFactory(this.GraphicsDevice);                  
 
             _AvodadoTemplate = gltfFactory.LoadModel("Content\\Avocado.glb");
             _BrainStemTemplate = gltfFactory.LoadModel("Content\\BrainStem.glb");
