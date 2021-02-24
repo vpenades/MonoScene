@@ -24,8 +24,10 @@ namespace AndroidDemo1
 
         protected override void LoadContent()
         {
+            var factory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.GltfModelFactory(this.GraphicsDevice);
+
             var thisAssembly = typeof(Game1).Assembly;
-            _ModelTemplate = Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatGLTF.LoadModelFromEmbeddedResource(thisAssembly,"CesiumMan.glb", this.GraphicsDevice);
+            _ModelTemplate = factory.LoadModelFromEmbeddedResource(thisAssembly, "CesiumMan.glb");
         }
 
         protected override void UnloadContent()

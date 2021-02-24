@@ -24,7 +24,9 @@ namespace Demo2
 
         protected override void LoadContent()
         {
-            _ModelTemplate = Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatGLTF.LoadModel("Content\\CesiumMan.glb", this.GraphicsDevice);            
+            var factory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.GltfModelFactory(this.GraphicsDevice);
+
+            _ModelTemplate = factory.LoadModel("Content\\CesiumMan.glb");            
         }
 
         protected override void UnloadContent()

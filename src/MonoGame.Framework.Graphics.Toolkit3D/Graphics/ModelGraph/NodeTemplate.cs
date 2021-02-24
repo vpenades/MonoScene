@@ -12,7 +12,7 @@ namespace Microsoft.Xna.Framework.Graphics
     /// Defines a hierarchical transform node of a scene graph tree.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("[{LogicalNodeIndex}] {Name}")]
-    public class NodeTemplate
+    public class NodeTemplate : BaseTemplate
     {
         #region lifecycle
 
@@ -56,8 +56,6 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region properties
 
-        public string Name { get; set; }
-
         /// <summary>
         /// Gets the index of the source <see cref="Schema2.Node"/> in <see cref="ModelTemplate._NodeTemplates"/>
         /// </summary>
@@ -73,7 +71,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// </summary>
         public IReadOnlyList<int> ChildIndices => _ChildIndices;
 
-        public TRANSFORM LocalMatrix => _LocalMatrix;
+        public TRANSFORM LocalMatrix => _LocalMatrix;        
 
         #endregion
 

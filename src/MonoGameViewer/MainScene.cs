@@ -78,7 +78,11 @@ namespace MonoGameViewer
                 else if (fp.EndsWith(".obj") || fp.EndsWith(".blend") || fp.EndsWith(".fbx"))
                 {
                     _IsAssimp = true;
-                    _ModelTemplate = Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatAssimp.LoadModel(filePath, GraphicsDevice, _UseClassicEffects);
+
+                    var assimpFactory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.AssimpModelFactory(GraphicsDevice);
+                    assimpFactory.UseBasicEffects = _UseClassicEffects;
+
+                    _ModelTemplate = assimpFactory.LoadModel(filePath);
                     _ModelSphere = _ModelTemplate.DefaultModel.ModelBounds;
                     _ModelInstance = null;
                 }
@@ -94,7 +98,10 @@ namespace MonoGameViewer
             if (_Model == null) return;
             if (_ModelTemplate != null) { _ModelTemplate.Dispose(); _ModelTemplate = null; }
 
-            _ModelTemplate = Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatGLTF.ReadModel(_Model, GraphicsDevice, _UseClassicEffects);
+            var gltfFactory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.GltfModelFactory(this.GraphicsDevice);
+            gltfFactory.UseBasicEffects = _UseClassicEffects;
+
+            _ModelTemplate = gltfFactory.ReadModel(_Model);
             _ModelSphere = _ModelTemplate.DefaultModel.ModelBounds;
             _ModelInstance = null;
 

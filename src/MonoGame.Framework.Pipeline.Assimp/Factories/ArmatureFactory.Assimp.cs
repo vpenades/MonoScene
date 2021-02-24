@@ -25,6 +25,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
         #region overrides
 
         protected override string GetName(Assimp.Node node) { return node.Name; }
+        protected override object GetTag(Assimp.Node node) { return node.Metadata; }
 
         protected override IEnumerable<Assimp.Node> GetChildren(Assimp.Node node) { return node.Children; }
 

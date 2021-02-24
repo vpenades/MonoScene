@@ -11,10 +11,11 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
     readonly struct _MeshDecoder : IMeshDecoder<MaterialContent>        
     {
         #region constructor
-        public _MeshDecoder(SharpGLTF.Runtime.IMeshDecoder<SharpGLTF.Schema2.Material> mesh, IReadOnlyList<MaterialContent> materials)
+        public _MeshDecoder(SharpGLTF.Runtime.IMeshDecoder<SharpGLTF.Schema2.Material> mesh, IReadOnlyList<MaterialContent> materials, object tag)
         {
             _Source = mesh;
             _Primitives = mesh.Primitives.Select(item => _MeshPrimitiveDecoder.Create(item, materials)).ToArray();
+            _Tag = tag;
         }
 
         #endregion
@@ -23,16 +24,16 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 
         private readonly SharpGLTF.Runtime.IMeshDecoder<SharpGLTF.Schema2.Material> _Source;
         private readonly IMeshPrimitiveDecoder<MaterialContent>[] _Primitives;
+        private readonly object _Tag;
 
         #endregion
 
         #region properties
 
-        public string Name => _Source.Name;       
+        public string Name => _Source.Name;
+        public object Tag => _Tag;
 
-        public IReadOnlyList<IMeshPrimitiveDecoder<MaterialContent>> Primitives => _Primitives;
-
-        public object Tag => null; // might return Extras.
+        public IReadOnlyList<IMeshPrimitiveDecoder<MaterialContent>> Primitives => _Primitives;        
 
         #endregion
     }

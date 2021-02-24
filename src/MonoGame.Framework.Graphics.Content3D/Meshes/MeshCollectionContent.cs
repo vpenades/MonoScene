@@ -104,6 +104,8 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
         public void AppendMesh(IMeshDecoder<MaterialContent> srcMesh)            
         {
             var dstMesh = new MeshContent();
+            dstMesh.Name = srcMesh.Name;
+            dstMesh.Tag = srcMesh.Tag;
 
             foreach (var prim in srcMesh.Primitives)
             {

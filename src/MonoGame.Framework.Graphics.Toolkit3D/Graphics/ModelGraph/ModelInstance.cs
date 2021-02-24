@@ -46,16 +46,15 @@ namespace Microsoft.Xna.Framework.Graphics
         private readonly IDrawableTemplate[] _DrawableTemplates;
         private readonly IMeshTransform[] _DrawableTransforms;
 
-        private Matrix _WorldMatrix;        
+        private Matrix _WorldMatrix;
 
         #endregion
 
         #region properties
 
-        /// <summary>
-        /// Gets a reference to the template used to create this <see cref="MonoGameModelInstance"/>.
-        /// </summary>
-        public ModelTemplate Template => _Parent;
+        public string Name => _Parent.Name;
+
+        public Object Tag => _Parent.Tag;        
 
         public ArmatureInstance Armature => _Armature;
 
@@ -87,6 +86,9 @@ namespace Microsoft.Xna.Framework.Graphics
                 }
             }
         }
+
+
+        public IEnumerable<Effect> SharedEffects => _Parent.SharedEffects;
 
         #endregion
 
@@ -136,7 +138,7 @@ namespace Microsoft.Xna.Framework.Graphics
         /// <param name="view">The view matrix.</param>        
         public void DrawAllParts(Matrix projection, Matrix view)
         {
-            foreach (var e in this.Template.SharedEffects)
+            foreach (var e in this.SharedEffects)
             {
                 UpdateProjViewTransforms(e, projection, view);
             }

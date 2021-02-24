@@ -16,16 +16,24 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
     {
         #region constructor
 
-        public GLTFArmatureFactory(SharpGLTF.Schema2.Scene scene)
+        public GLTFArmatureFactory(SharpGLTF.Schema2.Scene scene, Converter<SharpGLTF.Schema2.ExtraProperties, Object> tagConverter)
         {
             AddSceneRoot(scene);
+            _TagConverter = tagConverter;
         }
+
+        #endregion
+
+        #region data
+
+        private readonly Converter<SharpGLTF.Schema2.ExtraProperties, Object> _TagConverter;
 
         #endregion
 
         #region overrides
 
         protected override string GetName(GLTFNODE node) { return node.Name; }
+        protected override object GetTag(GLTFNODE node) { return _TagConverter?.Invoke(node); }
 
         protected override IEnumerable<GLTFNODE> GetChildren(GLTFNODE node) { return node.VisualChildren; }
 
@@ -39,7 +47,12 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 
             foreach (var anim in node.LogicalParent.LogicalAnimations)
             {
-                var sAnim = anim.FindScaleSampler(node)?.CreateCurveSampler(true).ToXna();
+                var sAnim = anim
+                    .FindScaleChannel(node)
+                    ?.GetScaleSampler()
+                    ?.CreateCurveSampler(true)
+                    .ToXna();
+
                 if (sAnim != null) s.SetCurve(anim.LogicalIndex, sAnim);
             }
 
@@ -54,7 +67,12 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 
             foreach (var anim in node.LogicalParent.LogicalAnimations)
             {
-                var rAnim = anim.FindRotationSampler(node)?.CreateCurveSampler(true).ToXna();
+                var rAnim = anim
+                    .FindRotationChannel(node)
+                    ?.GetRotationSampler()
+                    ?.CreateCurveSampler(true)
+                    .ToXna();
+
                 if (rAnim != null) r.SetCurve(anim.LogicalIndex, rAnim);
             }
 
@@ -69,7 +87,12 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 
             foreach (var anim in node.LogicalParent.LogicalAnimations)
             {
-                var tAnim = anim.FindTranslationSampler(node)?.CreateCurveSampler(true).ToXna();
+                var tAnim = anim
+                    .FindTranslationChannel(node)
+                    ?.GetTranslationSampler()
+                    ?.CreateCurveSampler(true)
+                    .ToXna();
+
                 if (tAnim != null) t.SetCurve(anim.LogicalIndex, tAnim);
             }
 

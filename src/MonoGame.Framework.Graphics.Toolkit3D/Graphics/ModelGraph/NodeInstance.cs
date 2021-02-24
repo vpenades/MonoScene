@@ -39,6 +39,8 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public String Name => _Template.Name;
 
+        public Object Tag => _Template.Tag;
+
         /// <summary>
         /// Parent node.
         /// </summary>

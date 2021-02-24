@@ -22,6 +22,8 @@ namespace Microsoft.Xna.Framework.Graphics
         /// </summary>
         string Name { get; }
 
+        Object Tag { get; }
+
         /// <summary>
         /// An index into <see cref="ModelTemplate.Meshes"/>
         /// </summary>
@@ -39,13 +41,13 @@ namespace Microsoft.Xna.Framework.Graphics
     /// This class is the 'glue' that binds a mesh with a <see cref="NodeTemplate"/> so we
     /// can calculate the local transform matrix of the mesh we want to render.
     /// </remarks>
-    abstract class DrawableTemplate : IDrawableTemplate
+    abstract class DrawableTemplate : BaseTemplate, IDrawableTemplate
     {
         #region lifecycle
 
-        protected DrawableTemplate(string nodeName, int logicalMeshIndex)
-        {
-            _NodeName = nodeName;
+        protected DrawableTemplate(string name, int logicalMeshIndex)
+            : base(name)
+        {            
             _LogicalMeshIndex = logicalMeshIndex;            
         }
 
@@ -53,16 +55,12 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #region data
 
-        private readonly String _NodeName;
-
         private readonly int _LogicalMeshIndex;
 
         #endregion
 
         #region properties
-
-        public String Name => _NodeName;
-
+        
         /// <summary>
         /// An index into a <see cref="MeshCollection"/>
         /// </summary>

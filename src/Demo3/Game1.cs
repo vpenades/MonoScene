@@ -57,16 +57,13 @@ namespace Demo3
 
         protected override void LoadContent()
         {
-            DeviceModelCollection _load(string filePath)
-            {
-                return Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatGLTF.LoadModel(filePath, this.GraphicsDevice);
-            }            
+            var gltfFactory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.GltfModelFactory(this.GraphicsDevice);                  
 
-            _AvodadoTemplate = _load("Content\\Avocado.glb");
-            _BrainStemTemplate = _load("Content\\BrainStem.glb");
-            _CesiumManTemplate = _load("Content\\CesiumMan.glb");
-            _HauntedHouseTemplate = _load("Content\\haunted_house.glb");
-            _SharkTemplate = _load("Content\\shark.glb");
+            _AvodadoTemplate = gltfFactory.LoadModel("Content\\Avocado.glb");
+            _BrainStemTemplate = gltfFactory.LoadModel("Content\\BrainStem.glb");
+            _CesiumManTemplate = gltfFactory.LoadModel("Content\\CesiumMan.glb");
+            _HauntedHouseTemplate = gltfFactory.LoadModel("Content\\haunted_house.glb");
+            _SharkTemplate = gltfFactory.LoadModel("Content\\shark.glb");
         }
 
         protected override void UnloadContent()

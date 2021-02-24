@@ -79,6 +79,10 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
     {
         private readonly List<MeshPartContent> _Primitives = new List<MeshPartContent>();
 
+        public string Name { get; set; }
+
+        public Object Tag { get; set; }
+
         public IReadOnlyList<MeshPartContent> Parts => _Primitives;
 
         public void AddMeshPart(MeshGeometryContent geometry, int materialIndex)

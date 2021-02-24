@@ -9,11 +9,13 @@ using SharpGLTF.Runtime;
 
 using GLTFMATERIAL = SharpGLTF.Schema2.Material;
 
+using XYZ = System.Numerics.Vector3;
+
 namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 {
     static class Converters
     {
-        public static BoundingSphere ToXna(this (System.Numerics.Vector3 center, float radius) sphere)
+        public static BoundingSphere ToXna(this (XYZ center, float radius) sphere)
         {
             return new BoundingSphere(sphere.center, sphere.radius);
         }        
@@ -26,7 +28,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
             return (u, v);
         }
 
-        public static ICurveEvaluator<Vector3> ToXna(this SharpGLTF.Animations.ICurveSampler<System.Numerics.Vector3> curve)
+        public static ICurveEvaluator<Vector3> ToXna(this SharpGLTF.Animations.ICurveSampler<XYZ> curve)
         {
             if (curve == null) return null;
             return new _GltfSamplerVector3(curve);
@@ -124,7 +126,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
             };
         }
 
-        public static IReadOnlyList<IMeshDecoder<MaterialContent>> ToXnaDecoders(this IEnumerable<SharpGLTF.Schema2.Mesh> srcMeshes)
+        public static IReadOnlyList<IMeshDecoder<MaterialContent>> ToXnaDecoders(this IEnumerable<SharpGLTF.Schema2.Mesh> srcMeshes, Converter<SharpGLTF.Schema2.ExtraProperties, Object> tagConverter)
         {
             if (!srcMeshes.Any()) return Array.Empty<IMeshDecoder<MaterialContent>>();
 
@@ -137,7 +139,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
                 .ToArray();
 
             var dstMeshes = srcMeshes
-                .Select(item => new _MeshDecoder(item.Decode(), dstMaterials))
+                .Select(item => new _MeshDecoder(item.Decode(), dstMaterials, tagConverter?.Invoke(item)))
                 .Cast<IMeshDecoder<MaterialContent>>()
                 .ToArray();
 

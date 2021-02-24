@@ -70,7 +70,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 
         #endregion
 
-        #region API
+        #region overridable API
 
         protected override MeshPrimitiveMaterial ConvertMaterial(MaterialContent srcMaterial, bool isSkinned)
         {
@@ -86,6 +86,10 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
         }
 
         protected abstract Effect CreateEffect(MaterialContent srcMaterial, bool isSkinned);
+
+        #endregion
+
+        #region
 
         public static IEnumerable<(Vector3 A,Vector3 B,Vector3 C)> EvaluateTriangles(ModelInstance instance, IReadOnlyList<IMeshDecoder<MaterialContent>> meshes)
         {

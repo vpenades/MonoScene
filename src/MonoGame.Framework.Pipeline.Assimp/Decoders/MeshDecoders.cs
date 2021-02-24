@@ -13,7 +13,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
         #region constructor
         public _MeshDecoder(Assimp.Mesh mesh, TMaterial material)
         {
-            _Name = mesh.Name;
+            _Name = mesh.Name;            
             _Source = new _MeshPrimitiveDecoder<TMaterial>(mesh, material);
         }
 
@@ -21,7 +21,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 
         #region data
 
-        private readonly string _Name;
+        private readonly string _Name;        
         private readonly IMeshPrimitiveDecoder<TMaterial> _Source;
 
         #endregion
@@ -29,10 +29,8 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
         #region properties
 
         public string Name => _Name;
-
-        public IReadOnlyList<IMeshPrimitiveDecoder<TMaterial>> Primitives => new [] { _Source };
-
-        public object Tag => null; // might return Extras.
+        public object Tag => null;
+        public IReadOnlyList<IMeshPrimitiveDecoder<TMaterial>> Primitives => new [] { _Source };        
 
         #endregion
     }

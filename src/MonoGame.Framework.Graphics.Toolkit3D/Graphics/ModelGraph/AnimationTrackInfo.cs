@@ -4,15 +4,13 @@ using System.Text;
 
 namespace Microsoft.Xna.Framework.Graphics.Graphics.ModelGraph
 {
-    public class AnimationTrackInfo
+    public class AnimationTrackInfo : BaseTemplate
     {
-        public AnimationTrackInfo(string name, float duration)
-        {
-            Name = name;
+        public AnimationTrackInfo(string name, object tag, float duration)
+            : base(name, tag)
+        {            
             Duration = duration;
         }
-
-        public string Name { get; private set; }
         public float Duration { get; private set; }
     }
 }

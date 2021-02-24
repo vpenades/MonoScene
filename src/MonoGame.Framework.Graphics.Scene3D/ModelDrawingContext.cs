@@ -131,7 +131,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
             var proj = GetProjectionMatrix();            
 
-            foreach (var e in modelInstance.Template.SharedEffects)
+            foreach (var e in modelInstance.SharedEffects)
             {
                 environment.ApplyTo(e);
                 ModelInstance.UpdateProjViewTransforms(e, proj, _View);
@@ -170,7 +170,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
             // gather all effects from all visible instances.
             _SceneEffects.Clear();
-            _SceneEffects.UnionWith(_SceneInstances.SelectMany(item => item.Template.SharedEffects));
+            _SceneEffects.UnionWith(_SceneInstances.SelectMany(item => item.SharedEffects));
 
             // set Projection & View on all visible effects.
 
@@ -187,7 +187,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
             foreach (var instance in _SceneInstances)
             {
-                foreach (var e in instance.Template.SharedEffects) environment.ApplyTo(e);
+                foreach (var e in instance.SharedEffects) environment.ApplyTo(e);
                 instance.DrawOpaqueParts();
             }
 
@@ -197,7 +197,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
             foreach (var instance in _SceneInstances)
             {
-                foreach (var e in instance.Template.SharedEffects) environment.ApplyTo(e);
+                foreach (var e in instance.SharedEffects) environment.ApplyTo(e);
                 instance.DrawTranslucidParts();
             }
 

@@ -13,7 +13,6 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
         #region data
 
         private readonly List<AnimationTrackInfo> _AnimationTracks = new List<AnimationTrackInfo>();
-
         private readonly List<NodeTemplate> _Nodes = new List<NodeTemplate>();
         private readonly Dictionary<TNode, NodeTemplate> _Map = new Dictionary<TNode, NodeTemplate>();
 
@@ -21,11 +20,11 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
 
         #region API
 
-        public void SetAnimationTrack(int index, string name, float duration)
+        public void SetAnimationTrack(int index, string name, object tag, float duration)
         {
-            while (_AnimationTracks.Count <= index) _AnimationTracks.Add(new AnimationTrackInfo(null,0));
+            while (_AnimationTracks.Count <= index) _AnimationTracks.Add(new AnimationTrackInfo(null, null, 0));
 
-            _AnimationTracks[index] = new AnimationTrackInfo(name, duration);
+            _AnimationTracks[index] = new AnimationTrackInfo(name, tag, duration);
         }
 
         public void AddRoot(TNode node)
@@ -34,6 +33,7 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
         }
 
         protected abstract string GetName(TNode node);
+        protected abstract Object GetTag(TNode node);
         protected abstract IEnumerable<TNode> GetChildren(TNode node);
         protected abstract Matrix GetLocalMatrix(TNode node);
         protected abstract AnimatableProperty<Vector3> GetScale(TNode node);
@@ -84,10 +84,10 @@ namespace Microsoft.Xna.Framework.Content.Runtime.Graphics
                 var childIndex = AddNodeRescursive(child, thisIdx);
                 childIndices.Add(childIndex);
             }
-
             
             var dst = new NodeTemplate(thisIdx, parentIndex, childIndices.ToArray());
             dst.Name = GetName(src);
+            dst.Tag = GetTag(src);
 
             dst.SetLocalMatrix(GetLocalMatrix(src));
 

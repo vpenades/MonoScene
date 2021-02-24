@@ -13,22 +13,20 @@ namespace Microsoft.Xna.Framework.Graphics
     /// Defines a templatized representation of a <see cref="Schema2.Scene"/> that can be used
     /// to create <see cref="ModelInstance"/>, which can help render a scene on a client application.
     /// </summary>
-    public class ModelTemplate
+    public class ModelTemplate : BaseTemplate
     {
         #region lifecycle        
 
         public ModelTemplate(string modelName, ArmatureTemplate armature, IDrawableTemplate[] drawables)
-        {
-            _ModelName = modelName;
+            : base(modelName)
+        {            
             _Armature = armature;
             _DrawableReferences = drawables;            
         }
 
         #endregion
 
-        #region data
-
-        private readonly String _ModelName;        
+        #region data        
 
         internal readonly ArmatureTemplate _Armature;
         
@@ -41,9 +39,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         #endregion
 
-        #region properties
-
-        public String Name => _ModelName;        
+        #region properties        
 
         public BoundingSphere ModelBounds { get; set; }
 

@@ -28,9 +28,11 @@ namespace Demo1
 
         protected override void LoadContent()
         {
-            var gltfModel = SharpGLTF.Schema2.ModelRoot.Load($"Content{Path.DirectorySeparatorChar}WaterBottle.glb");
+            var gltfFactory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.GltfModelFactory(this.GraphicsDevice);
 
-            var contentMeshes = Microsoft.Xna.Framework.Content.Runtime.Graphics.FormatGLTF.ReadMeshContent(gltfModel.LogicalMeshes.Take(1));
+            var modelPath = SharpGLTF.Schema2.ModelRoot.Load($"Content{Path.DirectorySeparatorChar}WaterBottle.glb");
+
+            var contentMeshes = gltfFactory.ReadMeshContent(modelPath.LogicalMeshes.Take(1));
 
             var factory = new Microsoft.Xna.Framework.Content.Runtime.Graphics.PBRMeshFactory(this.GraphicsDevice);            
             _MeshCollection = factory.CreateMeshCollection(contentMeshes);
