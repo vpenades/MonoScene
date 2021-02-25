@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 
 using XNAV2 = Microsoft.Xna.Framework.Vector2;
@@ -20,12 +16,7 @@ namespace MonoScene.Graphics.Pipeline
     public interface IMeshDecoder<TMaterial>
         where TMaterial : class
     {
-        /// <summary>
-        /// The mesh name.
-        /// </summary>
-        string Name { get; }
-
-        //
+        string Name { get; }        
         Object Tag { get; }
         IReadOnlyList<IMeshPrimitiveDecoder<TMaterial>> Primitives { get; }        
     }    
@@ -98,7 +89,7 @@ namespace MonoScene.Graphics.Pipeline
 
         XNAV4 GetColor(int vertexIndex, int colorSetIndex);
 
-        VertexInfluences GetSkinWeights(int vertexIndex);
+        BoneInfluences GetSkinWeights(int vertexIndex);
 
         #endregion
     }    

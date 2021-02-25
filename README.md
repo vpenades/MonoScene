@@ -1,87 +1,47 @@
-﻿# MonoGame realtime rendering demo
+﻿# MonoScene Framework
+#### A MonoGame 3D Model alternative.
 
 ![MonoGame Demo](MonoGameDemoPBR.jpg)
 
-### Temporary pre-requirements
+### ⚠️ Temporary pre-requirements ⚠️
 
-During the development of this project, I stumbled upon a limitation of
-Monogame regarding some shader limitations that have been recently
-addressed.
+This project requires compiling complex effect shaders with +256 techniques.
 
-To continue developing this library, now it is required to use the
-development branch nugets of monogame, which supports FX Objects version
-10.
+Current version of MonoGame, 3.8.0.1641, is not able to do that and will fail to compile.
 
-So until monogame publishes a new official release, at which point I
-will switch back to the public packages, I temporarily discourage using
-this library for purposes other than research... That is... unless
-you're also using the development branch nugets.
+The issue has been recently resolved and it's available in MonoGame's development branch.
+
+MonoGame's minimum version required is: __3.8.1.1825-develop__
 
 ### Overview
 
-This is an example of loading and rendering glTF files with MonoGame.
+MonoScene is a framework that replaces the very outdated 3D model architecture
+currently available in MonoGame, providing a number of much needed features:
 
-This demo was originally intended to be an example of how to use SharpGLTF to load glTF models into MonoGame, since then, it has evolved into a full graphics library that helps loading and rendering PBR Animated models into monogame.
-
-The main features of the project, compared with in-built 3D features of MonoGame are:
-
-- Loading glTF models at runtime, without any pipeline processing.
-- PBR materials support
-- Animated models, out of the box.
+- PBR effect shaders.
+- Full skeleton animation.
+- Loading asset models at runtime.
 
 
 ### Architecture:
 
-The project is split into 4 different packages that can be used independently.
+By design, the data flow of the framework looks like this:
 
-Notice that the package names and namespaces are **temporary** and subject to change.
+__3D Assets ⇒ Pipeline ⇒ Content ⇒ Runtime__
 
-- MonoGame.Framework.Graphics.EffectsPBR
-- MonoGame.Framework.Graphics.Model3D
-- MonoGame.Framework.Graphics.Scene3D
-- MonoGame.Framework.Pipeline.GLTF
+The project is split into 3 sections:
 
-##### Graphics.EffectsPBR
-
-Defines glTF compatible, PBR effects:
-
-- AnimatedEffect (abstract base class)
-  - UnlitEffect
-  - PBREffect (abstract)
-    - PBRMetallicRoughnessEffect
-    - PBRSpecularGlossinessEffect
-
-These effects can be used on their own, and dont' require anything from the rest of libraries.
-
-##### Graphics.Model3D
-
-Defines a number of classes to represent 3D models, using a new architecture that can handle
-animated models in a modern way.
-
-- [Model Architecture docs (WIP)](src/MonoGame.Framework.Graphics.Toolkit3D/Graphics/ModelArchitecture.md)
-- [Skinning considerations (WIP)](src/MonoGame.Framework.Graphics.Toolkit3D/Graphics/Skinning.MD)
-
-##### Graphics.Scene3D
-
-This is a package that can be optinally used, and simplifies drawing scenes with multiple objects.
-
-##### Pipeline.GLTF
-
-This library depends on [SharpGLTF.Core](https://www.nuget.org/packages/SharpGLTF.Core) and loads
-glTF models and converts them to the structures defined in Graphics.Model3D.
-
-When loading the models, it is recomended to use EffectsPBR effects, because that would give
-the visual results expected by glTF, but it's also possible to fall back to BasicEffect and
-SkinnedEffect, in which case the loader will do a "best effort" to convert the materials from
-PBR to classic diffuse-specular materials.
+- Pipeline: utilities and classes to help importing 3D asset files.
+- Content: classes used to define an intermediate representation of 3D model.
+- Runtime: framework to consume and render 3D content objects.
 
 ### Limitations
 
-##### Pipeline
+##### MonoGame's Content Pipeline
 
-Right now, It is **not possible** to load glTFs through the content pipeline, glTFs need to be loaded
-at runtime, so only projects able to consume Pipeline.GLTF library will be able to load glTFs.
-
+Right now, It is **not possible** to load glTFs through Monogame's old content processing pipeline;
+glTFs need to be loaded at runtime, so only projects able to consume `MonoScene.Pipeline.GLTF` library
+will be able to load glTFs.
 ##### Animations
 
 - Due to limitations in the rendering API of MonoGame, glTF's morphing features are not supported.

@@ -11,12 +11,12 @@ using XNAV3 = Microsoft.Xna.Framework.Vector3;
 
 namespace MonoScene.Graphics.Pipeline
 {
-    public abstract class MeshFactory<TMaterial>
+    public abstract class DeviceMeshFactory<TMaterial>
         where TMaterial : class
     {
         #region lifecycle
 
-        public MeshFactory(GraphicsDevice device)
+        public DeviceMeshFactory(GraphicsDevice device)
         {
             _Device = device;
 
@@ -29,7 +29,7 @@ namespace MonoScene.Graphics.Pipeline
 
         private readonly GraphicsDevice _Device;
         
-        private readonly Dictionary<TMaterial, MeshPrimitiveMaterial> _Materials = new Dictionary<TMaterial, MeshPrimitiveMaterial>();        
+        private readonly Dictionary<TMaterial, DeviceMeshPrimitiveMaterial> _Materials = new Dictionary<TMaterial, DeviceMeshPrimitiveMaterial>();        
 
         /// <summary>
         /// Gathers all disposable resources shared by the collection of meshes:
@@ -55,28 +55,27 @@ namespace MonoScene.Graphics.Pipeline
 
         protected TextureFactory<Byte[]> FileContentTextureFactory => _TextureFactory;        
 
-        protected abstract MeshPrimitiveMaterial ConvertMaterial(TMaterial material, bool mustSupportSkinning);
+        protected abstract DeviceMeshPrimitiveMaterial ConvertMaterial(TMaterial material, bool mustSupportSkinning);
 
         #endregion        
     }
 
-    public abstract class MeshFactory : MeshFactory<MaterialContent>
+    public abstract class DeviceMeshFactory : DeviceMeshFactory<MaterialContent>
     {
         #region lifecycle
 
-        public MeshFactory(GraphicsDevice device) : base(device)
-        {
-        }
+        public DeviceMeshFactory(GraphicsDevice device)
+            : base(device) { }
 
         #endregion
 
         #region overridable API
 
-        protected override MeshPrimitiveMaterial ConvertMaterial(MaterialContent srcMaterial, bool isSkinned)
+        protected override DeviceMeshPrimitiveMaterial ConvertMaterial(MaterialContent srcMaterial, bool isSkinned)
         {
             var effect = CreateEffect(srcMaterial, isSkinned);
 
-            var material = new MeshPrimitiveMaterial();
+            var material = new DeviceMeshPrimitiveMaterial();
 
             material.Effect = effect;
             material.DoubleSided = srcMaterial.DoubleSided;
@@ -89,44 +88,7 @@ namespace MonoScene.Graphics.Pipeline
 
         #endregion
 
-        #region
-
-        public static IEnumerable<(XNAV3 A, XNAV3 B, XNAV3 C)> EvaluateTriangles(ModelInstance instance, IReadOnlyList<IMeshDecoder<MaterialContent>> meshes)
-        {
-            foreach(var drawable in instance.DrawableInstances)
-            {
-                var srcMesh = meshes[drawable.Template.MeshIndex];
-                var srcXfrm = drawable.Transform;
-
-                foreach(var prim in srcMesh.Primitives)
-                {
-                    foreach (var (idx0, idx1, idx2) in prim.TriangleIndices)
-                    {
-                        var pos0 = prim.GetPosition(idx0);
-                        var pos1 = prim.GetPosition(idx1);
-                        var pos2 = prim.GetPosition(idx2);
-
-                        var sjw0 = prim.GetSkinWeights(idx0);
-                        var sjw1 = prim.GetSkinWeights(idx1);
-                        var sjw2 = prim.GetSkinWeights(idx2);
-
-                        var a = srcXfrm.TransformPosition(pos0, null, sjw0);
-                        var b = srcXfrm.TransformPosition(pos1, null, sjw1);
-                        var c = srcXfrm.TransformPosition(pos2, null, sjw2);
-
-                        yield return (a, b, c);
-                    }
-                }
-            }
-        }
-
-        public static Microsoft.Xna.Framework.BoundingSphere EvaluateBoundingSphere(ModelInstance instance, IReadOnlyList<IMeshDecoder<MaterialContent>> meshes)
-        {
-            var triangles = EvaluateTriangles(instance, meshes)
-                .SelectMany(item => new[] { item.A, item.B, item.C });
-
-            return Microsoft.Xna.Framework.BoundingSphere.CreateFromPoints(triangles);
-        }
+        #region static API        
 
         public MeshCollection CreateMeshCollection(MeshCollectionContent srcMeshes)
         {
@@ -188,7 +150,7 @@ namespace MonoScene.Graphics.Pipeline
         #endregion
     }
 
-    public class PBRMeshFactory : MeshFactory
+    public class PBRMeshFactory : DeviceMeshFactory
     {
         public PBRMeshFactory(GraphicsDevice device)
             : base(device) { }
@@ -199,7 +161,7 @@ namespace MonoScene.Graphics.Pipeline
         }
     }
 
-    public class ClassicMeshFactory : MeshFactory
+    public class ClassicMeshFactory : DeviceMeshFactory
     {
         #region lifecycle
 
@@ -218,17 +180,17 @@ namespace MonoScene.Graphics.Pipeline
         #endregion        
     }
 
-    public class MeshPrimitiveMaterial
+    public class DeviceMeshPrimitiveMaterial
     {
         public Effect Effect;
         public BlendState Blend;
         public bool DoubleSided;
 
-        public class MeshFactory : MeshFactory<MeshPrimitiveMaterial>
+        public class MeshFactory : DeviceMeshFactory<DeviceMeshPrimitiveMaterial>
         {
             public MeshFactory(GraphicsDevice device) : base(device) { }
 
-            protected override MeshPrimitiveMaterial ConvertMaterial(MeshPrimitiveMaterial material, bool mustSupportSkinning)
+            protected override DeviceMeshPrimitiveMaterial ConvertMaterial(DeviceMeshPrimitiveMaterial material, bool mustSupportSkinning)
             {
                 return material;
             }

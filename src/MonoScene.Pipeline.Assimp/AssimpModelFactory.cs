@@ -41,16 +41,18 @@ namespace MonoScene.Graphics.Pipeline
 
         public DeviceModelCollection ReadModel(Assimp.Scene scene)
         {
-            var factory = UseBasicEffects ? (MeshFactory)new ClassicMeshFactory(_Device) : new PBRMeshFactory(_Device);
+            var factory = UseBasicEffects ? (DeviceMeshFactory)new ClassicMeshFactory(_Device) : new PBRMeshFactory(_Device);
 
-            return ConvertToXna(scene, factory);
+            return ConvertToDevice(scene, factory);
         }
 
-        public static DeviceModelCollection ConvertToXna(Assimp.Scene scene, MeshFactory meshFactory)
+        public static DeviceModelCollection ConvertToDevice(Assimp.Scene srcScene, DeviceMeshFactory meshFactory)
         {
             if (meshFactory == null) throw new ArgumentNullException();
 
-            return ConvertToContent(scene).ToDeviceModelCollection(meshFactory);
+            var content = ConvertToContent(srcScene);
+
+            return DeviceModelCollection.CreateFrom(content, meshFactory.CreateMeshCollection);
         }
 
         public static ModelCollectionContent ConvertToContent(Assimp.Scene scene)
@@ -58,24 +60,33 @@ namespace MonoScene.Graphics.Pipeline
             // create a mesh decoder for each mesh
 
             var meshDecoders = scene.Meshes.ToXna(scene.Materials);
-            var meshContent = MeshCollectionContent.CreateFromMeshes(meshDecoders);
+            var meshContent = MeshCollectionBuilder.CreateContent(meshDecoders);
 
             // build the armatures and models
 
-            var models = new List<ModelTemplate>();
+            var models = new List<ModelContent>();
             var armatures = new List<ArmatureContent>();
 
             var armatureFactory = new AssimpArmatureFactory(scene);
             var armature = armatureFactory.CreateArmature();
             armatures.Add(armature);
 
-            var model = armatureFactory.CreateModel(scene, armature, meshDecoders);
+            var model = armatureFactory.CreateModelContent(scene, armatures.Count-1);
+
+            model.Name = "AssimpScene";
+            model.Tag = scene.Metadata;
+
+            // model.ModelBounds = 
 
             models.Add(model);            
 
             // coalesce all resources into a container class:
 
-            return new ModelCollectionContent(meshContent, armatures.ToArray(), models.ToArray(), 0);
+            var content = new ModelCollectionContent(meshContent, armatures.ToArray(), models.ToArray(), 0);
+
+            content = PostProcessor.Postprocess(content);
+
+            return content;
         }
     }
 }

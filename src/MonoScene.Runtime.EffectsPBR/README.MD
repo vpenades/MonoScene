@@ -1,4 +1,4 @@
-﻿### MonoGame.Framework.Graphics.PBR
+﻿### MonoScene.Runtime.EffectsPBR
 
 Extends Monogame with additional PBR effects:
 

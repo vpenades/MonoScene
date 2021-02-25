@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using XNAV3 = Microsoft.Xna.Framework.Vector3;
 using XNAMAT = Microsoft.Xna.Framework.Matrix;
 
+
 namespace MonoScene.Graphics
 {
     /// <summary>
@@ -23,11 +24,11 @@ namespace MonoScene.Graphics
         internal ModelInstance(ModelTemplate parent)
         {
             _Parent = parent;
-            
+
             _Armature = new ArmatureInstance(_Parent._Armature);
             _Armature.SetPoseTransforms();
 
-            _WorldMatrix = XNAMAT.Identity;            
+            _WorldMatrix = XNAMAT.Identity;
 
             _DrawableTemplates = _Parent._DrawableReferences;
             _DrawableTransforms = new IMeshTransform[_DrawableTemplates.Length];
@@ -35,7 +36,7 @@ namespace MonoScene.Graphics
             for (int i = 0; i < _DrawableTransforms.Length; ++i)
             {
                 _DrawableTransforms[i] = _DrawableTemplates[i].CreateGeometryTransform();
-            }            
+            }
         }
 
         #endregion
@@ -59,7 +60,7 @@ namespace MonoScene.Graphics
 
         public string Name => _Parent.Name;
 
-        public Object Tag => _Parent.Tag;        
+        public Object Tag => _Parent.Tag;
 
         public ArmatureInstance Armature => _Armature;
 
@@ -301,6 +302,6 @@ namespace MonoScene.Graphics
             }
         }
 
-        #endregion
+        #endregion                
     }
 }

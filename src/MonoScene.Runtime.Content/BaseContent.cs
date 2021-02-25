@@ -12,6 +12,12 @@ namespace MonoScene.Graphics.Content
 
         public BaseContent(string name, Object tag) { Name = name; Tag = tag; }
 
+        public BaseContent(BaseContent other)
+        {
+            this.Name = other.Name;
+            this.Tag = other.Tag;
+        }
+
         public string Name { get; set; }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using MonoScene.Graphics.Content;
@@ -16,6 +17,17 @@ namespace MonoScene.Graphics
     public class DeviceModelCollection : ModelCollection, IDisposable
     {
         #region lifecycle
+
+        public static DeviceModelCollection CreateFrom(ModelCollectionContent content, Converter<MeshCollectionContent, MeshCollection> meshesConverter)
+        {
+            var meshes = meshesConverter(content._SharedMeshes);
+
+            var models = content._Models
+                .Select((item, idx) => new ModelTemplate(content,idx))
+                .ToArray();
+            
+            return new DeviceModelCollection(meshes, content._SharedArmatures, models, content._DefaultModelIndex);           
+        }
 
         public DeviceModelCollection(MeshCollection meshes, ArmatureContent[] armatures, ModelTemplate[] models, int defaultModelIndex)
             : base(meshes, armatures, models,defaultModelIndex)

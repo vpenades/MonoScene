@@ -67,8 +67,8 @@ for some classes, there's two class variants
 |-|-|
 |[ModelTemplate](ModelGraph/ModelTemplate.cs)|[ModelInstance](ModelGraph/ModelInstance.cs)|
 |[DrawableTemplate](ModelGraph/DrawableTemplate.cs)|[DrawableInstance](ModelGraph/DrawableInstance.cs)|
-|[ArmatureTemplate](ModelGraph/ArmatureTemplate.cs)|[ArmatureInstance](ModelGraph/ArmatureInstance.cs)|
-|[NodeTemplate](ModelGraph/NodeTemplate.cs)|[NodeInstance](ModelGraph/NodeInstance.cs)|
+|[ArmatureContent](../MonoScene.Runtime.Content/Armature/ArmatureContent.cs)|[ArmatureInstance](ModelGraph/ArmatureInstance.cs)|
+|[NodeContent](../MonoScene.Runtime.Content/Armature/NodeContent.cs)|[NodeInstance](ModelGraph/NodeInstance.cs)|
 
 
 So what's this about?

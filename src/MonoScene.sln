@@ -22,15 +22,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo3", "Demo3\Demo3.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Pipeline.Assimp", "MonoScene.Pipeline.Assimp\MonoScene.Pipeline.Assimp.csproj", "{53F32A7E-EA67-408E-92FC-D6B3D46AC9B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGameViewer", "MonoSceneViewer\MonoGameViewer.csproj", "{5CA89BF6-7EF0-4DAF-81F1-0534C56136BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoSceneViewer", "MonoSceneViewer\MonoSceneViewer.csproj", "{5CA89BF6-7EF0-4DAF-81F1-0534C56136BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidDemo1", "AndroidDemo1\AndroidDemo1.csproj", "{9CE794E3-3DEC-491B-8AFB-28833107D8A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoScene.Pipeline", "MonoScene.Pipeline\MonoScene.Pipeline.csproj", "{BF0082A1-44BE-45B6-8679-BD22E5899050}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Pipeline", "MonoScene.Pipeline\MonoScene.Pipeline.csproj", "{BF0082A1-44BE-45B6-8679-BD22E5899050}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{891DFE27-C481-4D2C-9F55-91CFC08635DF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Runtime", "Runtime", "{C5BB2248-5C6A-4895-BE07-F9A53D566E9B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F0B1912B-E726-4B4E-8FF5-5ADC7FC18824}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

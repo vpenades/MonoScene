@@ -17,7 +17,21 @@ namespace MonoScene.Graphics
     /// </summary>
     public class ModelTemplate : BaseContent
     {
-        #region lifecycle        
+        #region lifecycle
+
+        public ModelTemplate(ModelCollectionContent collection, int index)
+        {
+            var srcModel = collection._Models[index];
+
+            _Armature = collection._SharedArmatures[srcModel.ArmatureLogicalIndex];
+
+            _ModelBounds = srcModel.ModelBounds;
+
+            _DrawableReferences = srcModel
+                .DrawableReferences
+                .Select(item => item.UpcastToTemplate())
+                .ToArray();
+        }
 
         public ModelTemplate(string modelName, ArmatureContent armature, IDrawableTemplate[] drawables)
             : base(modelName)
@@ -35,14 +49,16 @@ namespace MonoScene.Graphics
         // this is the collection of "what needs to be rendered", and it binds meshes with armatures
         internal readonly IDrawableTemplate[] _DrawableReferences;
 
+        private readonly Microsoft.Xna.Framework.BoundingSphere _ModelBounds;
+
         private IMeshCollection _SharedMeshes;
-        private Effect[] _SharedEffects;
+        private Effect[] _SharedEffects;        
 
         #endregion
 
         #region properties        
 
-        public Microsoft.Xna.Framework.BoundingSphere ModelBounds { get; set; }
+        public Microsoft.Xna.Framework.BoundingSphere ModelBounds => _ModelBounds;
 
         public IMeshCollection Meshes
         {
@@ -51,6 +67,8 @@ namespace MonoScene.Graphics
             {
                 _SharedMeshes = value;
                 _SharedEffects = null;
+
+                // if we change the meshes, we probably need to rebuild _ModelBounds.
             }
         }
 

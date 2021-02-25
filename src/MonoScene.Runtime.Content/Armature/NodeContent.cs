@@ -71,7 +71,10 @@ namespace MonoScene.Graphics.Content
         /// </summary>
         public IReadOnlyList<int> ChildIndices => _ChildIndices;
 
-
+        /// <summary>
+        /// If true, use <see cref="LocalScale"/>, <see cref="LocalRotation"/> and <see cref="LocalTranslation"/><br/>
+        /// instead of <see cref="LocalMatrix"/>.
+        /// </summary>
         public bool UseAnimatedTransforms => _UseAnimatedTransforms;
         public XNAMAT LocalMatrix => _LocalMatrix;        
         public AnimatableProperty<XNAV3> LocalScale => _LocalScale;

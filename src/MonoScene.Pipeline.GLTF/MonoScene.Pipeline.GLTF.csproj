@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MonoScene.Pipeline\MonoScene.Pipeline.csproj" />
+    <ProjectReference Include="..\MonoScene.Runtime.Model3D\MonoScene.Runtime.Model3D.csproj" />
   </ItemGroup>
 
 </Project>

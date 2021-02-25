@@ -18,11 +18,6 @@ namespace MonoScene.Graphics.Pipeline
 {
     static class Converters
     {
-        public static BoundingSphere ToXna(this (XYZ center, float radius) sphere)
-        {
-            return new BoundingSphere(sphere.center, sphere.radius);
-        }        
-
         public static (Vector3 U, Vector3 V) ToXna(this System.Numerics.Matrix3x2 m)
         {
             var u = new Vector3(m.M11, m.M21, m.M31);

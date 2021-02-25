@@ -7,6 +7,11 @@ namespace MonoScene.Graphics.Content
     /// <summary>
     /// Represents the geometry (vertex+index buffers) of a <see cref="MeshPartContent"/>
     /// </summary>
+    /// <remarks>
+    /// Notice that <see cref="VertexOffset"/> and <see cref="VertexCount"/><br/>
+    /// are measured in <i>vertices</i>; that allows reshaping the vertex format of<br/>
+    /// <see cref="VertexBufferContent"/> without requiring to update the byte offsets.
+    /// </remarks>
     public class MeshGeometryContent
     {
         #region data        
@@ -15,7 +20,15 @@ namespace MonoScene.Graphics.Content
         /// Logical Index into <see cref="MeshCollectionContent.SharedVertexBuffers"/>
         /// </summary>
         public int VertexBufferIndex { get; private set; }
+
+        /// <summary>
+        /// Index of the first vertex of <see cref="VertexBufferContent"/>
+        /// </summary>
         public int VertexOffset { get; private set; }
+
+        /// <summary>
+        /// Number of vertices within <see cref="VertexBufferContent"/> starting at <see cref="VertexOffset"/>.
+        /// </summary>
         public int VertexCount { get; private set; }        
 
         /// <summary>

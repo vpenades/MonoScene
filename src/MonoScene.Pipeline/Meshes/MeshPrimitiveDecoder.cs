@@ -10,6 +10,8 @@ using XNAV2 = Microsoft.Xna.Framework.Vector2;
 using XNAV3 = Microsoft.Xna.Framework.Vector3;
 using XNAV4 = Microsoft.Xna.Framework.Vector4;
 
+using BYTES = System.Span<byte>;
+
 namespace MonoScene.Graphics.Pipeline
 {
     static class MeshPrimitiveDecoder
@@ -85,24 +87,24 @@ namespace MonoScene.Graphics.Pipeline
     readonly ref struct VertexEncoder
     {
         #region constructors
-        public VertexEncoder(Span<Byte> array, int vertexStride, int index)
+        public VertexEncoder(BYTES array, int vertexStride, int index)
         {
             _Vertex = array.Slice(index * vertexStride, vertexStride);
         }
 
-        public VertexEncoder(Span<Byte> vertex) { _Vertex = vertex; }
+        public VertexEncoder(BYTES vertex) { _Vertex = vertex; }
 
         #endregion
 
         #region data
 
-        private readonly Span<Byte> _Vertex;
+        private readonly BYTES _Vertex;
 
         #endregion
 
         #region API
 
-        public void Encode(VertexElement element, Vector2 value)
+        public void Encode(VertexElement element, XNAV2 value)
         {
             var dstVertex = _Vertex.Slice(element.Offset);
 
@@ -115,7 +117,7 @@ namespace MonoScene.Graphics.Pipeline
             throw new ArgumentException(nameof(element));
         }
 
-        public void Encode(VertexElement element, Vector3 value)
+        public void Encode(VertexElement element, XNAV3 value)
         {
             var dstVertex = _Vertex.Slice(element.Offset);
 
@@ -135,7 +137,7 @@ namespace MonoScene.Graphics.Pipeline
             throw new ArgumentException(nameof(element));
         }
 
-        public void Encode(VertexElement element, Vector4 value)
+        public void Encode(VertexElement element, XNAV4 value)
         {
             var dstVertex = _Vertex.Slice(element.Offset);
 

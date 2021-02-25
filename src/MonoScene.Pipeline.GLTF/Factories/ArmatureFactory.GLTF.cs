@@ -108,23 +108,6 @@ namespace MonoScene.Graphics.Pipeline
 
         #region API
 
-        public ModelTemplate CreateModel(SharpGLTF.Schema2.Scene scene, ArmatureContent armature, IReadOnlyList<IMeshDecoder<MaterialContent>> meshDecoders)
-        {
-            var model = CreateModel(scene, armature);
-            model.ModelBounds = MeshFactory.EvaluateBoundingSphere(model.CreateInstance(), meshDecoders);
-            return model;
-        }
-
-        public ModelTemplate CreateModel(SharpGLTF.Schema2.Scene scene, ArmatureContent armature)
-        {
-            var drawables = GLTFNODE.Flatten(scene)
-                .Where(item => item.Mesh != null)
-                .Select(item => CreateDrawable(item))
-                .ToArray();
-
-            return new ModelTemplate(scene.Name, armature, drawables);
-        }
-
         public void AddSceneRoot(SharpGLTF.Schema2.Scene scene)
         {
             foreach (var root in scene.VisualChildren)
@@ -133,14 +116,26 @@ namespace MonoScene.Graphics.Pipeline
             }
         }
 
-        public IDrawableTemplate CreateDrawable(GLTFNODE node)
+        public ModelContent CreateModelContent(SharpGLTF.Schema2.Scene scene, int armatureIndex)
+        {
+            var drawables = GLTFNODE.Flatten(scene)
+                .Where(item => item.Mesh != null)
+                .Select(item => CreateDrawableContent(item))
+                .ToArray();
+
+            var model = new ModelContent(armatureIndex, drawables);
+
+            return model;
+        }
+
+        public DrawableContent CreateDrawableContent(GLTFNODE node)
         {
             if (node == null) throw new ArgumentNullException(nameof(GLTFNODE));
             if (node.Mesh == null) throw new ArgumentNullException(nameof(GLTFNODE.Mesh));
 
             if (node.Skin == null)
             {
-                return CreateRigidDrawable(node.Mesh.LogicalIndex, node);
+                return CreateRigidDrawableContent(node.Mesh.LogicalIndex, node);
             }
             else
             {
@@ -152,9 +147,9 @@ namespace MonoScene.Graphics.Pipeline
                     bones[i] = (joint, inverseBindMatrix);
                 }
 
-                return CreateSkinnedDrawable(node.Mesh.LogicalIndex, node, bones);
+                return CreateSkinnedDrawableContent(node.Mesh.LogicalIndex, node, bones);
             }
-        }        
+        }
 
         #endregion
     }

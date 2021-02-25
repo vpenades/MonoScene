@@ -79,20 +79,22 @@ namespace MonoScene.Graphics.Pipeline
 
         public DeviceModelCollection ReadModel(SharpGLTF.Schema2.ModelRoot model)
         {
-            var factory = UseBasicEffects ? (MeshFactory)new ClassicMeshFactory(_Device) : new PBRMeshFactory(_Device);
+            var factory = UseBasicEffects ? (DeviceMeshFactory)new ClassicMeshFactory(_Device) : new PBRMeshFactory(_Device);
 
-            return ConvertToXna(model, factory);
+            return ConvertToDevice(model, factory);
         }
 
         #endregion
 
         #region static API
 
-        public DeviceModelCollection ConvertToXna(SharpGLTF.Schema2.ModelRoot srcModel, MeshFactory meshFactory)
+        public DeviceModelCollection ConvertToDevice(SharpGLTF.Schema2.ModelRoot srcModel, DeviceMeshFactory meshFactory)
         {
             if (meshFactory == null) throw new ArgumentNullException();
 
-            return ConvertToContent(srcModel).ToDeviceModelCollection(meshFactory);
+            var content = ConvertToContent(srcModel);
+
+            return DeviceModelCollection.CreateFrom(content, meshFactory.CreateMeshCollection);
         }
 
         public ModelCollectionContent ConvertToContent(SharpGLTF.Schema2.ModelRoot srcModel)
@@ -100,12 +102,12 @@ namespace MonoScene.Graphics.Pipeline
             // create a mesh decoder for each mesh
 
             var meshDecoders = srcModel.LogicalMeshes.ToXnaDecoders(TagConverter);
-            var meshContent = MeshCollectionContent.CreateFromMeshes(meshDecoders);
+            var meshContent = MeshCollectionBuilder.CreateContent(meshDecoders);
 
             // build the armatures and models
 
             var armatures = new List<ArmatureContent>();
-            var models = new List<ModelTemplate>();
+            var models = new List<ModelContent>();
 
             foreach (var scene in srcModel.LogicalScenes)
             {
@@ -121,22 +123,28 @@ namespace MonoScene.Graphics.Pipeline
                 var armature = armatureFactory.CreateArmature();
                 armatures.Add(armature);
 
-                var model = armatureFactory.CreateModel(scene, armature, meshDecoders);
-                model.Tag = TagConverter?.Invoke(scene);
+                var model = armatureFactory.CreateModelContent(scene, armatures.Count-1);
+
+                model.Name = scene.Name;
+                model.Tag = TagConverter?.Invoke(scene);                
 
                 models.Add(model);
             }
             
             // coalesce all resources into a container class:
 
-            return new ModelCollectionContent(meshContent, armatures.ToArray(), models.ToArray(), srcModel.DefaultScene.LogicalIndex);
+            var content = new ModelCollectionContent(meshContent, armatures.ToArray(), models.ToArray(), srcModel.DefaultScene.LogicalIndex);
+
+            content = PostProcessor.Postprocess(content);
+
+            return content;
         }              
 
         public MeshCollectionContent ReadMeshContent(IEnumerable<SharpGLTF.Schema2.Mesh> meshes)
         {
             var meshDecoders = meshes.ToXnaDecoders(TagConverter);
 
-            return MeshCollectionContent.CreateFromMeshes(meshDecoders);
+            return MeshCollectionBuilder.CreateContent(meshDecoders);
         }
 
         #endregion

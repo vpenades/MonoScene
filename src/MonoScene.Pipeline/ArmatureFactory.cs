@@ -39,29 +39,26 @@ namespace MonoScene.Graphics.Pipeline
         protected abstract Object GetTag(TNode node);
         protected abstract IEnumerable<TNode> GetChildren(TNode node);
         protected abstract XNAMAT GetLocalMatrix(TNode node);
-        protected abstract Content.AnimatableProperty<XNAV3> GetScale(TNode node);
-        protected abstract Content.AnimatableProperty<XNAQUAT> GetRotation(TNode node);
-        protected abstract Content.AnimatableProperty<XNAV3> GetTranslation(TNode node);
+        protected abstract AnimatableProperty<XNAV3> GetScale(TNode node);
+        protected abstract AnimatableProperty<XNAQUAT> GetRotation(TNode node);
+        protected abstract AnimatableProperty<XNAV3> GetTranslation(TNode node);
 
 
-        public NodeContent GetNode(TNode srcNode) => _Map[srcNode];
+        public NodeContent GetNode(TNode srcNode) => _Map[srcNode];        
 
-        public IDrawableTemplate CreateRigidDrawable(int meshIndex, TNode node)
+        public DrawableContent CreateRigidDrawableContent(int meshIndex, TNode node)
         {
             var n = GetNode(node);
-            var d = new RigidDrawableTemplate(meshIndex, n);
-            return d;
+            return DrawableContent.CreateRigid(meshIndex, n);
         }
 
-        public IDrawableTemplate CreateSkinnedDrawable(int meshIndex, TNode container, (TNode, XNAMAT)[] bones)
+        public DrawableContent CreateSkinnedDrawableContent(int meshIndex, TNode container, (TNode, XNAMAT)[] bones)
         {
             var xbones = bones
                 .Select(item => (GetNode(item.Item1), item.Item2))
                 .ToArray();
 
-            var d = new SkinnedDrawableTemplate(meshIndex, null, GetNode(container).Name, xbones);
-
-            return d;
+            return DrawableContent.CreateSkinned(meshIndex, null, xbones);
         }
 
         public ArmatureContent CreateArmature() { return new ArmatureContent(_Nodes.ToArray(), _AnimationTracks.ToArray()); }

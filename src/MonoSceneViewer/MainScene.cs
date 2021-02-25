@@ -39,7 +39,7 @@ namespace MonoGameViewer
 
         #region properties
 
-        [PropertyTools.DataAnnotations.Description("If enabled, it will use BasicEffect and SkinnedEffect.")]
+        [PropertyTools.DataAnnotations.Description("If enabled, it will use BasicEffect and SkinnedEffect.\r\n⚠ Switching this checkbox will reload the model!")]        
         public bool UseClassicEffects
         {
             get => _UseClassicEffects;
@@ -86,6 +86,9 @@ namespace MonoGameViewer
 
                     _ModelTemplate = assimpFactory.LoadModel(filePath);
                     _ModelSphere = _ModelTemplate.DefaultModel.ModelBounds;
+
+                    if (_ModelSphere.Radius == 0) throw new ArgumentException();
+
                     _ModelInstance = null;
                 }
             }

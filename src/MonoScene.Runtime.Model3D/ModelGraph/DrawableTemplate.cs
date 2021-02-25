@@ -37,77 +37,37 @@ namespace MonoScene.Graphics
     }
        
 
-    /// <summary>
-    /// Defines a reference to a drawable mesh
-    /// </summary>
-    /// <remarks>
-    /// This class is the 'glue' that binds a mesh with a <see cref="NodeTemplate"/> so we
-    /// can calculate the local transform matrix of the mesh we want to render.
-    /// </remarks>    
-    abstract class DrawableTemplate : BaseContent, IDrawableTemplate
+    
+
+    static class DrawableTemplateFactory
     {
-        #region lifecycle
-
-        protected DrawableTemplate(string name, int logicalMeshIndex)
-            : base(name)
-        {            
-            _LogicalMeshIndex = logicalMeshIndex;            
+        public static IDrawableTemplate UpcastToTemplate(this DrawableContent content)
+        {
+            if (content is RigidDrawableContent rigid) return new RigidDrawableTemplate(rigid);
+            if (content is SkinnedDrawableContent skinned) return new SkinnedDrawableTemplate(skinned);
+            throw new NotImplementedException();
         }
-
-        #endregion
-
-        #region data
-
-        private readonly int _LogicalMeshIndex;
-
-        #endregion
-
-        #region properties
-        
-        /// <summary>
-        /// An index into a <see cref="MeshCollection"/>
-        /// </summary>
-        public int MeshIndex => _LogicalMeshIndex;
-
-        #endregion
-
-        #region API
-
-        public abstract IMeshTransform CreateGeometryTransform();
-
-        public abstract void UpdateGeometryTransform(IMeshTransform geoxform, ArmatureInstance armature);
-
-        #endregion
     }
 
     /// <summary>
     /// Defines a reference to a drawable rigid mesh
     /// </summary>
-    sealed class RigidDrawableTemplate : DrawableTemplate
+    sealed class RigidDrawableTemplate : RigidDrawableContent , IDrawableTemplate
     {
         #region lifecycle
 
-        public RigidDrawableTemplate(int meshIndex, NodeContent node)
-            : base(node.Name, meshIndex)
-        {
-            _NodeIndex = node.ThisIndex;
-        }
+        public RigidDrawableTemplate(RigidDrawableContent content)
+            : base(content) { }
 
-        #endregion
-
-        #region data
-
-        private readonly int _NodeIndex;
-
-        #endregion
+        #endregion        
 
         #region API
 
-        public override IMeshTransform CreateGeometryTransform() { return new MeshRigidTransform(); }
+        public IMeshTransform CreateGeometryTransform() { return new MeshRigidTransform(); }
 
-        public override void UpdateGeometryTransform(IMeshTransform rigidTransform, ArmatureInstance armature)
+        public void UpdateGeometryTransform(IMeshTransform rigidTransform, ArmatureInstance armature)
         {
-            var node = armature.LogicalNodes[_NodeIndex];
+            var node = armature.LogicalNodes[NodeIndex];
 
             var statxform = (MeshRigidTransform)rigidTransform;
             statxform.Update(node.ModelMatrix);
@@ -120,46 +80,26 @@ namespace MonoScene.Graphics
     /// <summary>
     /// Defines a reference to a drawable skinned mesh
     /// </summary>
-    sealed class SkinnedDrawableTemplate : DrawableTemplate
+    sealed class SkinnedDrawableTemplate : SkinnedDrawableContent, IDrawableTemplate
     {
         #region lifecycle
 
-        public SkinnedDrawableTemplate(int meshIndex, NodeContent morphNode, string ownerNname, (NodeContent, XNAMAT)[] skinNodes)
-            : base(ownerNname, meshIndex)
-        {
-            // _MorphNodeIndex = indexFunc(morphNode);
-
-            _JointsNodeIndices = new int[skinNodes.Length];
-            _BindMatrices = new XNAMAT[skinNodes.Length];
-
-            for (int i = 0; i < _JointsNodeIndices.Length; ++i)
-            {
-                var (j, ibm) = skinNodes[i];
-
-                _JointsNodeIndices[i] = j.ThisIndex;
-                _BindMatrices[i] = ibm;
-            }
-        }
-
-        #endregion
-
-        #region data
-
-        private readonly int _MorphNodeIndex;
-        private readonly int[] _JointsNodeIndices;
-        private readonly XNAMAT[] _BindMatrices;
+        public SkinnedDrawableTemplate(SkinnedDrawableContent content)
+            : base(content) { }
 
         #endregion
 
         #region API
 
-        public override IMeshTransform CreateGeometryTransform() { return new MeshSkinTransform(); }
+        public IMeshTransform CreateGeometryTransform() { return new MeshSkinTransform(); }
 
-        public override void UpdateGeometryTransform(IMeshTransform skinnedTransform, ArmatureInstance armature)
+        public void UpdateGeometryTransform(IMeshTransform skinnedTransform, ArmatureInstance armature)
         {
             var skinxform = (MeshSkinTransform)skinnedTransform;
 
-            skinxform.Update(_JointsNodeIndices.Length, idx => _BindMatrices[idx], idx => armature.LogicalNodes[_JointsNodeIndices[idx]].ModelMatrix);
+            skinxform.Update(this.JointsNodeIndices.Length
+                , idx => this.JointsBindMatrices[idx]
+                , idx => armature.LogicalNodes[this.JointsNodeIndices[idx]].ModelMatrix);
 
             // skinxform.Update(instances[_MorphNodeIndex].MorphWeights, false);
         }

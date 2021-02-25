@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using MonoScene.Graphics;
-
-using VERTEXINFLUENCES = Microsoft.Xna.Framework.Graphics.PackedVector.VertexInfluences;
+using VERTEXINFLUENCES = Microsoft.Xna.Framework.Graphics.PackedVector.BoneInfluences;
 
 using XNAV2 = Microsoft.Xna.Framework.Vector2;
 using XNAV3 = Microsoft.Xna.Framework.Vector3;

@@ -8,12 +8,12 @@ using XNAV4 = Microsoft.Xna.Framework.Vector4;
 namespace Microsoft.Xna.Framework.Graphics.PackedVector
 {
     /// <summary>
-    /// Represents 4 vertex influences, defined as 4 bone indices and 4 weights.
+    /// Represents 4 bone influences, defined as 4 indices and 4 weights.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Indices} {Weights}")]
-    public struct VertexInfluences
+    public struct BoneInfluences
     {
-        public static VertexInfluences FromCollection(IEnumerable<(int Index, float Weight)> jointWeights)
+        public static BoneInfluences FromCollection(IEnumerable<(int Index, float Weight)> jointWeights)
         {
             if (jointWeights == null || !jointWeights.Any()) return default;
 
@@ -36,14 +36,20 @@ namespace Microsoft.Xna.Framework.Graphics.PackedVector
                 ++index;
             }
 
-            return new VertexInfluences(indices, weights / wsum);
+            return new BoneInfluences(indices, weights / wsum);
         }
 
-        public static readonly VertexInfluences Default = new VertexInfluences(XNAV4.Zero, XNAV4.UnitX);
+        public static readonly BoneInfluences Default = new BoneInfluences(XNAV4.Zero, XNAV4.UnitX);
 
-        public VertexInfluences(XNAV4 indices, XNAV4 weights)
+        public BoneInfluences(XNAV4 indices, XNAV4 weights)
         {
             Indices = new Short4(indices);
+            Weights = weights;
+        }
+
+        public BoneInfluences(Short4 indices, XNAV4 weights)
+        {
+            Indices = indices;
             Weights = weights;
         }
 

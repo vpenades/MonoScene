@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-using MonoScene.Graphics.Content;
-
-namespace MonoScene.Graphics.Pipeline
+namespace MonoScene.Graphics.Content
 {
     /// <summary>
     /// Represents a data only representation of a collection of models with shared data resources.
@@ -13,7 +11,7 @@ namespace MonoScene.Graphics.Pipeline
     {
         #region constructor
 
-        public ModelCollectionContent(MeshCollectionContent meshes, ArmatureContent[] armatures, ModelTemplate[] models, int defaultModelIndex)
+        public ModelCollectionContent(MeshCollectionContent meshes, ArmatureContent[] armatures, ModelContent[] models, int defaultModelIndex)
         {
             _SharedMeshes = meshes;
             _SharedArmatures = armatures;
@@ -28,33 +26,23 @@ namespace MonoScene.Graphics.Pipeline
         /// <summary>
         /// Multiple <see cref="ModelTemplate"/> at <see cref="_Models"/> might share the same meshes.
         /// </summary>
-        private MeshCollectionContent _SharedMeshes;
+        public MeshCollectionContent _SharedMeshes;
 
         /// <summary>
         /// Multiple <see cref="ModelTemplate"/> at <see cref="_Models"/> might share the same <see cref="ArmatureTemplate"/>.
         /// </summary>
-        private ArmatureContent[] _SharedArmatures;
+        public ArmatureContent[] _SharedArmatures;
 
         /// <summary>
         /// Models available in this collection.
         /// </summary>
-        private ModelTemplate[] _Models;
+        public ModelContent[] _Models;
 
         /// <summary>
         /// Default model index
         /// </summary>
-        private readonly int _DefaultModelIndex;
+        public readonly int _DefaultModelIndex;
 
-        #endregion
-
-        #region API
-
-        public DeviceModelCollection ToDeviceModelCollection(MeshFactory factory)
-        {
-            var meshes = factory.CreateMeshCollection(_SharedMeshes);
-            return new DeviceModelCollection(meshes, _SharedArmatures, _Models, _DefaultModelIndex);
-        }
-
-        #endregion
+        #endregion        
     }
 }

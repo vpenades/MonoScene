@@ -44,30 +44,23 @@ namespace MonoScene.Graphics.Pipeline
 
         #region API
 
-        public ModelTemplate CreateModel(Assimp.Scene scene, ArmatureContent armature, IReadOnlyList<IMeshDecoder<MaterialContent>> meshDecoders)
-        {
-            var model = CreateModel(scene, armature);
-            model.ModelBounds = MeshFactory.EvaluateBoundingSphere(model.CreateInstance(), meshDecoders);
-            return model;
-        }
-
-        public ModelTemplate CreateModel(Assimp.Scene scene, ArmatureContent armature)
-        {
-            var drawables = Flatten(scene.RootNode)
-                .Where(item => item.HasMeshes)
-                .SelectMany(item => CreateDrawables(item, scene.Meshes))
-                .ToArray();
-
-            return new ModelTemplate(null, armature, drawables);
-        }
-
         private static IEnumerable<Assimp.Node> Flatten(Assimp.Node node)
         {
             var flattenedChildren = node.Children.SelectMany(c => Flatten(c));
             return new Assimp.Node[] { node }.Concat(flattenedChildren);
         }
 
-        public IEnumerable<IDrawableTemplate> CreateDrawables(Assimp.Node node, IReadOnlyList<Assimp.Mesh> meshes)
+        public ModelContent CreateModelContent(Assimp.Scene scene, int armatureIndex)
+        {
+            var drawables = Flatten(scene.RootNode)
+                .Where(item => item.HasMeshes)
+                .SelectMany(item => CreateDrawableContent(item, scene.Meshes))
+                .ToArray();
+
+            return new ModelContent(armatureIndex, drawables);
+        }
+
+        public IEnumerable<DrawableContent> CreateDrawableContent(Assimp.Node node, IReadOnlyList<Assimp.Mesh> meshes)
         {
             if (node == null) throw new ArgumentNullException(nameof(node));
             if (!node.HasMeshes) throw new ArgumentNullException(nameof(node.HasMeshes));
@@ -96,7 +89,7 @@ namespace MonoScene.Graphics.Pipeline
             // process rigid meshes
             foreach (var meshIdx in rigidIndices)
             {
-                yield return CreateRigidDrawable(meshIdx, node);
+                yield return CreateRigidDrawableContent(meshIdx, node);
             }
 
             // process skinned meshes
@@ -104,9 +97,9 @@ namespace MonoScene.Graphics.Pipeline
             {
                 var skin = meshes[meshIdx].Bones
                     .Select(item => (rootNode.FindNode(item.Name), item.OffsetMatrix.ToXna()))
-                    .ToArray();                    
+                    .ToArray();
 
-                yield return CreateSkinnedDrawable(meshIdx, node, skin);
+                yield return CreateSkinnedDrawableContent(meshIdx, node, skin);
             }
         }
 

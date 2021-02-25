@@ -55,6 +55,20 @@ namespace MonoScene.Graphics.Content
             return ib;
         }
 
+        public IEnumerable<(int A, int B, int C)> EvaluateTriangles(int offset, int count, int primCount)
+        {
+            count = Math.Min(count, primCount * 3);
+
+            while(offset < count)
+            {
+                var a = (int)_Indices[offset++];
+                var b = (int)_Indices[offset++];
+                var c = (int)_Indices[offset++];
+
+                yield return (a, b, c);
+            }
+        }
+
         #endregion
     }
 }
