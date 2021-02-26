@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework.Graphics;
 
 using XNAV3 = Microsoft.Xna.Framework.Vector3;
 using XNAMAT = Microsoft.Xna.Framework.Matrix;
-
 
 namespace MonoScene.Graphics
 {
@@ -70,17 +70,12 @@ namespace MonoScene.Graphics
 
         public Microsoft.Xna.Framework.BoundingSphere ModelBounds => _Parent.ModelBounds;
 
-        public Microsoft.Xna.Framework.BoundingSphere WorldBounds => _Parent.ModelBounds.Transform(_WorldMatrix);
-
-        /// <summary>
-        /// Gets the number of drawable instances.
-        /// </summary>
-        public int DrawableInstancesCount => _DrawableInstances.Length;
+        public Microsoft.Xna.Framework.BoundingSphere WorldBounds => _Parent.ModelBounds.Transform(_WorldMatrix);        
 
         /// <summary>
         /// Gets the current sequence of drawing commands.
         /// </summary>
-        public IEnumerable<DrawableInstance> DrawableInstances
+        public IReadOnlyList<DrawableInstance> DrawableInstances
         {
             get
             {
@@ -89,6 +84,15 @@ namespace MonoScene.Graphics
             }
         }        
 
+        /// <summary>
+        /// True if the model can be rendered.
+        /// </summary>
+        public bool IsVisible { get; private set; }
+
+        /// <summary>
+        /// Gets the collection of all the effects used by this model,<br/>
+        /// which might be shared with other <see cref="ModelInstance"/> objects.
+        /// </summary>
         public IEnumerable<Effect> SharedEffects => _Parent.SharedEffects;
 
         #endregion
@@ -117,7 +121,13 @@ namespace MonoScene.Graphics
 
         private void _UpdateDrawableInstanceTransforms()
         {
-            foreach (var dwinst in _DrawableInstances) dwinst.Transform.Update(_ModelArmature);
+            IsVisible = false;
+
+            foreach (var dwinst in _DrawableInstances)
+            {
+                dwinst.Transform.Update(_ModelArmature);
+                IsVisible |= dwinst.Transform.Visible;
+            }
         }
 
         /// <summary>
@@ -188,23 +198,7 @@ namespace MonoScene.Graphics
 
         #endregion
 
-        #region effect utils
-
-        // pre-allocated bone arrays to update the IEffectBones
-        private static readonly List<XNAMAT[]> _BoneArrays = new List<XNAMAT[]>();
-
-        // Since SkinnedEffect has such a flexible and GC friendly API,
-        // we have to do this to have a reusable bone matrix pool.
-        private static XNAMAT[] UseArray(int count)
-        {
-            while (_BoneArrays.Count <= count) _BoneArrays.Add(null);
-
-            if (_BoneArrays[count] == null) _BoneArrays[count] = new XNAMAT[count];
-
-            return _BoneArrays[count];
-
-        }
-
+        #region API - Effects
 
         public static void UpdateProjViewTransforms(Effect effect, XNAMAT projectionXform, XNAMAT viewXform)
         {

@@ -26,16 +26,16 @@ namespace MonoScene.Graphics
     {
         #region lifecycle
 
-        internal ArmatureInstance(ArmatureContent armature)
+        internal ArmatureInstance(ArmatureContent content)
         {
-            _ArmatureContent = armature;
-            _NodeInstances = new NodeInstance[armature.Count];
+            _ArmatureContent = content;
+            _NodeInstances = new NodeInstance[content.Count];
 
-            // no need to check arguments since they're supposedly pre-checked by ArmatureTemplate's constructor.
+            // no need to check arguments since they're supposedly pre-checked by ArmatureContent's constructor.
 
             for (var i = 0; i < _NodeInstances.Length; ++i)
             {
-                var n = armature[i];
+                var n = content[i];
                 var pidx = n.ParentIndex;
                 var p = pidx < 0 ? null : _NodeInstances[pidx];
                 _NodeInstances[i] = new NodeInstance(n, p);
