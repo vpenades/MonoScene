@@ -14,8 +14,10 @@ namespace MonoScene.Graphics
     /// Represents the state machine of a specific model instance on screen.    
     /// </summary>
     /// <remarks>
-    /// For each <see cref="ModelTemplate"/> you can create
-    /// multiple <see cref="ModelInstance"/> objects.
+    /// <para>
+    /// Lifecycle flow:<br/>
+    /// <see cref="Content.ModelContent"/> ➔ <see cref="ModelTemplate"/> ➔ <b><see cref="ModelInstance"/></b>.
+    /// </para>
     /// </remarks>
     public class ModelInstance
     {
@@ -25,17 +27,16 @@ namespace MonoScene.Graphics
         {
             _Parent = parent;
 
-            _Armature = new ArmatureInstance(_Parent._Armature);
-            _Armature.SetPoseTransforms();
-
             _WorldMatrix = XNAMAT.Identity;
 
-            _DrawableTemplates = _Parent._DrawableReferences;
-            _DrawableTransforms = new IMeshTransform[_DrawableTemplates.Length];
+            _ModelArmature = new ArmatureInstance(_Parent._Armature);
+            _ModelArmature.SetPoseTransforms();            
 
-            for (int i = 0; i < _DrawableTransforms.Length; ++i)
+            _DrawableInstances = new DrawableInstance[_Parent._Drawables.Count];
+            
+            for (int i = 0; i < _DrawableInstances.Length; ++i)
             {
-                _DrawableTransforms[i] = _DrawableTemplates[i].CreateGeometryTransform();
+                _DrawableInstances[i] = new DrawableInstance(_Parent._Drawables[i]);
             }
         }
 
@@ -43,17 +44,14 @@ namespace MonoScene.Graphics
 
         #region data        
 
-        private readonly ModelTemplate _Parent;
-
-        private IMeshCollection _Meshes => _Parent.Meshes;
-
-        private readonly ArmatureInstance _Armature;
-
-        private readonly IDrawableTemplate[] _DrawableTemplates;
-        private readonly IMeshTransform[] _DrawableTransforms;
+        private readonly ModelTemplate _Parent;        
 
         private XNAMAT _WorldMatrix;
 
+        private readonly ArmatureInstance _ModelArmature;
+
+        private readonly DrawableInstance[] _DrawableInstances;
+        
         #endregion
 
         #region properties
@@ -62,7 +60,7 @@ namespace MonoScene.Graphics
 
         public Object Tag => _Parent.Tag;
 
-        public ArmatureInstance Armature => _Armature;
+        public ArmatureInstance Armature => _ModelArmature;
 
         public XNAMAT WorldMatrix
         {
@@ -77,7 +75,7 @@ namespace MonoScene.Graphics
         /// <summary>
         /// Gets the number of drawable instances.
         /// </summary>
-        public int DrawableInstancesCount => _DrawableTransforms.Length;
+        public int DrawableInstancesCount => _DrawableInstances.Length;
 
         /// <summary>
         /// Gets the current sequence of drawing commands.
@@ -86,13 +84,10 @@ namespace MonoScene.Graphics
         {
             get
             {
-                for (int i = 0; i < _DrawableTemplates.Length; ++i)
-                {
-                    yield return GetDrawableInstance(i);
-                }
+                _UpdateDrawableInstanceTransforms();
+                return _DrawableInstances;
             }
-        }
-
+        }        
 
         public IEnumerable<Effect> SharedEffects => _Parent.SharedEffects;
 
@@ -100,14 +95,14 @@ namespace MonoScene.Graphics
 
         #region API - Armature
 
-        public int IndexOfNode(string nodeName) { return _Armature.IndexOfNode(nodeName); }
+        public int IndexOfNode(string nodeName) { return _ModelArmature.IndexOfNode(nodeName); }
 
         /// <summary>
         /// Gets the matrix of a given node/bone in Model Space.
         /// </summary>
         /// <param name="nodeIndex">The index of the node/bone.</param>
         /// <returns>A matrix in model space.</returns>
-        public XNAMAT GetModelMatrix(int nodeIndex) { return _Armature.LogicalNodes[nodeIndex].ModelMatrix; }
+        public XNAMAT GetModelMatrix(int nodeIndex) { return _ModelArmature.LogicalNodes[nodeIndex].ModelMatrix; }
 
         /// <summary>
         /// Gets the matrix of a given node/bone in World Space.
@@ -118,23 +113,11 @@ namespace MonoScene.Graphics
 
         #endregion
 
-        #region API - Drawing
+        #region API - Drawing        
 
-        /// <summary>
-        /// Gets a <see cref="DrawableInstance"/> object, where:
-        /// - Name is the name of this drawable instance. Originally, it was the name of <see cref="Schema2.Node"/>.
-        /// - MeshIndex is the logical Index of a <see cref="Schema2.Mesh"/> in <see cref="Schema2.ModelRoot.LogicalMeshes"/>.
-        /// - Transform is an <see cref="IMeshTransform"/> that can be used to transform the <see cref="Schema2.Mesh"/> into world space.
-        /// </summary>
-        /// <param name="index">The index of the drawable reference, from 0 to <see cref="DrawableInstancesCount"/></param>
-        /// <returns><see cref="DrawableInstance"/> object.</returns>
-        public DrawableInstance GetDrawableInstance(int index)
+        private void _UpdateDrawableInstanceTransforms()
         {
-            var dref = _DrawableTemplates[index];
-
-            dref.UpdateGeometryTransform(_DrawableTransforms[index], _Armature);
-
-            return new DrawableInstance(dref, _DrawableTransforms[index]);
+            foreach (var dwinst in _DrawableInstances) dwinst.Transform.Update(_ModelArmature);
         }
 
         /// <summary>
@@ -160,10 +143,10 @@ namespace MonoScene.Graphics
         {
             foreach (var d in DrawableInstances)
             {
-                var mesh = _Meshes[d.Template.MeshIndex];
+                var mesh = _Parent.Meshes[d.Content.MeshIndex];
                 if (mesh.TranslucidEffects.Count == 0) continue;
 
-                SetEffectsTransforms(mesh.TranslucidEffects, _WorldMatrix, d.Transform);
+                _SetEffectsTransforms(mesh.TranslucidEffects, _WorldMatrix, d.Transform);
 
                 mesh.DrawTranslucid();
             }
@@ -173,54 +156,35 @@ namespace MonoScene.Graphics
         {
             foreach (var d in DrawableInstances)
             {
-                var mesh = _Meshes[d.Template.MeshIndex];
+                var mesh = _Parent.Meshes[d.Content.MeshIndex];
                 if (mesh.OpaqueEffects.Count == 0) continue;
 
-                SetEffectsTransforms(mesh.OpaqueEffects, _WorldMatrix, d.Transform);
+                _SetEffectsTransforms(mesh.OpaqueEffects, _WorldMatrix, d.Transform);
 
                 mesh.DrawOpaque();
             }
         }
 
         /// <summary>
-        /// Sets the effects transforms.
+        /// Applies <paramref name="worldXform"/> and <paramref name="meshXform"/> to <paramref name="effects"/>.
         /// </summary>
-        /// <param name="effects">The target effects</param>
-        /// <param name="projectionXform">The current projection matrix</param>
-        /// <param name="viewXform">The current view matrix</param>
-        /// <param name="worldXform">The current world matrix</param>
-        /// <param name="meshXform">The mesh local transform provided by the runtime</param>
-        private void SetEffectsTransforms(IReadOnlyCollection<Effect> effects, XNAMAT worldXform, IMeshTransform meshXform)
+        /// <param name="effects">The effects to update.</param>
+        /// <param name="worldXform">The new world transform.</param>
+        /// <param name="meshXform">The new mesh transform containing model and skin matrices.</param>
+        private void _SetEffectsTransforms(IReadOnlyCollection<Effect> effects, XNAMAT worldXform, IMeshTransform meshXform)
         {
-            if (meshXform is MeshSkinTransform skinnedXform)
+            if (meshXform.TryGetModelMatrix(out XNAMAT modelXform))
             {
-                // skinned transforms don't have a single "local transform" instead, they deform the mesh using multiple meshes.
-
-                var skinTransforms = UseArray(skinnedXform.SkinMatrices.Count);
-
-                for (int i = 0; i < skinTransforms.Length; ++i)
-                {
-                    skinTransforms[i] = skinnedXform.SkinMatrices[i];
-                }
-
-                foreach (var effect in effects)
-                {
-                    UpdateWorldTransforms(effect, worldXform, skinTransforms);
-                }
+                worldXform = XNAMAT.Multiply(modelXform, worldXform);
             }
 
-            if (meshXform is MeshRigidTransform rigidXform)
+            var meshSkinMatrices = meshXform.TryGetSkinMatrices();
+
+            foreach (var effect in effects)
             {
-                var statTransform = rigidXform.WorldMatrix;
-
-                worldXform = XNAMAT.Multiply(statTransform, worldXform);
-
-                foreach (var effect in effects)
-                {
-                    UpdateWorldTransforms(effect, worldXform);
-                }
+                UpdateWorldTransforms(effect, worldXform, meshSkinMatrices);
             }
-        }
+        }        
 
         #endregion
 

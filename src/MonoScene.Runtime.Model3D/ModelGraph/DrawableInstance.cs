@@ -1,25 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MonoScene.Graphics
 {
-    [System.Diagnostics.DebuggerDisplay("{Template.Name} {MeshIndex}")]
+    /// <summary>
+    /// Represents a drawable item within a <see cref="ModelInstance.DrawableInstances"/>.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Lifecycle flow:<br/>
+    /// <see cref="Content.DrawableContent"/> ➔ <b><see cref="DrawableInstance"/></b>
+    /// </para>
+    /// </remarks>
+    [System.Diagnostics.DebuggerDisplay("{Content.Name} {Content.MeshIndex}")]
     public readonly struct DrawableInstance
     {
-        internal DrawableInstance(IDrawableTemplate t, IMeshTransform xform)
+        internal DrawableInstance(Content.DrawableContent content)
         {
-            Template = t;
-            Transform = xform;
+            Content = content;
+            Transform = content.CreateTransformInstance();
         }
 
         /// <summary>
-        /// Defines "what to draw"
+        /// Defines "what to draw".
         /// </summary>
-        public readonly IDrawableTemplate Template;
+        public readonly Content.DrawableContent Content;
 
         /// <summary>
-        /// Defines "where to draw"
+        /// Defines "where to draw it".
         /// </summary>
         public readonly IMeshTransform Transform;
     }

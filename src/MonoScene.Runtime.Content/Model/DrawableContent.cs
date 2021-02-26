@@ -47,22 +47,32 @@ namespace MonoScene.Graphics.Content
         public int MeshIndex => _MeshIndex;
 
         #endregion
+
+        #region API
+
+        /// <summary>
+        /// Creates new <see cref="IMeshTransform"/> instance.
+        /// </summary>
+        /// <returns></returns>
+        public abstract IMeshTransform CreateTransformInstance();
+
+        #endregion
     }
 
-    public class RigidDrawableContent : DrawableContent
+    sealed class RigidDrawableContent : DrawableContent
     {
         #region lifecycle
 
         protected RigidDrawableContent(RigidDrawableContent other)
             : base(other)
         {
-            this.NodeIndex = other.NodeIndex;
+            this._NodeIndex = other._NodeIndex;
         }
 
         internal RigidDrawableContent(int meshIndex, NodeContent node)
             : base(meshIndex)
         {
-            NodeIndex = node.ThisIndex;
+            _NodeIndex = node.ThisIndex;
         }
 
         #endregion
@@ -70,23 +80,32 @@ namespace MonoScene.Graphics.Content
         #region data
 
         /// <summary>
-        /// An index into a <see cref="MeshCollectionContent.Meshes"/>
+        /// An index into a <see cref="IArmatureTransform.GetModelMatrix(int)"/>
         /// </summary>
-        protected readonly int NodeIndex;
+        internal readonly int _NodeIndex;
+
+        #endregion
+
+        #region API
+
+        public override IMeshTransform CreateTransformInstance()
+        {
+            return new _MeshRigidTransform(this);
+        }
 
         #endregion
     }
 
-    public class SkinnedDrawableContent : DrawableContent
+    sealed class SkinnedDrawableContent : DrawableContent
     {
         #region lifecycle
 
         protected SkinnedDrawableContent(SkinnedDrawableContent other)
             : base(other)
         {
-            this.MorphNodeIndex = other.MorphNodeIndex;
-            this.JointsNodeIndices = other.JointsNodeIndices;
-            this.JointsBindMatrices = other.JointsBindMatrices;
+            this._MorphNodeIndex = other._MorphNodeIndex;
+            this._JointsNodeIndices = other._JointsNodeIndices;
+            this._JointsBindMatrices = other._JointsBindMatrices;
         }
 
         internal SkinnedDrawableContent(int meshIndex, NodeContent morphNode, (NodeContent, XNAMAT)[] skinNodes)
@@ -94,15 +113,15 @@ namespace MonoScene.Graphics.Content
         {
             // _MorphNodeIndex = indexFunc(morphNode);
 
-            JointsNodeIndices = new int[skinNodes.Length];
-            JointsBindMatrices = new XNAMAT[skinNodes.Length];
+            _JointsNodeIndices = new int[skinNodes.Length];
+            _JointsBindMatrices = new XNAMAT[skinNodes.Length];
 
-            for (int i = 0; i < JointsNodeIndices.Length; ++i)
+            for (int i = 0; i < _JointsNodeIndices.Length; ++i)
             {
                 var (j, ibm) = skinNodes[i];
 
-                JointsNodeIndices[i] = j.ThisIndex;
-                JointsBindMatrices[i] = ibm;
+                _JointsNodeIndices[i] = j.ThisIndex;
+                _JointsBindMatrices[i] = ibm;
             }
         }
 
@@ -111,20 +130,29 @@ namespace MonoScene.Graphics.Content
         #region data
 
         /// <summary>
-        /// An index into a <see cref="ArmatureContent"/> which holds the morph state.
+        /// An index into a <see cref="IArmatureTransform.GetMorphState(int)"/>.
         /// </summary>
-        protected readonly int MorphNodeIndex;
+        internal readonly int _MorphNodeIndex;
 
         /// <summary>
-        /// Bone indices into <see cref="ArmatureContent"/>.
+        /// Bone indices into <see cref="IArmatureTransform.GetModelMatrix(int)"/>.
         /// </summary>
-        protected readonly int[] JointsNodeIndices;
+        internal readonly int[] _JointsNodeIndices;
 
         /// <summary>
-        /// Inverse Bind Matrices associated to <see cref="JointsNodeIndices"/>.
+        /// Inverse Bind Matrices associated to <see cref="_JointsNodeIndices"/>.
         /// </summary>
-        protected readonly XNAMAT[] JointsBindMatrices;
+        internal readonly XNAMAT[] _JointsBindMatrices;
 
         #endregion                
+
+        #region API
+
+        public override IMeshTransform CreateTransformInstance()
+        {
+            return new _MeshSkinTransform(this);
+        }
+
+        #endregion
     }
 }

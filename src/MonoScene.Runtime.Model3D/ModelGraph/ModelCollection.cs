@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using MonoScene.Graphics.Content;
-
-using MODELMESH = MonoScene.Graphics.Mesh;
-
 
 namespace MonoScene.Graphics
 {

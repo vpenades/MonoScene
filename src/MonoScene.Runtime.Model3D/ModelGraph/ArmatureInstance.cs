@@ -1,30 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using MonoScene.Graphics.Content;
 
-using XFORM = Microsoft.Xna.Framework.Matrix;
+using XNAMAT = Microsoft.Xna.Framework.Matrix;
 
 namespace MonoScene.Graphics
 {
     /// <summary>
-    /// Represents a specific and independent state of a <see cref="Content.ArmatureContent"/>.
+    /// Represents an instanced state of <see cref="ArmatureContent"/>.
     /// </summary>
     /// <remarks>
-    /// An <see cref="ArmatureTemplate"/> represents the layout, graph and initial state of a skeleton, and it's a READ ONLY OBJECT.
-    /// Moving forward, an <see cref="ArmatureInstance"/> represents a live instance of that skeleton within a 3D scene, so each
-    /// joint can be rotated independently from other instances, without affecting each other.
+    /// <para>
+    /// An <see cref="ArmatureContent"/> represents the layout, graph and<br/>
+    /// initial state of a skeleton, and it's a READ ONLY OBJECT.
+    /// </para>
+    /// <para>
+    /// Moving forward, an <see cref="ArmatureInstance"/> represents the current<br/>
+    /// state of a an independent skeleton within a 3D scene, so each joint can be<br/>
+    /// rotated independently from other instances, without affecting each other.
+    /// </para>
     /// </remarks>
-    public class ArmatureInstance
+    public class ArmatureInstance : IArmatureTransform
     {
         #region lifecycle
 
         internal ArmatureInstance(ArmatureContent armature)
         {
-            _Template = armature;
+            _ArmatureContent = armature;
             _NodeInstances = new NodeInstance[armature.Count];
 
             // no need to check arguments since they're supposedly pre-checked by ArmatureTemplate's constructor.
@@ -42,7 +46,7 @@ namespace MonoScene.Graphics
 
         #region data
 
-        private ArmatureContent _Template;
+        private ArmatureContent _ArmatureContent;
         private NodeInstance[] _NodeInstances;              
 
         #endregion
@@ -62,7 +66,7 @@ namespace MonoScene.Graphics
         /// <summary>
         /// Gets the total number of animation tracks for this instance.
         /// </summary>
-        public int AnimationTracksCount => _Template.Animations.Count;        
+        public int AnimationTracksCount => _ArmatureContent.Animations.Count;        
 
         #endregion
 
@@ -78,14 +82,19 @@ namespace MonoScene.Graphics
             return -1;
         }
 
-        public void SetLocalMatrix(string name, XFORM localMatrix)
+        public void SetLocalMatrix(string name, XNAMAT localMatrix)
         {
             var n = LogicalNodes.FirstOrDefault(item => item.Name == name);
             if (n == null) return;
             n.LocalMatrix = localMatrix;
         }
 
-        public void SetModelMatrix(string name, XFORM modelMatrix)
+        XNAMAT IArmatureTransform.GetModelMatrix(int index)
+        {
+            return LogicalNodes[index].ModelMatrix;
+        }
+
+        public void SetModelMatrix(string name, XNAMAT modelMatrix)
         {
             var n = LogicalNodes.FirstOrDefault(item => item.Name == name);
             if (n == null) return;
@@ -97,11 +106,11 @@ namespace MonoScene.Graphics
             foreach (var n in _NodeInstances) n.SetPoseTransform();
         }
 
-        public string NameOfTrack(int trackIndex) { return _Template.Animations[trackIndex].Name; }
+        public string NameOfTrack(int trackIndex) { return _ArmatureContent.Animations[trackIndex].Name; }
 
-        public int IndexOfTrack(string name) { return _Template.IndexOfTrack(name); }
+        public int IndexOfTrack(string name) { return _ArmatureContent.IndexOfTrack(name); }
 
-        public float GetAnimationDuration(int trackIndex) { return _Template.GetTrackDuration(trackIndex); }
+        public float GetAnimationDuration(int trackIndex) { return _ArmatureContent.GetTrackDuration(trackIndex); }
 
         public void SetAnimationFrame(int trackIndex, float time, bool looped = true)
         {
@@ -139,7 +148,7 @@ namespace MonoScene.Graphics
             }
 
             foreach (var n in nodes) n.SetAnimationFrame(tracks, times, weights);
-        }
+        }        
 
         #endregion
     }

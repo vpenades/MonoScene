@@ -14,7 +14,7 @@ namespace MonoScene.Graphics.Content
     /// Represents a hierarchical element within a <see cref="ArmatureContent"/>.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("[{LogicalNodeIndex}] {Name}")]
-    public class NodeContent : BaseContent
+    public partial class NodeContent : BaseContent
     {
         #region lifecycle
 
@@ -81,43 +81,6 @@ namespace MonoScene.Graphics.Content
         public AnimatableProperty<XNAQUAT> LocalRotation => _LocalRotation;
         public AnimatableProperty<XNAV3> LocalTranslation => _LocalTranslation;
 
-        #endregion
-
-        #region API
-
-        public void SetLocalMatrix(XNAMAT matrix)
-        {
-            _LocalMatrix = matrix;
-            _UseAnimatedTransforms = false;
-        }
-
-        public void SetLocalTransform(AnimatableProperty<XNAV3> s, AnimatableProperty<XNAQUAT> r, AnimatableProperty<XNAV3> t)
-        {            
-            var ss = s != null && s.IsAnimated;
-            var rr = r != null && r.IsAnimated;
-            var tt = t != null && t.IsAnimated;
-
-            if (!(ss || rr || tt))
-            {
-                _UseAnimatedTransforms = false;
-                _LocalScale = null;
-                _LocalRotation = null;
-                _LocalTranslation = null;
-                return;
-            }
-
-            _UseAnimatedTransforms = true;
-            _LocalScale = s;
-            _LocalRotation = r;
-            _LocalTranslation = t;
-
-            var m = XNAMAT.Identity;
-            if (s != null) m *= XNAMAT.CreateScale(s.Value);
-            if (r != null) m *= XNAMAT.CreateFromQuaternion(r.Value);
-            if (t != null) m.Translation = t.Value;
-            _LocalMatrix = m;
-        }
-
-        #endregion
+        #endregion        
     }
 }

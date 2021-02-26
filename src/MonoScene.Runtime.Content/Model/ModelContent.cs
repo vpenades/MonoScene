@@ -36,7 +36,7 @@ namespace MonoScene.Graphics.Content
         #region properties
         public int ArmatureLogicalIndex { get; set; }
         public IReadOnlyList<DrawableContent> DrawableReferences => _DrawableReferences;
-        public Microsoft.Xna.Framework.BoundingSphere ModelBounds { get; set; }        
+        public Microsoft.Xna.Framework.BoundingSphere ModelBounds { get; set; }
 
         #endregion        
     }

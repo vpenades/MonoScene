@@ -50,7 +50,7 @@ namespace MonoScene.Graphics.Content
                     return controller.TransformPosition(pos, null, blend);
                 }
 
-                foreach (var tri in srcMeshes.EvaluateTriangles(drawable.Template.MeshIndex, transform))
+                foreach (var tri in srcMeshes.EvaluateTriangles(drawable.Content.MeshIndex, transform))
                 {
                     yield return tri;
                 }

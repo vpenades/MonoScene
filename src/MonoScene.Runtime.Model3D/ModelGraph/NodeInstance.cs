@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 using MonoScene.Graphics.Content;
 
@@ -10,13 +9,18 @@ using XFORM = Microsoft.Xna.Framework.Matrix;
 namespace MonoScene.Graphics
 {
     /// <summary>
-    /// Represents a hierarchical element within an <see cref="ArmatureInstance"/>, mirroring a <see cref="NodeContent"/>.
+    /// Represents a hierarchical element within an <see cref="ArmatureInstance"/>.<br/>    
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Lifecycle flow:<br/>
+    /// <see cref="NodeContent"/> ➔ <b><see cref="NodeInstance"/></b>
+    /// </para>
+    /// </remarks>
     [System.Diagnostics.DebuggerDisplay("{Name}")]
     public sealed class NodeInstance
     {
         #region lifecycle
-
         internal NodeInstance(NodeContent template, NodeInstance parent)
         {
             _Template = template;
