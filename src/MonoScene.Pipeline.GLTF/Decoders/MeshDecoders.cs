@@ -15,10 +15,10 @@ using VERTEXINFLUENCES = Microsoft.Xna.Framework.Graphics.PackedVector.BoneInflu
 
 namespace MonoScene.Graphics.Pipeline
 {
-    readonly struct _MeshDecoder : IMeshDecoder<MaterialContent>
+    readonly struct _MeshDecoder : IMeshDecoder<int>
     {
         #region constructor
-        public _MeshDecoder(SharpGLTF.Runtime.IMeshDecoder<SharpGLTF.Schema2.Material> mesh, IReadOnlyList<MaterialContent> materials, object tag)
+        public _MeshDecoder(SharpGLTF.Runtime.IMeshDecoder<SharpGLTF.Schema2.Material> mesh, GLTFMaterialsFactory materials, object tag)
         {
             _Source = mesh;
             _Primitives = mesh.Primitives.Select(item => _MeshPrimitiveDecoder.Create(item, materials)).ToArray();
@@ -30,7 +30,7 @@ namespace MonoScene.Graphics.Pipeline
         #region data
 
         private readonly SharpGLTF.Runtime.IMeshDecoder<SharpGLTF.Schema2.Material> _Source;
-        private readonly IMeshPrimitiveDecoder<MaterialContent>[] _Primitives;
+        private readonly IMeshPrimitiveDecoder<int>[] _Primitives;
         private readonly object _Tag;
 
         #endregion
@@ -40,27 +40,25 @@ namespace MonoScene.Graphics.Pipeline
         public string Name => _Source.Name;
         public object Tag => _Tag;
 
-        public IReadOnlyList<IMeshPrimitiveDecoder<MaterialContent>> Primitives => _Primitives;        
+        public IReadOnlyList<IMeshPrimitiveDecoder<int>> Primitives => _Primitives;        
 
         #endregion
     }
 
-    readonly struct _MeshPrimitiveDecoder : IMeshPrimitiveDecoder<MaterialContent>
+    readonly struct _MeshPrimitiveDecoder : IMeshPrimitiveDecoder<int>
     {
-        #region constructor
+        #region constructor        
 
-        private static readonly MaterialContent _DefaultMaterial = new MaterialContent();
-
-        public static IMeshPrimitiveDecoder<MaterialContent> Create(SharpGLTF.Runtime.IMeshPrimitiveDecoder<SharpGLTF.Schema2.Material> primitive, IReadOnlyList<MaterialContent> materials)
+        public static IMeshPrimitiveDecoder<int> Create(SharpGLTF.Runtime.IMeshPrimitiveDecoder<SharpGLTF.Schema2.Material> primitive, GLTFMaterialsFactory materials)
         {
-            var material = primitive.Material == null ? _DefaultMaterial : materials[primitive.Material.LogicalIndex];
+            var material = materials.UseMaterial(primitive.Material);
 
             return new _MeshPrimitiveDecoder(primitive, material);
         }
-        private _MeshPrimitiveDecoder(SharpGLTF.Runtime.IMeshPrimitiveDecoder<SharpGLTF.Schema2.Material> primitive, MaterialContent material)
+        private _MeshPrimitiveDecoder(SharpGLTF.Runtime.IMeshPrimitiveDecoder<SharpGLTF.Schema2.Material> primitive, int materialIndex)
         {
             _Source = primitive;
-            _Material = material;
+            _MaterialIndex = materialIndex;
         }
 
         #endregion
@@ -68,13 +66,13 @@ namespace MonoScene.Graphics.Pipeline
         #region data
 
         private readonly SharpGLTF.Runtime.IMeshPrimitiveDecoder<SharpGLTF.Schema2.Material> _Source;
-        private readonly MaterialContent _Material;
+        private readonly int _MaterialIndex;
 
         #endregion
 
         #region properties
 
-        public MaterialContent Material => _Material;
+        public int Material => _MaterialIndex;
 
         public int VertexCount => _Source.VertexCount;
 

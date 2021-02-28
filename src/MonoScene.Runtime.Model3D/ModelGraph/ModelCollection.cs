@@ -14,9 +14,9 @@ namespace MonoScene.Graphics
     {
         #region lifecycle
 
-        public static DeviceModelCollection CreateFrom(ModelCollectionContent content, Converter<MeshCollectionContent, MeshCollection> meshesConverter)
+        public static DeviceModelCollection CreateFrom(ModelCollectionContent content, Func<MaterialCollectionContent, MeshCollectionContent, MeshCollection> meshesConverter)
         {
-            var meshes = meshesConverter(content._SharedMeshes);
+            var meshes = meshesConverter(content._SharedMaterials, content._SharedMeshes);
 
             var models = content._Models
                 .Select((item, idx) => new ModelTemplate(content,idx))

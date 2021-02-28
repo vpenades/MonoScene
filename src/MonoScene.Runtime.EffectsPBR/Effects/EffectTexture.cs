@@ -7,7 +7,7 @@ namespace Microsoft.Xna.Framework.Graphics
     
     public abstract class EffectTexture2D
     {
-        #region
+        #region debug
 
         protected virtual string DebuggerDisplay()
         {

@@ -41,7 +41,9 @@ namespace MonoScene.Graphics.Pipeline
 
         public DeviceModelCollection ReadModel(Assimp.Scene scene)
         {
-            var factory = UseBasicEffects ? (DeviceMeshFactory)new ClassicMeshFactory(_Device) : new PBRMeshFactory(_Device);
+            var factory = UseBasicEffects
+                ? (DeviceMeshFactory)new ClassicMeshFactory(_Device)
+                : new PBRMeshFactory(_Device);
 
             return ConvertToDevice(scene, factory);
         }
@@ -59,8 +61,10 @@ namespace MonoScene.Graphics.Pipeline
         {
             // create a mesh decoder for each mesh
 
-            var meshDecoders = scene.Meshes.ToXna(scene.Materials);
+            var matsBuilder = new AssimpMaterialsFactory(scene.Materials);
+            var meshDecoders = scene.Meshes.ToXna(matsBuilder);
             var meshContent = MeshCollectionBuilder.CreateContent(meshDecoders);
+            var matsContent = matsBuilder.CreateContent();
 
             // build the armatures and models
 
@@ -82,7 +86,7 @@ namespace MonoScene.Graphics.Pipeline
 
             // coalesce all resources into a container class:
 
-            var content = new ModelCollectionContent(meshContent, armatures.ToArray(), models.ToArray(), 0);
+            var content = new ModelCollectionContent(matsContent, meshContent, armatures.ToArray(), models.ToArray(), 0);
 
             content = PostProcessor.Postprocess(content);
 

@@ -18,7 +18,7 @@ namespace MonoScene.Graphics.Pipeline
 
         public MeshCollectionBuilder() { }
 
-        public MeshCollectionBuilder(IReadOnlyList<IMeshDecoder<MaterialContent>> srcMeshes)
+        public MeshCollectionBuilder(IReadOnlyList<IMeshDecoder<int>> srcMeshes)
         {
             for (int i = 0; i < srcMeshes.Count; ++i)
             {
@@ -31,19 +31,18 @@ namespace MonoScene.Graphics.Pipeline
 
         #endregion
 
-        #region data
+        #region data        
 
         // shared buffers
         internal readonly List<VertexBufferContent> _VertexBuffers = new List<VertexBufferContent>();
-        internal readonly List<IndexBufferContent> _IndexBuffers = new List<IndexBufferContent>();
-        internal readonly List<MaterialContent> _Materials = new List<MaterialContent>();
+        internal readonly List<IndexBufferContent> _IndexBuffers = new List<IndexBufferContent>();        
         internal readonly List<MeshContent> _Meshes = new List<MeshContent>();
 
         #endregion
 
         #region API
 
-        public static MeshCollectionContent CreateContent(IReadOnlyList<IMeshDecoder<MaterialContent>> srcMeshes)
+        public static MeshCollectionContent CreateContent(IReadOnlyList<IMeshDecoder<int>> srcMeshes)
         {
             return new MeshCollectionBuilder(srcMeshes).ToContent();
         }
@@ -53,8 +52,7 @@ namespace MonoScene.Graphics.Pipeline
             var dstMeshes = new MeshCollectionContent();
 
             dstMeshes._SharedVertexBuffers.AddRange(this._VertexBuffers);
-            dstMeshes._SharedIndexBuffers.AddRange(this._IndexBuffers);
-            dstMeshes._SharedMaterials.AddRange(this._Materials);
+            dstMeshes._SharedIndexBuffers.AddRange(this._IndexBuffers);            
             dstMeshes._Meshes.AddRange(this._Meshes);
 
             return dstMeshes;
@@ -62,16 +60,7 @@ namespace MonoScene.Graphics.Pipeline
 
         #endregion
 
-        #region core        
-
-        private int _UseMaterialIndex(MaterialContent material)
-        {
-            var idx = _Materials.IndexOf(material);
-            if (idx >= 0) return idx;
-
-            _Materials.Add(material);
-            return _Materials.Count - 1;
-        }
+        #region core
 
         private int _UseVertexBuffer(VertexDeclaration vdecl)
         {
@@ -91,7 +80,7 @@ namespace MonoScene.Graphics.Pipeline
             return _IndexBuffers.Count - 1;
         }
 
-        public void AppendMesh(IMeshDecoder<MaterialContent> srcMesh)
+        public void AppendMesh(IMeshDecoder<int> srcMesh)
         {
             var dstMesh = new MeshContent();
             dstMesh.Name = srcMesh.Name;
@@ -107,13 +96,13 @@ namespace MonoScene.Graphics.Pipeline
                 var geometry = CreateGeometry(vbIndex, ibIndex, prim, vdecl);
                 if (geometry == null) continue;
 
-                dstMesh.AddMeshPart(geometry, _UseMaterialIndex(prim.Material));
+                dstMesh.AddMeshPart(geometry, prim.Material);
             }
 
             _Meshes.Add(dstMesh);
         }
 
-        private MeshGeometryContent CreateGeometry(int vbIndex, int ibIndex, IMeshPrimitiveDecoder<MaterialContent> primitive, VertexDeclaration vdecl)
+        private MeshGeometryContent CreateGeometry(int vbIndex, int ibIndex, IMeshPrimitiveDecoder<int> primitive, VertexDeclaration vdecl)
         {
             var partVertices = MeshPrimitiveDecoder.ToXnaVertices(primitive, vdecl);
             var partTriangles = primitive.TriangleIndices.ToList();

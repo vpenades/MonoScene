@@ -43,51 +43,18 @@ namespace MonoScene.Graphics.Pipeline
             return (u, v);
         }
 
-        public static MaterialContent ToXna(this Assimp.Material srcMaterial)
+        
+
+        public static IReadOnlyList<IMeshDecoder<int>> ToXna(this IReadOnlyList<Assimp.Mesh> srcMeshes, AssimpMaterialsFactory srcMaterials)
         {
-            var dstMaterial = new MaterialContent();
-            dstMaterial.Name = srcMaterial.Name;
-
-            dstMaterial.DoubleSided = srcMaterial.HasTwoSided;
-            dstMaterial.Mode = srcMaterial.BlendMode == Assimp.BlendMode.Default ? MaterialBlendMode.Opaque : MaterialBlendMode.Blend;
-            dstMaterial.AlphaCutoff = 0.5f;            
-
-            if (srcMaterial.IsPBRMaterial)
-            {
-                dstMaterial.PreferredShading = "MetallicRoughness";
-                SetTexture(dstMaterial, "Normals", srcMaterial.PBR.TextureNormalCamera);
-                SetTexture(dstMaterial, "BaseColor", srcMaterial.PBR.TextureBaseColor);
-                SetTexture(dstMaterial, "MetallicRoughness", srcMaterial.PBR.TextureMetalness);
-                SetTexture(dstMaterial, "Emissive", srcMaterial.PBR.TextureEmissionColor);
-            }
-            else
-            {
-                dstMaterial.PreferredShading = "MetallicRoughness";
-                SetTexture(dstMaterial, "BaseColor", srcMaterial.TextureDiffuse);
-            }
-
-            return dstMaterial;
-        }
-
-        public static IReadOnlyList<IMeshDecoder<MaterialContent>> ToXna(this IReadOnlyList<Assimp.Mesh> srcMeshes, IReadOnlyList<Assimp.Material> srcMaterials)
-        {
-            var dstMaterials = srcMaterials
-                .Select(item => item.ToXna())
-                .ToArray();
-
             var dstMeshes = srcMeshes
-                .Select(item => new _MeshDecoder<MaterialContent>(item, dstMaterials[item.MaterialIndex]))
-                .Cast<IMeshDecoder<MaterialContent>>()
+                .Select(item => new _MeshDecoder<int>(item, item.MaterialIndex))
+                .Cast<IMeshDecoder<int>>()
                 .ToArray();
 
             return dstMeshes;
         }
 
-        private static void SetTexture(MaterialContent dstMaterial, string slot, Assimp.TextureSlot srcSlot)
-        {
-            var dstChannel = dstMaterial.UseChannel(slot);
-
-            dstChannel.VertexIndexSet = srcSlot.UVIndex;            
-        }
+        
     }
 }

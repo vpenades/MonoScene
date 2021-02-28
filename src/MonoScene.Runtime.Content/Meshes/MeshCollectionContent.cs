@@ -13,21 +13,18 @@ namespace MonoScene.Graphics.Content
     /// </summary>
     public class MeshCollectionContent
     {
-        #region data
+        #region data        
 
         internal readonly List<VertexBufferContent> _SharedVertexBuffers = new List<VertexBufferContent>();
-        internal readonly List<IndexBufferContent> _SharedIndexBuffers = new List<IndexBufferContent>();
-        internal readonly List<MaterialContent> _SharedMaterials = new List<MaterialContent>();
+        internal readonly List<IndexBufferContent> _SharedIndexBuffers = new List<IndexBufferContent>();        
 
         internal readonly List<MeshContent> _Meshes = new List<MeshContent>();
 
         #endregion
 
         #region properties
-
         public IReadOnlyList<VertexBufferContent> SharedVertexBuffers => _SharedVertexBuffers;
-        public IReadOnlyList<IndexBufferContent> SharedIndexBuffers => _SharedIndexBuffers;
-        public IReadOnlyList<MaterialContent> SharedMaterials => _SharedMaterials;
+        public IReadOnlyList<IndexBufferContent> SharedIndexBuffers => _SharedIndexBuffers;        
         public IReadOnlyList<MeshContent> Meshes => _Meshes;
 
         #endregion

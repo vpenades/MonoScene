@@ -99,10 +99,12 @@ namespace MonoScene.Graphics.Pipeline
 
         public ModelCollectionContent ConvertToContent(SharpGLTF.Schema2.ModelRoot srcModel)
         {
-            // create a mesh decoder for each mesh
+            // process materials and meshes.
 
-            var meshDecoders = srcModel.LogicalMeshes.ToXnaDecoders(TagConverter);
-            var meshContent = MeshCollectionBuilder.CreateContent(meshDecoders);
+            var materialsBuilder = new GLTFMaterialsFactory(TagConverter);
+            var meshesDecoders = srcModel.LogicalMeshes.ToXnaDecoders(materialsBuilder, TagConverter);
+            var meshesContent = MeshCollectionBuilder.CreateContent(meshesDecoders);
+            var materialsContent = materialsBuilder.CreateContent();
 
             // build the armatures and models
 
@@ -133,18 +135,23 @@ namespace MonoScene.Graphics.Pipeline
             
             // coalesce all resources into a container class:
 
-            var content = new ModelCollectionContent(meshContent, armatures.ToArray(), models.ToArray(), srcModel.DefaultScene.LogicalIndex);
+            var content = new ModelCollectionContent(materialsContent, meshesContent, armatures.ToArray(), models.ToArray(), srcModel.DefaultScene.LogicalIndex);
 
             content = PostProcessor.Postprocess(content);
 
             return content;
         }              
 
-        public MeshCollectionContent ReadMeshContent(IEnumerable<SharpGLTF.Schema2.Mesh> meshes)
+        public (MaterialCollectionContent Materials, MeshCollectionContent Meshes) ReadMeshContent(IEnumerable<SharpGLTF.Schema2.Mesh> meshes)
         {
-            var meshDecoders = meshes.ToXnaDecoders(TagConverter);
+            var materialsFactory = new GLTFMaterialsFactory(TagConverter);
 
-            return MeshCollectionBuilder.CreateContent(meshDecoders);
+            var meshDecoders = meshes.ToXnaDecoders(materialsFactory, TagConverter);
+
+            var meshContent = MeshCollectionBuilder.CreateContent(meshDecoders);
+            var matsContent = materialsFactory.CreateContent();
+
+            return (matsContent, meshContent);
         }
 
         #endregion

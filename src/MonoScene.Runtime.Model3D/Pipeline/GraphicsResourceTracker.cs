@@ -22,18 +22,33 @@ namespace MonoScene.Graphics.Pipeline
 
         #endregion
 
-        #region API        
+        #region API
+
+        private static bool IsStaticResource(GraphicsResource resource)
+        {
+            if (Object.ReferenceEquals(resource, BlendState.Opaque)) return true;
+            if (Object.ReferenceEquals(resource, BlendState.Additive)) return true;
+            if (Object.ReferenceEquals(resource, BlendState.AlphaBlend)) return true;
+            if (Object.ReferenceEquals(resource, BlendState.NonPremultiplied)) return true;
+
+            if (Object.ReferenceEquals(resource, SamplerState.PointWrap)) return true;
+            if (Object.ReferenceEquals(resource, SamplerState.PointClamp)) return true;
+            if (Object.ReferenceEquals(resource, SamplerState.LinearWrap)) return true;
+            if (Object.ReferenceEquals(resource, SamplerState.LinearClamp)) return true;
+            if (Object.ReferenceEquals(resource, SamplerState.AnisotropicWrap)) return true;
+            if (Object.ReferenceEquals(resource, SamplerState.AnisotropicClamp)) return true;
+
+            return false;
+        }
+
         public void AddDisposable(GraphicsResource resource)
         {
             if (resource == null) throw new ArgumentNullException();
 
-            if (Object.ReferenceEquals(resource, BlendState.Opaque)) throw new ArgumentException("Static");
-            if (Object.ReferenceEquals(resource, BlendState.AlphaBlend)) throw new ArgumentException("Static");
+            if (_Disposables.Contains(resource)) return;
 
-            if (Object.ReferenceEquals(resource, SamplerState.LinearWrap)) throw new ArgumentException("Static");
+            if (IsStaticResource(resource)) return;      
 
-
-            if (_Disposables.Contains(resource)) throw new ArgumentException("Already Added");
             _Disposables.Add(resource);
         }
 

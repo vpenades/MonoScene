@@ -13,16 +13,14 @@ namespace MonoScene.Graphics.Pipeline
     /// Interface used by importers to wrap the imported mesh.
     /// </summary>
     /// <typeparam name="TMaterial"></typeparam>
-    public interface IMeshDecoder<TMaterial>
-        where TMaterial : class
+    public interface IMeshDecoder<TMaterial>        
     {
         string Name { get; }        
         Object Tag { get; }
         IReadOnlyList<IMeshPrimitiveDecoder<TMaterial>> Primitives { get; }        
     }    
 
-    public interface IMeshPrimitiveDecoder<TMaterial> : IMeshPrimitiveDecoder
-        where TMaterial : class
+    public interface IMeshPrimitiveDecoder<TMaterial> : IMeshPrimitiveDecoder        
     {
         TMaterial Material { get; }
     }

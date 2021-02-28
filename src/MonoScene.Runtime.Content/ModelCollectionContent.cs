@@ -11,8 +11,9 @@ namespace MonoScene.Graphics.Content
     {
         #region constructor
 
-        public ModelCollectionContent(MeshCollectionContent meshes, ArmatureContent[] armatures, ModelContent[] models, int defaultModelIndex)
+        public ModelCollectionContent(MaterialCollectionContent materials, MeshCollectionContent meshes, ArmatureContent[] armatures, ModelContent[] models, int defaultModelIndex)
         {
+            _SharedMaterials = materials;
             _SharedMeshes = meshes;
             _SharedArmatures = armatures;
             _Models = models;
@@ -22,6 +23,8 @@ namespace MonoScene.Graphics.Content
         #endregion
 
         #region data
+
+        public MaterialCollectionContent _SharedMaterials;
 
         /// <summary>
         /// Multiple <see cref="ModelTemplate"/> at <see cref="_Models"/> might share the same meshes.

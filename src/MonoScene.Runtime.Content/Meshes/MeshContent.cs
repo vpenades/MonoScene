@@ -77,9 +77,13 @@ namespace MonoScene.Graphics.Content
         }
 
         /// <summary>
-        /// Logical Index into <see cref="MeshCollectionContent.SharedMaterials"/>
+        /// Logical Index into <see cref="MaterialCollectionContent.Materials"/>
         /// </summary>
         public int MaterialIndex { get; private set; }
+
+        /// <summary>
+        /// Pointers to vertices and indices.
+        /// </summary>
         public MeshGeometryContent Geometry { get; private set; }
     }
 

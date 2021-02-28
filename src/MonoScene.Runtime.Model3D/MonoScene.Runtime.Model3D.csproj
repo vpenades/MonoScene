@@ -15,10 +15,10 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.1825-develop" PrivateAssets="all" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
-  </ItemGroup>  
+  </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonoScene.Runtime.EffectsPBR\MonoScene.Runtime.EffectsPBR.csproj" />
+    <ProjectReference Include="..\MonoScene.Runtime.Content\MonoScene.Runtime.Content.csproj" />
   </ItemGroup>  
 
 </Project>

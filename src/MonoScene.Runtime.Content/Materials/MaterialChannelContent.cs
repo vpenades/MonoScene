@@ -58,7 +58,7 @@ namespace MonoScene.Graphics.Content
 
         private SamplerStateContent _Sampler;
 
-        private Object _Texture;
+        private int _TextureIndex = -1;
 
         #endregion
 
@@ -104,15 +104,12 @@ namespace MonoScene.Graphics.Content
         }
 
         /// <summary>
-        /// An object representing a serializable texture object
+        /// Index to a texture at <see cref="MaterialCollectionContent.Textures"/> or -1 if unused.
         /// </summary>
-        /// <remarks>
-        /// This can be a Byte[] array with an image (PNG, DDS, etc)
-        /// </remarks>
-        public Object Texture
+        public int TextureIndex
         {
-            get => _Texture;
-            set => _Texture = value;
+            get => _TextureIndex;
+            set => _TextureIndex = value;
         }
 
         #endregion

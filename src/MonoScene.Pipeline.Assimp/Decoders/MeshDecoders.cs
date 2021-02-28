@@ -11,8 +11,7 @@ using XNAV4 = Microsoft.Xna.Framework.Vector4;
 
 namespace MonoScene.Graphics.Pipeline
 {
-    readonly struct _MeshDecoder<TMaterial> : IMeshDecoder<TMaterial>
-        where TMaterial : class
+    readonly struct _MeshDecoder<TMaterial> : IMeshDecoder<TMaterial>        
     {
         #region constructor
         public _MeshDecoder(Assimp.Mesh mesh, TMaterial material)
@@ -39,8 +38,7 @@ namespace MonoScene.Graphics.Pipeline
         #endregion
     }
 
-    readonly struct _MeshPrimitiveDecoder<TMaterial> : IMeshPrimitiveDecoder<TMaterial>
-    where TMaterial : class
+    readonly struct _MeshPrimitiveDecoder<TMaterial> : IMeshPrimitiveDecoder<TMaterial>    
     {
         #region constructor
         public static IMeshPrimitiveDecoder<TMaterial> Create(Assimp.Mesh mesh, TMaterial material)

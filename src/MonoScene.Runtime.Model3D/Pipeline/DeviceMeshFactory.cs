@@ -7,20 +7,28 @@ using Microsoft.Xna.Framework.Graphics;
 
 using MonoScene.Graphics.Content;
 
-using XNAV3 = Microsoft.Xna.Framework.Vector3;
-
 namespace MonoScene.Graphics.Pipeline
 {
-    public abstract class DeviceMeshFactory<TMaterial>
-        where TMaterial : class
+    /// <summary>
+    /// Helper class to process <see cref="MaterialCollectionContent"/> and<br/>
+    /// <see cref="MeshCollectionContent"/> content source into a GPU ready<br/>
+    /// <see cref="MeshCollection"/>.
+    /// </summary>
+    /// <remarks>
+    /// In normal circumstances it could be easy to simply convert all the<br/>
+    /// textures within a <see cref="MaterialCollectionContent"/>. But depending<br/>
+    /// of the shader, we might not need all the source textures, so we can only<br/>
+    /// instantiate the textures as we traverse the graph, so only what's actually<br/>
+    /// used will consume GPU resources.
+    /// </remarks>
+    public abstract class DeviceMeshFactory
     {
         #region lifecycle
 
-        public DeviceMeshFactory(GraphicsDevice device)
+        public DeviceMeshFactory(GraphicsDevice device)            
         {
             _Device = device;
-
-            _TextureFactory = new ImageFileTextureFactory(_Device);
+            _TextureFactory = new ImageFileTextureFactory(device);
         }
 
         #endregion
@@ -28,8 +36,6 @@ namespace MonoScene.Graphics.Pipeline
         #region data
 
         private readonly GraphicsDevice _Device;
-        
-        private readonly Dictionary<TMaterial, DeviceMeshPrimitiveMaterial> _Materials = new Dictionary<TMaterial, DeviceMeshPrimitiveMaterial>();        
 
         /// <summary>
         /// Gathers all disposable resources shared by the collection of meshes:
@@ -40,9 +46,11 @@ namespace MonoScene.Graphics.Pipeline
         /// - Custom <see cref="BlendState"/>
         /// - Custom <see cref="SamplerState"/>
         /// </summary>
-        internal GraphicsResourceTracker _Disposables;
+        private GraphicsResourceTracker _Disposables;
 
-        private ImageFileTextureFactory _TextureFactory;
+        private IReadOnlyList<Byte[]> _TextureContent;
+
+        private TextureFactory<Byte[]> _TextureFactory;
 
         #endregion
 
@@ -51,49 +59,57 @@ namespace MonoScene.Graphics.Pipeline
 
         #endregion
 
-        #region API
-
-        protected TextureFactory<Byte[]> FileContentTextureFactory => _TextureFactory;        
-
-        protected abstract DeviceMeshPrimitiveMaterial ConvertMaterial(TMaterial material, bool mustSupportSkinning);
-
-        #endregion        
-    }
-
-    public abstract class DeviceMeshFactory : DeviceMeshFactory<MaterialContent>
-    {
-        #region lifecycle
-
-        public DeviceMeshFactory(GraphicsDevice device)
-            : base(device) { }
-
-        #endregion
-
         #region overridable API
 
-        protected override DeviceMeshPrimitiveMaterial ConvertMaterial(MaterialContent srcMaterial, bool isSkinned)
+        protected Texture2D GetTexture(int index)
         {
-            var effect = CreateEffect(srcMaterial, isSkinned);
+            if (index < 0) return null;
 
-            var material = new DeviceMeshPrimitiveMaterial();
+            if (index == 65536 * 256) return _TextureFactory.UseWhiteImage();
 
-            material.Effect = effect;
-            material.DoubleSided = srcMaterial.DoubleSided;
-            material.Blend = srcMaterial.Mode == MaterialBlendMode.Blend ? BlendState.NonPremultiplied : BlendState.Opaque;
+            var content = _TextureContent[index];
 
-            return material;
+            var tex = _TextureFactory.UseTexture(content);
+
+            _Disposables.AddDisposable(tex);
+
+            return tex;
         }
 
-        protected abstract Effect CreateEffect(MaterialContent srcMaterial, bool isSkinned);
+        /// <summary>
+        /// Creates a new effect from <paramref name="srcMaterial"/>.
+        /// </summary>
+        /// <param name="srcMaterial">The <see cref="MaterialContent"/> to use as source.</param>
+        /// <param name="meshIsSkinned">
+        /// If it's true, the returned <see cref="Effect"/><br/>
+        /// must implement <see cref="IEffectBones"/>.
+        /// </param>
+        /// <returns></returns>
+        protected abstract Effect CreateEffect(MaterialContent srcMaterial, bool meshIsSkinned);
 
         #endregion
 
-        #region static API        
+        #region API        
 
-        public MeshCollection CreateMeshCollection(MeshCollectionContent srcMeshes)
+        public MeshCollection CreateMeshCollection(MaterialCollectionContent srcMaterials, MeshCollectionContent srcMeshes)
         {
+            // check arguments
+
+            if (srcMaterials == null) throw new ArgumentNullException(nameof(srcMaterials));
             if (srcMeshes == null) throw new ArgumentNullException(nameof(srcMeshes));
+
+            foreach(var srcPart in srcMeshes.Meshes.SelectMany(item => item.Parts))
+            {
+                if (srcPart.MaterialIndex < 0 || srcPart.MaterialIndex >= srcMaterials.Materials.Count) throw new ArgumentOutOfRangeException(nameof(srcMeshes), "MaterialIndex");
+            }
+
+            // initialize internals
+
+            _TextureContent = srcMaterials.Textures;
+
             _Disposables = new GraphicsResourceTracker();
+
+            // instantiate vertex and index buffers
 
             var vertexBuffers = srcMeshes.SharedVertexBuffers
                 .Select(item => item.CreateVertexBuffer(Device))
@@ -106,20 +122,32 @@ namespace MonoScene.Graphics.Pipeline
             _Disposables.AddDisposables(vertexBuffers);
             _Disposables.AddDisposables(indexBuffers);
 
+            // instantiate effects lambda
+
             // There isn't an exact match between content materials and effects,
-            // because depending on the effects we choose, we have to split
-            // between effects supporting skinning or not.            
+            // because depending on the behaviour a MaterialContent might be used
+            // on rigid and skinned meshes alike, so we have to create the
+            // appropiate effect on demand.
+
             var rigidEffects = new Dictionary<MaterialContent, Effect>();
             var skinnedEffects = new Dictionary<MaterialContent, Effect>();
 
-            Effect useEffect(MaterialContent srcMaterial, bool isSkinned)
+            Effect useEffect(MaterialContent srcMaterial, bool meshIsSkinned)
             {
-                var dict = isSkinned ? skinnedEffects : rigidEffects;
+                var dict = meshIsSkinned ? skinnedEffects : rigidEffects;
                 if (dict.TryGetValue(srcMaterial, out Effect effect)) return effect;
-                dict[srcMaterial] = effect = CreateEffect(srcMaterial, isSkinned);
+                effect = CreateEffect(srcMaterial, meshIsSkinned);
+
+                if (effect == null) throw new NullReferenceException(nameof(CreateEffect));
+                if (meshIsSkinned && !(effect is IEffectBones)) throw new InvalidCastException($"Effect must implement IEffectBones");
+
+                dict[srcMaterial] = effect;
+
                 _Disposables.AddDisposable(effect);
                 return effect;
             }
+
+            // coalesce meshes
 
             var dstMeshes = new List<Mesh>();
 
@@ -129,7 +157,8 @@ namespace MonoScene.Graphics.Pipeline
 
                 foreach(var srcPart in srcMesh.Parts)
                 {
-                    var srcMaterial = srcMeshes.SharedMaterials[srcPart.MaterialIndex];
+                    var srcMaterial = srcMaterials.Materials[srcPart.MaterialIndex];
+
                     var hasSkin = srcMeshes.SharedVertexBuffers[srcPart.Geometry.VertexBufferIndex].HasSkinning;
 
                     var dstGeometry = MeshTriangles.CreateFrom(srcPart.Geometry, vertexBuffers, indexBuffers);
@@ -148,52 +177,5 @@ namespace MonoScene.Graphics.Pipeline
         }
 
         #endregion
-    }
-
-    public class PBRMeshFactory : DeviceMeshFactory
-    {
-        public PBRMeshFactory(GraphicsDevice device)
-            : base(device) { }
-        
-        protected override Effect CreateEffect(MaterialContent srcMaterial, bool isSkinned)
-        {
-            return PBREffectsFactory.CreatePBREffect(srcMaterial, isSkinned, Device, tobj => FileContentTextureFactory.UseTexture(tobj as Byte[]));
-        }
-    }
-
-    public class ClassicMeshFactory : DeviceMeshFactory
-    {
-        #region lifecycle
-
-        public ClassicMeshFactory(GraphicsDevice device)
-            : base(device) { }
-
-        #endregion
-
-        #region API        
-
-        protected override Effect CreateEffect(MaterialContent srcMaterial, bool mustSupportSkinning)
-        {
-            return PBREffectsFactory.CreateClassicEffect(srcMaterial, mustSupportSkinning, Device, tobj => FileContentTextureFactory.UseTexture(tobj as Byte[]));
-        }
-
-        #endregion        
-    }
-
-    public class DeviceMeshPrimitiveMaterial
-    {
-        public Effect Effect;
-        public BlendState Blend;
-        public bool DoubleSided;
-
-        public class MeshFactory : DeviceMeshFactory<DeviceMeshPrimitiveMaterial>
-        {
-            public MeshFactory(GraphicsDevice device) : base(device) { }
-
-            protected override DeviceMeshPrimitiveMaterial ConvertMaterial(DeviceMeshPrimitiveMaterial material, bool mustSupportSkinning)
-            {
-                return material;
-            }
-        }
-    }
+    }    
 }
