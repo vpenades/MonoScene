@@ -87,13 +87,13 @@
       <Project>{691c5dfc-9041-4406-9459-b83afd5fbad2}</Project>
       <Name>MonoScene.Runtime.Effects.Classic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoScene.Runtime.EffectsPBR\MonoScene.Runtime.Effects.PBR.csproj">
-      <Project>{2563EE5B-0B4A-4EC1-BF78-8F270CACAB59}</Project>
-      <Name>MonoScene.Runtime.Effects.PBR</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj">
       <Project>{c8ac1020-fe76-4bf5-9767-f63554900091}</Project>
       <Name>MonoScene.Pipeline.GLTF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MonoScene.Runtime.Effects.PBR\MonoScene.Runtime.Effects.PBR.csproj">
+      <Project>{2563ee5b-0b4a-4ec1-bf78-8f270cacab59}</Project>
+      <Name>MonoScene.Runtime.Effects.PBR</Name>
     </ProjectReference>
     <ProjectReference Include="..\MonoScene.Runtime.Scene3D\MonoScene.Runtime.Scene3D.csproj">
       <Project>{486A02BA-D0C2-4EBB-B17A-DAC9C32A8C99}</Project>

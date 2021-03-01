@@ -14,21 +14,20 @@ namespace MonoScene.Graphics.Pipeline
 
         private readonly Dictionary<TMaterialKey, int> _MaterialMapping = new Dictionary<TMaterialKey, int>();        
 
-        internal readonly List<Byte[]> _SharedTextures = new List<byte[]>();
+        internal readonly List<TextureContent> _SharedTextures = new List<TextureContent>();
         internal readonly List<MaterialContent> _Materials = new List<MaterialContent>();
 
         #endregion
 
         #region API
 
-        public int UseTexture(Byte[] texture)
+        public int UseTexture(TextureContent texture)
         {
             if (texture == null) return -1;
-            if (texture.Length == 0) return -1;
 
             for (int i = 0; i < _SharedTextures.Count; ++i)
             {
-                if (texture.AsSpan().SequenceEqual(_SharedTextures[i])) return i;
+                if (TextureContent.ContentComparer.Equals(texture, _SharedTextures[i])) return i;
             }
 
             _SharedTextures.Add(texture);

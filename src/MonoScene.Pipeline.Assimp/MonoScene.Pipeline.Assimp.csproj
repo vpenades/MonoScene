@@ -8,7 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MonoScene.Pipeline\MonoScene.Pipeline.csproj" />
     <ProjectReference Include="..\MonoScene.Runtime.Effects.Classic\MonoScene.Runtime.Effects.Classic.csproj" />
-    <ProjectReference Include="..\MonoScene.Runtime.EffectsPBR\MonoScene.Runtime.Effects.PBR.csproj" />
+    <ProjectReference Include="..\MonoScene.Runtime.Effects.PBR\MonoScene.Runtime.Effects.PBR.csproj" />
     <ProjectReference Include="..\MonoScene.Runtime.Model3D\MonoScene.Runtime.Model3D.csproj" />
   </ItemGroup>
 

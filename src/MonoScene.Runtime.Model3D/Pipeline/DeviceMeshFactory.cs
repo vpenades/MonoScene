@@ -48,7 +48,7 @@ namespace MonoScene.Graphics.Pipeline
         /// </summary>
         private GraphicsResourceTracker _Disposables;
 
-        private IReadOnlyList<Byte[]> _TextureContent;
+        private IReadOnlyList<TextureContent> _TextureContent;
 
         private TextureFactory<Byte[]> _TextureFactory;
 
@@ -69,7 +69,12 @@ namespace MonoScene.Graphics.Pipeline
 
             var content = _TextureContent[index];
 
-            var tex = _TextureFactory.UseTexture(content);
+            Texture2D tex = null;
+
+            if (content is ImageContent contentImg)
+            {
+                tex = _TextureFactory.UseTexture(contentImg.Data);
+            }            
 
             _Disposables.AddDisposable(tex);
 

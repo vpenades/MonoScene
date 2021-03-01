@@ -45,7 +45,11 @@ namespace MonoScene.Graphics.Pipeline
 
                 if (srcChannel.Texture != null)
                 {
-                    dstChannel.TextureIndex = UseTexture( srcChannel.Texture.PrimaryImage.Content.Content.ToArray() );
+                    var imgData = srcChannel.Texture.PrimaryImage.Content.Content.ToArray();
+
+                    var texContent = new ImageContent(imgData);
+
+                    dstChannel.TextureIndex = UseTexture(texContent);
                     dstChannel.Sampler = ToXna(srcChannel.Texture.Sampler);
                 }
                 else

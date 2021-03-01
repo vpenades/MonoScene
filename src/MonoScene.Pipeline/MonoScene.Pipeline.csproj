@@ -12,7 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MonoScene.Runtime.Content\MonoScene.Runtime.Content.csproj" />
     <ProjectReference Include="..\MonoScene.Runtime.Effects.Classic\MonoScene.Runtime.Effects.Classic.csproj" />
-    <ProjectReference Include="..\MonoScene.Runtime.EffectsPBR\MonoScene.Runtime.Effects.PBR.csproj" />
+    <ProjectReference Include="..\MonoScene.Runtime.Effects.PBR\MonoScene.Runtime.Effects.PBR.csproj" />
   </ItemGroup>
 
 </Project>
