@@ -99,7 +99,7 @@ namespace MonoScene.Graphics.Pipeline
         {
             var sparse = _Source
                 .GetSkinWeights(vertexIndex)
-                .GetReducedWeights(4);
+                .GetTrimmed(4);
 
             var indices = new XNAV4(sparse.Index0, sparse.Index1, sparse.Index2, sparse.Index3);
             var weights = new XNAV4(sparse.Weight0, sparse.Weight1, sparse.Weight2, sparse.Weight3);

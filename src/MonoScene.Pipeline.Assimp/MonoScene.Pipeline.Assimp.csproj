@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.1825-develop" PrivateAssets="all" />    
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.1922-develop" PrivateAssets="all" />    
   </ItemGroup>
 
 </Project>
