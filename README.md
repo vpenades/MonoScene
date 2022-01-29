@@ -13,6 +13,8 @@ The issue has been recently resolved and it's available in MonoGame's developmen
 
 MonoGame's minimum version required is: __3.8.1.1825-develop__
 
+Also Visual Studio 2022 required for Net6
+
 ### Overview
 
 MonoScene is a framework that replaces the very outdated 3D model architecture
