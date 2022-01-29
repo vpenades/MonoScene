@@ -71,8 +71,8 @@
     <MonoGameContentReference Include="Content\Content.mgcb" Visible="false" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.1922-develop" />
-    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.1.1920-develop" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.2082-develop" />
+    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.1.2070-develop" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoScene.Pipeline\MonoScene.Pipeline.csproj">

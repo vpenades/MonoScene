@@ -21,8 +21,8 @@
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.1922-develop" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.1922-develop" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.2082-develop" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.2082-develop" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj" />
