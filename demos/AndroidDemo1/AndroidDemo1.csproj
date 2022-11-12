@@ -24,6 +24,7 @@
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,6 +36,7 @@
     <WarningLevel>4</WarningLevel>
     <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
     <AndroidLinkMode>None</AndroidLinkMode>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,6 +47,7 @@
     <WarningLevel>4</WarningLevel>
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -75,31 +78,31 @@
     <PackageReference Include="MonoGame.Framework.Android" Version="3.8.1.2070-develop" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MonoScene.Pipeline\MonoScene.Pipeline.csproj">
+    <ProjectReference Include="..\..\src\MonoScene.Pipeline\MonoScene.Pipeline.csproj">
       <Project>{bf0082a1-44be-45b6-8679-bd22e5899050}</Project>
       <Name>MonoScene.Pipeline</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoScene.Runtime.Content\MonoScene.Runtime.Content.csproj">
+    <ProjectReference Include="..\..\src\MonoScene.Runtime.Content\MonoScene.Runtime.Content.csproj">
       <Project>{41112F36-3213-4C3F-8ECC-616F1B502B6A}</Project>
       <Name>MonoScene.Runtime.Content</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoScene.Runtime.Effects.Classic\MonoScene.Runtime.Effects.Classic.csproj">
+    <ProjectReference Include="..\..\src\MonoScene.Runtime.Effects.Classic\MonoScene.Runtime.Effects.Classic.csproj">
       <Project>{691c5dfc-9041-4406-9459-b83afd5fbad2}</Project>
       <Name>MonoScene.Runtime.Effects.Classic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj">
+    <ProjectReference Include="..\..\src\MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj">
       <Project>{c8ac1020-fe76-4bf5-9767-f63554900091}</Project>
       <Name>MonoScene.Pipeline.GLTF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoScene.Runtime.Effects.PBR\MonoScene.Runtime.Effects.PBR.csproj">
+    <ProjectReference Include="..\..\src\MonoScene.Runtime.Effects.PBR\MonoScene.Runtime.Effects.PBR.csproj">
       <Project>{2563ee5b-0b4a-4ec1-bf78-8f270cacab59}</Project>
       <Name>MonoScene.Runtime.Effects.PBR</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoScene.Runtime.Scene3D\MonoScene.Runtime.Scene3D.csproj">
+    <ProjectReference Include="..\..\src\MonoScene.Runtime.Scene3D\MonoScene.Runtime.Scene3D.csproj">
       <Project>{486A02BA-D0C2-4EBB-B17A-DAC9C32A8C99}</Project>
       <Name>MonoScene.Runtime.Scene3D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoScene.Runtime.Model3D\MonoScene.Runtime.Model3D.csproj">
+    <ProjectReference Include="..\..\src\MonoScene.Runtime.Model3D\MonoScene.Runtime.Model3D.csproj">
       <Project>{7B9B380E-D9AA-44F4-ABD3-36255EEE9F4A}</Project>
       <Name>MonoScene.Runtime.Model3D</Name>
     </ProjectReference>

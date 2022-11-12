@@ -11,7 +11,7 @@ echo Building 1.0.0-%VERSIONSUFFIX%
 
 :: ============================================= DOTNET builder
 
-dotnet build -c:Release --version-suffix %VERSIONSUFFIX% MonoScene.sln
+dotnet build -c:Release --version-suffix %VERSIONSUFFIX% ..\MonoScene.sln
 
 :: ============================================= Copy output
 

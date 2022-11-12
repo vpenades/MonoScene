@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+ <PropertyGroup>
+    <TargetFramework>net6.0-windows7.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputType>Exe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+ <ItemGroup>
+   <None Remove="Content\CesiumMan.glb" />
+   <None Remove="Content\haunted_house.glb" />
+   <None Remove="Content\WaterBottle.glb" />
+ </ItemGroup> 
+
+ <ItemGroup>
+   <Content Include="Content\CesiumMan.glb" CopyToOutputDirectory="PreserveNewest" />
+   <Content Include="Content\haunted_house.glb" CopyToOutputDirectory="PreserveNewest" />     
+   <Content Include="Content\WaterBottle.glb" CopyToOutputDirectory="PreserveNewest" />
+   <Content Include="Icon.ico" />
+ </ItemGroup>  
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.WindowsDX.9000" Version="3.8.9101" />
+    <PackageReference Include="nkast.Xna.Framework.Oculus.OvrDX11" Version="3.8.9101.1" />
+    <PackageReference Include="nkast.LibOVR" Version="1.0.0" />    
+  </ItemGroup>  
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj" />
+    <ProjectReference Include="..\..\src\MonoScene.Runtime.Scene3D\MonoScene.Runtime.Scene3D.csproj" />
+  </ItemGroup>
+
+</Project>

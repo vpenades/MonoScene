@@ -26,8 +26,8 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.2082-develop" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj" />
-    <ProjectReference Include="..\MonoScene.Runtime.Scene3D\MonoScene.Runtime.Scene3D.csproj" />
+    <ProjectReference Include="..\..\src\MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj" />
+    <ProjectReference Include="..\..\src\MonoScene.Runtime.Scene3D\MonoScene.Runtime.Scene3D.csproj" />
   </ItemGroup>
   
   <ItemGroup>
