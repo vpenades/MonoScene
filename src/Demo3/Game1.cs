@@ -114,16 +114,16 @@ namespace Demo3
 
             // create as many instances as we need from the templates
 
-            if (_Avocado == null) _Avocado = _AvodadoTemplate.DefaultModel.CreateInstance();
-            if (_HauntedHouse == null) _HauntedHouse = _HauntedHouseTemplate.DefaultModel.CreateInstance();
-            if (_BrainStem == null) _BrainStem = _BrainStemTemplate.DefaultModel.CreateInstance();
+            _Avocado ??= _AvodadoTemplate.DefaultModel.CreateInstance();
+            _HauntedHouse ??= _HauntedHouseTemplate.DefaultModel.CreateInstance();
+            _BrainStem ??= _BrainStemTemplate.DefaultModel.CreateInstance();
 
-            if (_CesiumMan1 == null) _CesiumMan1 = _CesiumManTemplate.DefaultModel.CreateInstance();
-            if (_CesiumMan2 == null) _CesiumMan2 = _CesiumManTemplate.DefaultModel.CreateInstance();
-            if (_CesiumMan3 == null) _CesiumMan3 = _CesiumManTemplate.DefaultModel.CreateInstance();
-            if (_CesiumMan4 == null) _CesiumMan4 = _CesiumManTemplate.DefaultModel.CreateInstance();
+            _CesiumMan1 ??= _CesiumManTemplate.DefaultModel.CreateInstance();
+            _CesiumMan2 ??= _CesiumManTemplate.DefaultModel.CreateInstance();
+            _CesiumMan3 ??= _CesiumManTemplate.DefaultModel.CreateInstance();
+            _CesiumMan4 ??= _CesiumManTemplate.DefaultModel.CreateInstance();
 
-            if (_Shark == null) _Shark = _SharkTemplate.DefaultModel.CreateInstance();
+            _Shark ??= _SharkTemplate.DefaultModel.CreateInstance();
 
             // animate each instance individually.
 

@@ -41,7 +41,7 @@ namespace MonoScene.Graphics.Pipeline
         public static AffineTransform ToXna(this SharpGLTF.Transforms.AffineTransform xform)
         {
             if (xform.IsMatrix) xform = xform.GetDecomposed();
-            return new AffineTransform(xform.Scale, xform.Rotation, xform.Translation);
+            return new AffineTransform(xform.Scale.ToXNA(), xform.Rotation.ToXNA(), xform.Translation.ToXNA());
         }
 
         public static TextureAddressMode ToXna(this SharpGLTF.Schema2.TextureWrapMode mode)

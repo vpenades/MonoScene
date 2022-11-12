@@ -69,7 +69,7 @@ namespace MonoGameViewer
 
                 if (fp.EndsWith(".zip"))
                 {
-                    _Model = SharpGLTF.IO.ZipReader.LoadGltf2(filePath, ValidationMode.TryFix);
+                    _Model = SharpGLTF.IO.ZipReader.LoadModelFromZip(filePath, ValidationMode.TryFix);
                     _IsAssimp = false;
                 }
                 else if (fp.EndsWith(".glb") || fp.EndsWith(".gltf"))

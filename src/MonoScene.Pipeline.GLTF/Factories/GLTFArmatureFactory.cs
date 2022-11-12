@@ -42,7 +42,7 @@ namespace MonoScene.Graphics.Pipeline
 
         protected override IEnumerable<GLTFNODE> GetChildren(GLTFNODE node) { return node.VisualChildren; }
 
-        protected override XNAMAT GetLocalMatrix(GLTFNODE node) { return node.LocalMatrix; }        
+        protected override XNAMAT GetLocalMatrix(GLTFNODE node) { return node.LocalMatrix.ToXNA(); }        
 
         protected override AnimatableProperty<XNAV3> GetScale(GLTFNODE node)
         {
@@ -144,7 +144,7 @@ namespace MonoScene.Graphics.Pipeline
                 {
                     var (joint, inverseBindMatrix) = node.Skin.GetJoint(i);
 
-                    bones[i] = (joint, inverseBindMatrix);
+                    bones[i] = (joint, inverseBindMatrix.ToXNA());
                 }
 
                 return CreateSkinnedDrawableContent(node.Mesh.LogicalIndex, node, bones);

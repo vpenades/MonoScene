@@ -245,7 +245,7 @@ namespace MonoScene.Graphics
             return new _DistanceComparer(origin);
         }
 
-        private struct _DistanceComparer : IComparer<ModelInstance>
+        private readonly struct _DistanceComparer : IComparer<ModelInstance>
         {
             public _DistanceComparer(XNAV3 origin) { _Origin = origin; }
 

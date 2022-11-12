@@ -1,24 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
     <RootNamespace>MonoScene.Graphics</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>  
+  </PropertyGroup>
 
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>MonoScene.Pipeline</_Parameter1>
-    </AssemblyAttribute>    
+    <InternalsVisibleTo Include="MonoScene.Pipeline" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.2082-develop" PrivateAssets="all" />
-    <PackageReference Include="System.Memory" Version="4.5.4" />
-  </ItemGroup>
+  <Import Project="..\MonoGameFramework.props" />
 
   <ItemGroup>
     <ProjectReference Include="..\MonoScene.Runtime.Content\MonoScene.Runtime.Content.csproj" />
-  </ItemGroup>  
+  </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31019.35
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipeline", "Pipeline", "{B8E244DA-E11E-4E86-A247-220C1AE236BF}"
 EndProject
@@ -22,10 +22,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo3", "Demo3\Demo3.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Pipeline.Assimp", "MonoScene.Pipeline.Assimp\MonoScene.Pipeline.Assimp.csproj", "{53F32A7E-EA67-408E-92FC-D6B3D46AC9B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoSceneViewer", "MonoSceneViewer\MonoSceneViewer.csproj", "{5CA89BF6-7EF0-4DAF-81F1-0534C56136BF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidDemo1", "AndroidDemo1\AndroidDemo1.csproj", "{9CE794E3-3DEC-491B-8AFB-28833107D8A8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Pipeline", "MonoScene.Pipeline\MonoScene.Pipeline.csproj", "{BF0082A1-44BE-45B6-8679-BD22E5899050}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{891DFE27-C481-4D2C-9F55-91CFC08635DF}"
@@ -34,10 +30,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Runtime", "Runtime", "{C5BB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F0B1912B-E726-4B4E-8FF5-5ADC7FC18824}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		MonoGameFramework.props = MonoGameFramework.props
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoScene.Runtime.Effects.Classic", "MonoScene.Runtime.Effects.Classic\MonoScene.Runtime.Effects.Classic.csproj", "{691C5DFC-9041-4406-9459-B83AFD5FBAD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Runtime.Effects.Classic", "MonoScene.Runtime.Effects.Classic\MonoScene.Runtime.Effects.Classic.csproj", "{691C5DFC-9041-4406-9459-B83AFD5FBAD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,16 +79,6 @@ Global
 		{53F32A7E-EA67-408E-92FC-D6B3D46AC9B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53F32A7E-EA67-408E-92FC-D6B3D46AC9B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53F32A7E-EA67-408E-92FC-D6B3D46AC9B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5CA89BF6-7EF0-4DAF-81F1-0534C56136BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5CA89BF6-7EF0-4DAF-81F1-0534C56136BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5CA89BF6-7EF0-4DAF-81F1-0534C56136BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5CA89BF6-7EF0-4DAF-81F1-0534C56136BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{BF0082A1-44BE-45B6-8679-BD22E5899050}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BF0082A1-44BE-45B6-8679-BD22E5899050}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF0082A1-44BE-45B6-8679-BD22E5899050}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -113,8 +101,6 @@ Global
 		{B3D0B09B-1DF1-49CB-B84F-6047C49550CC} = {891DFE27-C481-4D2C-9F55-91CFC08635DF}
 		{C8D978C4-BEC8-4FB3-9B00-1490A13A5779} = {891DFE27-C481-4D2C-9F55-91CFC08635DF}
 		{53F32A7E-EA67-408E-92FC-D6B3D46AC9B1} = {B8E244DA-E11E-4E86-A247-220C1AE236BF}
-		{5CA89BF6-7EF0-4DAF-81F1-0534C56136BF} = {891DFE27-C481-4D2C-9F55-91CFC08635DF}
-		{9CE794E3-3DEC-491B-8AFB-28833107D8A8} = {891DFE27-C481-4D2C-9F55-91CFC08635DF}
 		{BF0082A1-44BE-45B6-8679-BD22E5899050} = {B8E244DA-E11E-4E86-A247-220C1AE236BF}
 		{691C5DFC-9041-4406-9459-B83AFD5FBAD2} = {C5BB2248-5C6A-4895-BE07-F9A53D566E9B}
 	EndGlobalSection

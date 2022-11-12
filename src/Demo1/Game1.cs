@@ -32,9 +32,9 @@ namespace Demo1
         {
             var gltfFactory = new MonoScene.Graphics.Pipeline.GltfModelFactory(this.GraphicsDevice);
 
-            var modelPath = SharpGLTF.Schema2.ModelRoot.Load($"Content{Path.DirectorySeparatorChar}WaterBottle.glb");
+            var model = SharpGLTF.Schema2.ModelRoot.Load($"Content{Path.DirectorySeparatorChar}WaterBottle.glb");
 
-            var contentMeshes = gltfFactory.ReadMeshContent(modelPath.LogicalMeshes.Take(1));
+            var contentMeshes = gltfFactory.ReadMeshContent(model.LogicalMeshes.Take(1));
 
             var factory = new MonoScene.Graphics.Pipeline.PBRMeshFactory(this.GraphicsDevice);            
             _MeshCollection = factory.CreateMeshCollection(contentMeshes.Materials, contentMeshes.Meshes);

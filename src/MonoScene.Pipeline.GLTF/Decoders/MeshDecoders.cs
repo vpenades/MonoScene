@@ -4,8 +4,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-using MonoScene.Graphics.Content;
-
 using XNAV2 = Microsoft.Xna.Framework.Vector2;
 using XNAV3 = Microsoft.Xna.Framework.Vector3;
 using XNAV4 = Microsoft.Xna.Framework.Vector4;
@@ -92,9 +90,9 @@ namespace MonoScene.Graphics.Pipeline
 
         #region vertex API
 
-        public XNAV3 GetPosition(int vertexIndex) { return _Source.GetPosition(vertexIndex); }
-        public XNAV3 GetNormal(int vertexIndex) { return _Source.GetNormal(vertexIndex); }
-        public XNAV4 GetTangent(int vertexIndex) { return _Source.GetTangent(vertexIndex); }
+        public XNAV3 GetPosition(int vertexIndex) { return _Source.GetPosition(vertexIndex).ToXNA(); }
+        public XNAV3 GetNormal(int vertexIndex) { return _Source.GetNormal(vertexIndex).ToXNA(); }
+        public XNAV4 GetTangent(int vertexIndex) { return _Source.GetTangent(vertexIndex).ToXNA(); }
         public VERTEXINFLUENCES GetSkinWeights(int vertexIndex)
         {
             var sparse = _Source
@@ -109,8 +107,8 @@ namespace MonoScene.Graphics.Pipeline
 
         
 
-        public XNAV4 GetColor(int vertexIndex, int colorSetIndex) { return _Source.GetColor(vertexIndex, colorSetIndex); }
-        public XNAV2 GetTextureCoord(int vertexIndex, int textureSetIndex) { return _Source.GetTextureCoord(vertexIndex, textureSetIndex); }
+        public XNAV4 GetColor(int vertexIndex, int colorSetIndex) { return _Source.GetColor(vertexIndex, colorSetIndex).ToXNA(); }
+        public XNAV2 GetTextureCoord(int vertexIndex, int textureSetIndex) { return _Source.GetTextureCoord(vertexIndex, textureSetIndex).ToXNA(); }
 
 
         public IReadOnlyList<XNAV3> GetNormalDeltas(int vertexIndex) { throw new NotImplementedException(); }

@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
     <RootNamespace>MonoScene.Graphics.Pipeline</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+  </ItemGroup>
+
+  <Import Project="..\MonoGameFramework.props"/>
 
   <ItemGroup>
     <ProjectReference Include="..\MonoScene.Pipeline\MonoScene.Pipeline.csproj" />
     <ProjectReference Include="..\MonoScene.Runtime.Effects.Classic\MonoScene.Runtime.Effects.Classic.csproj" />
     <ProjectReference Include="..\MonoScene.Runtime.Effects.PBR\MonoScene.Runtime.Effects.PBR.csproj" />
     <ProjectReference Include="..\MonoScene.Runtime.Model3D\MonoScene.Runtime.Model3D.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.2082-develop" PrivateAssets="all" />    
-  </ItemGroup>
+  </ItemGroup>  
 
 </Project>

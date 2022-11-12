@@ -59,7 +59,7 @@ namespace Demo2
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
 
-            if (_ModelView1 == null) _ModelView1 = _ModelTemplate.DefaultModel.CreateInstance();
+            _ModelView1 ??= _ModelTemplate.DefaultModel.CreateInstance();
 
             var mdlPos = new Vector3(3.5f, 0, 0);
 

@@ -1,13 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
     <RootNamespace>MonoScene.Graphics.Pipeline</RootNamespace>
-  </PropertyGroup>   
+  </PropertyGroup>
 
-  <ItemGroup>    
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.2082-develop" PrivateAssets="all" />
-  </ItemGroup>  
+  <Import Project="..\MonoGameFramework.props"/>  
 
   <ItemGroup>
     <ProjectReference Include="..\MonoScene.Runtime.Content\MonoScene.Runtime.Content.csproj" />
