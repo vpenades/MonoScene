@@ -91,10 +91,10 @@ namespace Microsoft.Xna.Framework
 
         #region Draw
 
-        protected virtual void DrawStereo(GameTime gameTime, Vector3 cameraPosition, out Matrix left, out Matrix right)
+        protected virtual void DrawStereo(GameTime gameTime, Vector3 cameraPosition, out Matrix leftView, out Matrix rightView)
         {
-            left = Matrix.Identity;
-            right = Matrix.Identity;
+            leftView = Matrix.Identity;
+            rightView = Matrix.Identity;
 
             if (!ovrDevice.IsConnected) return;
 
@@ -115,8 +115,8 @@ namespace Microsoft.Xna.Framework
                 Matrix globalWorld = Matrix.CreateWorld(cameraPosition, Vector3.Forward, Vector3.Up);
                 view = Matrix.Invert(globalWorld) * view;
 
-                if (eye == 0) left = view;
-                if (eye == 1) right = view;
+                if (eye == 0) leftView = view;
+                if (eye == 1) rightView = view;
 
                 DrawScene(gameTime, view, (near, far) => ovrDevice.CreateProjection(eye, near, far));
 
@@ -130,27 +130,7 @@ namespace Microsoft.Xna.Framework
             int result = ovrDevice.EndFrame();            
 
             return;
-        }
-
-        protected virtual void DrawPreview()
-        {
-            // draw on PC screen
-            GraphicsDevice.SetRenderTarget(null);
-            GraphicsDevice.Clear(Color.Black);
-
-            // preview VR rendertargets
-            var pp = GraphicsDevice.PresentationParameters;
-            int height = pp.BackBufferHeight;
-            float aspectRatio = (float)ovrDevice.GetEyeRenderTarget(0).Width / ovrDevice.GetEyeRenderTarget(0).Height;
-
-            /*
-            int width = Math.Min(pp.BackBufferWidth, (int)(height * aspectRatio));
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-            spriteBatch.Draw(ovrDevice.GetEyeRenderTarget(0), new Rectangle(0, 0, width, height), Color.White);
-            spriteBatch.Draw(ovrDevice.GetEyeRenderTarget(1), new Rectangle(width, 0, width, height), Color.White);
-            spriteBatch.End();
-            */
-        }
+        }        
 
         protected virtual void DrawScene(GameTime gameTime, Matrix view, ProjectionDelegate projection)
         {

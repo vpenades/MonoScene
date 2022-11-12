@@ -11,10 +11,6 @@ using Microsoft.Xna.Framework.Input.Oculus;
 
 namespace Primitives3D
 {
-    /// <summary>
-    /// This sample shows how to draw 3D geometric primitives
-    /// such as cubes, spheres, and cylinders.
-    /// </summary>
     public class VRGameDemo : Microsoft.Xna.Framework.XRGame
     {
         #region Lifecycle
@@ -30,9 +26,9 @@ namespace Primitives3D
         {
             base.LoadContent();
 
-            var gltfScene = new VRSceneDemo(this);
-            gltfScene.Initialize();
-            this.Components.Add(gltfScene);
+            var component = new VRSceneDemo(this);
+            component.Initialize();
+            this.Components.Add(component);
         }
 
         #endregion                
@@ -151,8 +147,4 @@ namespace Primitives3D
 
         #endregion
     }
-
-    
-
-
 }
