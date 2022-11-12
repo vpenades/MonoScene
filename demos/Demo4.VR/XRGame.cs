@@ -118,7 +118,9 @@ namespace Microsoft.Xna.Framework
                 if (eye == 0) leftView = view;
                 if (eye == 1) rightView = view;
 
-                DrawScene(gameTime, view, (near, far) => ovrDevice.CreateProjection(eye, near, far));
+                var context = new XRSceneContext(view, (near, far) => ovrDevice.CreateProjection(eye, near, far));
+
+                DrawScene(gameTime, context);
 
                 // Resolve eye rendertarget
                 GraphicsDevice.SetRenderTarget(null);
@@ -132,12 +134,12 @@ namespace Microsoft.Xna.Framework
             return;
         }        
 
-        protected virtual void DrawScene(GameTime gameTime, Matrix view, ProjectionDelegate projection)
+        protected virtual void DrawScene(GameTime gameTime, XRSceneContext sceneContext)
         {
             // prepare XR drawable components
             foreach(var component in this.Components.OfType<XRGameComponent>())
             {
-                component.SetEyeTransforms(view, projection);
+                component.SetSceneContext(sceneContext);
             }
 
             // draw any drawable components

@@ -80,16 +80,16 @@ namespace Primitives3D
 
         #region draw
 
-        public override void Draw(GameTime gameTime, Matrix view, ProjectionDelegate projFunc)
+        public override void Draw(GameTime gameTime, XRSceneContext sceneContext)
         {
             var dc = new ModelDrawingContext(this.GraphicsDevice);
             
-            dc.SetCamera(Matrix.Invert(view));            
-            dc.SetProjectionMatrix(projFunc(0.1f, 100));
+            dc.SetCamera(Matrix.Invert(sceneContext.ViewMatrix));            
+            dc.SetProjectionMatrix(sceneContext.GetProjectionMatrix(0.1f, 100));
 
             dc.DrawSceneInstances(_LightsAndFog, _HouseView1, _HouseView2, _HouseView3, _HouseView4, _CharView1);
 
-            base.Draw(gameTime, view, projFunc);
+            base.Draw(gameTime, sceneContext);
         }
 
         #endregion

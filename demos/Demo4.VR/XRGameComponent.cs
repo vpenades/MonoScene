@@ -17,8 +17,8 @@ namespace Microsoft.Xna.Framework
         }
          
         public XRGame XRGame { get; }
-        private Matrix _EyeView;
-        private ProjectionDelegate _EyeProjection;        
+        
+        public XRSceneContext SceneContext { get; private set; }
 
         protected HandsState GetHandsState()
         {
@@ -28,23 +28,21 @@ namespace Microsoft.Xna.Framework
         /// <summary>
         /// This method must be called before calling <see cref="Draw(GameTime)"/>
         /// </summary>
-        /// <param name="view">the view matrix</param>
-        /// <param name="projFunction">the projection function</param>
-        internal void SetEyeTransforms(Matrix view, ProjectionDelegate projFunction)
+        /// <param name="context">the context containing scene transforms</param>        
+        internal void SetSceneContext(XRSceneContext context)
         {
-            _EyeView = view;
-            _EyeProjection = projFunction;
+            SceneContext = context;
         }
 
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public override void Draw(GameTime gameTime)
         {
-            Draw(gameTime, _EyeView, _EyeProjection);
+            Draw(gameTime, SceneContext);
 
             base.Draw(gameTime);
         }
 
-        public virtual void Draw(GameTime gameTime, Matrix view, ProjectionDelegate proj)
+        public virtual void Draw(GameTime gameTime, XRSceneContext sceneContext)
         {
 
         }

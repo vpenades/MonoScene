@@ -134,15 +134,17 @@ namespace Primitives3D
 
                 var aspect = GraphicsDevice.Viewport.AspectRatio;
 
-                DrawScene(gameTime, leftView, (near, far) => Matrix.CreatePerspectiveFieldOfView(1, aspect, near, far));
+                var context = new XRSceneContext(leftView, (near, far) => Matrix.CreatePerspectiveFieldOfView(1, aspect, near, far));
+
+                DrawScene(gameTime, context);
             }
         }
 
-        protected override void DrawScene(GameTime gameTime, Matrix view, ProjectionDelegate projection)
+        protected override void DrawScene(GameTime gameTime, XRSceneContext sceneContext)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            base.DrawScene(gameTime, view, projection);
+            base.DrawScene(gameTime, sceneContext);
         }
 
         #endregion
