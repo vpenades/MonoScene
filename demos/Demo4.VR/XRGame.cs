@@ -10,14 +10,6 @@ using Microsoft.Xna.Framework.Input.Oculus;
 
 namespace Microsoft.Xna.Framework
 {
-    /// <summary>
-    /// callback to retrieve the projection matrix
-    /// </summary>
-    /// <param name="nearPlane">near plane to use in the projection matrix</param>
-    /// <param name="farPlane">far plane to use in the projection matrix</param>
-    /// <returns>the projection matrix</returns>
-    public delegate Matrix ProjectionDelegate(float nearPlane, float farPlane);
-
     /// <inheritdoc/>    
     public class XRGame : Game
     {
