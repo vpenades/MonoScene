@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo2", "demos\Demo2\Demo2.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo3", "demos\Demo3\Demo3.csproj", "{2BD342D9-5E43-497C-930C-7576376F6B91}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Primitives3D.OVR", "demos\Demo4.VR\Primitives3D.OVR.csproj", "{E33A8290-FFD1-44DF-B095-FF7002BE8CFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo4.VR", "demos\Demo4.VR\Demo4.VR.csproj", "{E33A8290-FFD1-44DF-B095-FF7002BE8CFE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoSceneViewer", "demos\MonoSceneViewer\MonoSceneViewer.csproj", "{FE00A03E-5C60-4722-8DE2-B3705FB9845B}"
 EndProject
