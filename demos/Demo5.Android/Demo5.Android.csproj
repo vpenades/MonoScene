@@ -1,32 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  
   <PropertyGroup>
     <TargetFramework>net6.0-android</TargetFramework>
-    <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
-    <OutputType>Exe</OutputType>    
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <ApplicationId>com.monoscene.demo5</ApplicationId>
+    <SupportedOSPlatformVersion>23</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <ApplicationId>com.companyname.Demo5.Android</ApplicationId>
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-  </PropertyGroup>  
-
-  <PropertyGroup>
-    <IsTrimmable>false</IsTrimmable>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <Folder Include="Resources\drawable\" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.1.303" />
   </ItemGroup>
+  
+  <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
+    <Message Text="Restoring dotnet tools" Importance="High" />
+    <Exec Command="dotnet tool restore" />
+  </Target>
 
   <ItemGroup>
-    <Content Include="..\SharedResources\CesiumMan.glb" Link="Content\CesiumMan.glb" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />    
+    <EmbeddedResource Include="..\SharedResources\CesiumMan.glb" Link="Content\CesiumMan.glb" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,9 +2,10 @@ using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
+
 using Microsoft.Xna.Framework;
 
-namespace AndroidDemo1
+namespace Demo5
 {
     [Activity(
         Label = "@string/app_name",

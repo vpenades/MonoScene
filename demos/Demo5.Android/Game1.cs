@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 using MonoScene.Graphics;
 
-namespace AndroidDemo1
+namespace Demo5
 {
     public class Game1 : Game
     {
