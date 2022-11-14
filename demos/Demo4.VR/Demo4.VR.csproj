@@ -12,14 +12,11 @@
    <None Remove="Content\CesiumMan.glb" />
    <None Remove="Content\haunted_house.glb" />
    <None Remove="Content\WaterBottle.glb" />
- </ItemGroup> 
+ </ItemGroup>
 
- <ItemGroup>
-   <Content Include="Content\CesiumMan.glb" CopyToOutputDirectory="PreserveNewest" />
-   <Content Include="Content\haunted_house.glb" CopyToOutputDirectory="PreserveNewest" />     
-   <Content Include="Content\WaterBottle.glb" CopyToOutputDirectory="PreserveNewest" />
-   <Content Include="Icon.ico" />
- </ItemGroup>  
+  <ItemGroup>
+    <Content Include="..\SharedResources\*.glb" LinkBase="Content" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.WindowsDX.9000" Version="3.8.9101" />

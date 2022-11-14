@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo4.VR", "demos\Demo4.VR\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoScene.Pipeline.Assimp", "src\MonoScene.Pipeline.Assimp\MonoScene.Pipeline.Assimp.csproj", "{CC274EDC-1D0D-4BAB-AB9B-26077CE7874B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo5.Android", "demos\Demo5.Android\Demo5.Android.csproj", "{9CE794E3-3DEC-491B-8AFB-28833107D8A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,12 @@ Global
 		{CC274EDC-1D0D-4BAB-AB9B-26077CE7874B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC274EDC-1D0D-4BAB-AB9B-26077CE7874B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC274EDC-1D0D-4BAB-AB9B-26077CE7874B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CE794E3-3DEC-491B-8AFB-28833107D8A8}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,6 +116,7 @@ Global
 		{2BD342D9-5E43-497C-930C-7576376F6B91} = {CB3349D6-3282-49BC-87BC-3EA128FAE922}
 		{E33A8290-FFD1-44DF-B095-FF7002BE8CFE} = {CB3349D6-3282-49BC-87BC-3EA128FAE922}
 		{CC274EDC-1D0D-4BAB-AB9B-26077CE7874B} = {D3CE88C7-E423-42EF-B869-C233AE360D89}
+		{9CE794E3-3DEC-491B-8AFB-28833107D8A8} = {CB3349D6-3282-49BC-87BC-3EA128FAE922}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3A93E868-4176-4EB6-864F-C1CEE03ED6A5}
