@@ -15,7 +15,7 @@
  </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\SharedResources\*.glb" LinkBase="Content" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\SharedResources\**\*.*" LinkBase="Content" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

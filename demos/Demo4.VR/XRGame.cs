@@ -37,10 +37,7 @@ namespace Microsoft.Xna.Framework
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                ovrDevice?.Dispose();
-            }
+            if (disposing) { ovrDevice?.Dispose(); }
 
             base.Dispose(disposing);
         }
@@ -53,17 +50,21 @@ namespace Microsoft.Xna.Framework
 
         OvrDevice ovrDevice;
 
+        public Matrix HeadMatrix { get; private set; }
+
         #endregion
 
-        #region Update
+        #region Update        
 
         public HandsState GetHandsState()
         {
             return ovrDevice.GetHandsState();
         }           
 
-        protected void UpdateXRDevice()
+        protected void UpdateXRDevice(Matrix headMatrix)
         {
+            this.HeadMatrix = headMatrix;
+
             if (!ovrDevice.IsConnected)
             {
                 try
@@ -83,7 +84,7 @@ namespace Microsoft.Xna.Framework
 
         #region Draw
 
-        protected virtual void DrawStereo(GameTime gameTime, Vector3 cameraPosition, out Matrix leftView, out Matrix rightView)
+        protected virtual void DrawStereo(GameTime gameTime, out Matrix leftView, out Matrix rightView)
         {
             leftView = Matrix.Identity;
             rightView = Matrix.Identity;
@@ -104,7 +105,7 @@ namespace Microsoft.Xna.Framework
                 // VR eye view and projection
                 var view = headsetState.GetEyeView(eye);
 
-                Matrix globalWorld = Matrix.CreateWorld(cameraPosition, Vector3.Forward, Vector3.Up);
+                Matrix globalWorld = this.HeadMatrix;
                 view = Matrix.Invert(globalWorld) * view;
 
                 if (eye == 0) leftView = view;

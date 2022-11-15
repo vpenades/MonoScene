@@ -26,9 +26,13 @@ namespace Primitives3D
         {
             base.LoadContent();
 
-            var component = new VRSceneDemo(this);
-            component.Initialize();
-            this.Components.Add(component);
+            var component1 = new VRSceneDemo(this);
+            component1.Initialize();
+            this.Components.Add(component1);
+
+            var component2 = new VRHandsLayer(this);
+            component2.Initialize();
+            this.Components.Add(component2);
         }
 
         #endregion                
@@ -50,7 +54,7 @@ namespace Primitives3D
         /// <inheritdoc/>
         protected override void Update(GameTime gameTime)
         {
-            UpdateXRDevice();
+            UpdateXRDevice(Matrix.CreateTranslation(0, 1.7f, 0));
 
             HandleInput();
 
@@ -123,9 +127,7 @@ namespace Primitives3D
         /// <inheritdoc/>        
         protected override void Draw(GameTime gameTime)
         {
-            var cameraPosition = new Vector3(0, 1.7f, 0);            
-
-            this.DrawStereo(gameTime, cameraPosition, out var leftView, out var rightView);
+            this.DrawStereo(gameTime, out var leftView, out var rightView);
 
             if (true)
             {
