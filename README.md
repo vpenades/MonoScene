@@ -22,6 +22,8 @@ to what its outdated graphics subsystem can do, which led me to __stop developme
 library (except for maintenance) until MonoGame improves on the missing features or
 another fork takes the lead.__
 
+_PRs are welcome, though._
+
 ### Overview
 
 MonoScene is a framework that replaces the very outdated 3D model architecture
