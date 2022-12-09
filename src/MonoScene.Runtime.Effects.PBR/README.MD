@@ -6,10 +6,16 @@ Extends Monogame with additional PBR effects:
   - UnlitEffect
   - PBREffect (abstract)
     - PBRMetallicRoughnessEffect
-    - PBRSpecularGlossinessEffect
+    - PBRSpecularGlossinessEffect (deprecated)
 
 These effects are designed, but not limited, to provide the neccesary shader features
 required by glTF format.
+
+In October 2021, Khronos deprecated SpecularGlossiness shader model in favour of extending MetallicRoughness, so
+the features of both shaders would need to be merged in a sort of über shader.
+
+Also, Khronos has been adding additional extensions that extend MetallicRoughness further, with additional specialised
+maps, making it even more complex for someone willing to support everything glTF can provide.
 
 #### Supported Vertex shader features
 
@@ -30,7 +36,7 @@ have limited constant buffers may fail to load models with a large number of bon
 Monogame's in-built SkinnedEffect has a limit of 72 bones, which by today standards
 it's a bit low.
 
-The recomendation is to use an independent constant buffer for bones.
+The glTF recomendation is to use an independent constant buffer for bones.
 
 ##### Morphed vertices
 

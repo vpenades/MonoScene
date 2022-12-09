@@ -91,8 +91,12 @@ Shaders are missing three features that I think are key to be able to do decent 
 Vertex Morphing is not supported because it exceeds what MonoGame can do right now.
 Shadows and Glow might be possible, though.
 
-I'm not an shaders expert, so it's unlikely I'll do more work with the shaders, I'll try to add some
-documentation, though.
+I'm not an shaders expert, so it's unlikely I'll do more work with the shaders.
+
+Additinal documentation can be found here:
+- MonoScene.Runtime.Effects.PBR
+  - [Effects](src/MonoScene.Runtime.Effects.PBR/README.MD)
+  - [Shader Techniques](src/MonoScene.Runtime.Effects.PBR/Effects/Shaders/Techniques.MD)
 
 #### Credits
 

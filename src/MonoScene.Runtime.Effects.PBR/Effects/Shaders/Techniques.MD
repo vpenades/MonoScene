@@ -18,9 +18,7 @@ For those not familiar with T4 templates, here's a small example on how they wor
 
 ```c#
 <# for (int i = 0; i < 3; ++i) { #>
-
     Hello World <#= i #>
-
 <# } #>
 ```
 
@@ -63,3 +61,27 @@ Editing TT template files can be eye tearing,
 I suggest to install [Tim Maes T4 Editor](https://github.com/Tim-Maes/T4Editor)
 And then adjust the colors in `Visual Studio Menu > Extensions > T4Editor > Adjust Colors`
 to distingish between content code and template code.
+
+#### What's left / missing
+
+I am not an expert shader expert and maybe some optimizations are possible. My objective
+has been to support as many glTF features as possible over performance.
+
+The three biggest missing features are:
+- Morph vertices, which I think are not possible with vanilla monogame.
+- Shadows
+- Glow effects
+
+
+Morph vertices are not just a simple tweening, under glTF it's even possible
+to have morphed and skinned vertices at the same time!
+
+Shadows would need additional shader code and more technique permutations.
+
+Glow would need another effect, similar to Unlit, to render the emissive textures
+over a render target, to be used at a later stage.
+
+
+#### Credits
+
+The shaders have been lifted and adapted to monogame from [glTF-Sample-Viewer](https://github.com/KhronosGroup/glTF-Sample-Viewer/tree/master/source/shaders)

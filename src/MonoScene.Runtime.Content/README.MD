@@ -1,7 +1,7 @@
 ﻿#### MonoScene.Runtime.Content
 
 This project contains all the classes required to define a 3d model in memory,
-and eventually, to serialize it.
+and eventually, to serialize it (Most probably using ProtoBuffer)
 
 The architecture loosely replicates the architecture of the glTF standard,
 which is a feature rich model architecture.
