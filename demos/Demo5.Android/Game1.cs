@@ -17,7 +17,7 @@ namespace Demo5
 
         protected override void Initialize()
         {
-            this.Window.Title = "SharpGLTF - MonoGame Demo 2";
+            this.Window.Title = "SharpGLTF - MonoGame Demo 5";
             this.Window.AllowUserResizing = true;
             this.Window.AllowAltF4 = true;
 
