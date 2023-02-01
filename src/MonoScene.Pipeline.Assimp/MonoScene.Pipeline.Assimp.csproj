@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
@@ -6,10 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+    <PackageReference Include="AssimpNet" />
   </ItemGroup>
 
-  <Import Project="..\MonoGameFramework.props"/>
+  <Import Project="..\MonoGameFramework.props" />
 
   <ItemGroup>
     <ProjectReference Include="..\MonoScene.Pipeline\MonoScene.Pipeline.csproj" />

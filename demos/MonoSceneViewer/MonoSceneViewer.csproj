@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -8,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.2082-develop" />
-    <PackageReference Include="PropertyTools.Wpf" Version="3.1.0" />
-    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0027" />    
+    <PackageReference Include="MonoGame.Framework.WindowsDX" />
+    <PackageReference Include="PropertyTools.Wpf" />
+    <PackageReference Include="SharpGLTF.Toolkit" />    
   </ItemGroup>
 
   <ItemGroup>

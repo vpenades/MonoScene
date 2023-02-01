@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
 
  <PropertyGroup>
     <TargetFramework>net6.0-windows7.0</TargetFramework>
@@ -19,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX.9000" Version="3.8.9101" />
-    <PackageReference Include="nkast.Xna.Framework.Oculus.OvrDX11" Version="3.8.9101.1" />
-    <PackageReference Include="nkast.LibOVR" Version="1.0.0" />    
+    <PackageReference Include="MonoGame.Framework.WindowsDX.9000" />
+    <PackageReference Include="nkast.Xna.Framework.Oculus.OvrDX11" />
+    <PackageReference Include="nkast.LibOVR" />    
   </ItemGroup>  
 
   <ItemGroup>

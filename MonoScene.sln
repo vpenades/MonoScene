@@ -41,9 +41,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo5.Android", "demos\Demo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3549110B-73B7-4471-981F-52DF2243E957}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
 		NuGet.config = NuGet.config
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo5.AppleiOS", "demos\Demo5.AppleiOS\Demo5.AppleiOS.csproj", "{7A0376E9-716E-4546-8FD7-8696266B6CD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +108,12 @@ Global
 		{2C14367C-43E4-40FD-90B6-F860955BF184}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C14367C-43E4-40FD-90B6-F860955BF184}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2C14367C-43E4-40FD-90B6-F860955BF184}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{7A0376E9-716E-4546-8FD7-8696266B6CD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A0376E9-716E-4546-8FD7-8696266B6CD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A0376E9-716E-4546-8FD7-8696266B6CD2}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7A0376E9-716E-4546-8FD7-8696266B6CD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A0376E9-716E-4546-8FD7-8696266B6CD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A0376E9-716E-4546-8FD7-8696266B6CD2}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +132,7 @@ Global
 		{E33A8290-FFD1-44DF-B095-FF7002BE8CFE} = {CB3349D6-3282-49BC-87BC-3EA128FAE922}
 		{CC274EDC-1D0D-4BAB-AB9B-26077CE7874B} = {D3CE88C7-E423-42EF-B869-C233AE360D89}
 		{2C14367C-43E4-40FD-90B6-F860955BF184} = {CB3349D6-3282-49BC-87BC-3EA128FAE922}
+		{7A0376E9-716E-4546-8FD7-8696266B6CD2} = {CB3349D6-3282-49BC-87BC-3EA128FAE922}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3A93E868-4176-4EB6-864F-C1CEE03ED6A5}
