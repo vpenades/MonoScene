@@ -27,6 +27,7 @@ namespace Demo5
         protected override void LoadContent()
         {
             var factory = new MonoScene.Graphics.Pipeline.GltfModelFactory(this.GraphicsDevice);
+            factory.UseBasicEffects= true;
 
             var thisAssembly = typeof(Game1).Assembly;
             _ModelTemplate = factory.LoadModelFromEmbeddedResource(thisAssembly, "CesiumMan.glb");
