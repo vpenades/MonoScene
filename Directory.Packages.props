@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
+  
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <EnablePackageVersionOverride>true</EnablePackageVersionOverride>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
+  </PropertyGroup>
+
+  
   <ItemGroup>
     <PackageVersion Include="AssimpNet" Version="5.0.0-beta1" />
     <PackageVersion Include="ErrorProne.NET.Structs" Version="0.4.0-beta.1" />

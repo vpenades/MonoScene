@@ -1,0 +1,16 @@
+{
+  "solution": {
+    "path": "MonoScene.sln",
+    "projects": [
+      "demos\\Demo5.AppleiOS\\Demo5.AppleiOS.csproj",
+      "src\\MonoScene.Pipeline.Assimp\\MonoScene.Pipeline.Assimp.csproj",
+      "src\\MonoScene.Pipeline.GLTF\\MonoScene.Pipeline.GLTF.csproj",
+      "src\\MonoScene.Pipeline\\MonoScene.Pipeline.csproj",
+      "src\\MonoScene.Runtime.Content\\MonoScene.Runtime.Content.csproj",
+      "src\\MonoScene.Runtime.Effects.Classic\\MonoScene.Runtime.Effects.Classic.csproj",
+      "src\\MonoScene.Runtime.Effects.PBR\\MonoScene.Runtime.Effects.PBR.csproj",
+      "src\\MonoScene.Runtime.Model3D\\MonoScene.Runtime.Model3D.csproj",
+      "src\\MonoScene.Runtime.Scene3D\\MonoScene.Runtime.Scene3D.csproj"
+    ]
+  }
+}

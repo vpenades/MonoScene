@@ -7,18 +7,14 @@
     <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>  
   
-  <ItemGroup>
-    <!--
-    <PackageReference Include="MonoGame.Content.Builder.Task" />
-    -->
+  <ItemGroup>    
+    <PackageReference Include="MonoGame.Content.Builder.Task" />    
     <PackageReference Include="MonoGame.Framework.iOS" />
-  </ItemGroup>
+  </ItemGroup>  
   
-  <!--
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />
     <Exec Command="dotnet tool restore" />
-  </Target>
-  -->
+  </Target> 
   
 </Project>
