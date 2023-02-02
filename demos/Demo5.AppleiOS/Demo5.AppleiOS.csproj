@@ -1,20 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>    
+  </PropertyGroup>
   
   <PropertyGroup>
     <TargetFramework>net6.0-ios</TargetFramework>
+    <OutputType>Exe</OutputType>
     <SupportedOSPlatformVersion>11.2</SupportedOSPlatformVersion>
-    <OutputType>Exe</OutputType>    
     <CodesignKey>iPhone Developer</CodesignKey>
-  </PropertyGroup>  
+  </PropertyGroup>
   
-  <ItemGroup>    
-    <PackageReference Include="MonoGame.Content.Builder.Task" />    
-    <PackageReference Include="MonoGame.Framework.iOS" />
-  </ItemGroup>  
+  <ItemGroup>
+    <EmbeddedResource Include="..\SharedResources\CesiumMan.glb" Link="Content\CesiumMan.glb" />
+  </ItemGroup>
   
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+    <PackageReference Include="MonoGame.Framework.iOS" Version="3.8.1.303" />    
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MonoScene.Pipeline.GLTF\MonoScene.Pipeline.GLTF.csproj" />
+    <ProjectReference Include="..\..\src\MonoScene.Runtime.Scene3D\MonoScene.Runtime.Scene3D.csproj" />
+  </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />
     <Exec Command="dotnet tool restore" />
-  </Target> 
-  
+  </Target>
 </Project>

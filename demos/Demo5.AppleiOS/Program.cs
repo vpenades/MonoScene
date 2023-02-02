@@ -4,7 +4,7 @@ using Foundation;
 
 using UIKit;
 
-namespace Demo5.AppleiOS
+namespace Demo5
 {
     [Register("AppDelegate")]
     internal class Program : UIApplicationDelegate
