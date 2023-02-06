@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="all" />
-    <PackageReference Include="System.Memory" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="all" Version="3.8.1.2082-develop" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
-    <PackageReference Include="System.ValueTuple" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,21 +6,17 @@
     <MonoGameNetStandardVersion>3.8.1.2082-develop</MonoGameNetStandardVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="all" Version="3.8.1.303" />
+  </ItemGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="MonoGame.Framework.DesktopGL" VersionOverride="$(MonoGameNetStandardVersion)" PrivateAssets="all" />
-    <PackageReference Include="System.Memory" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Update="MonoGame.Framework.DesktopGL" Version="$(MonoGameNetStandardVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
-    <PackageReference Include="MonoGame.Framework.DesktopGL" VersionOverride="$(MonoGameNetStandardVersion)" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="all" />
+    <PackageReference Update="MonoGame.Framework.DesktopGL" Version="$(MonoGameNetStandardVersion)" />
   </ItemGroup>  
 
 </Project>

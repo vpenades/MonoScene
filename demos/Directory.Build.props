@@ -40,7 +40,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Update="ErrorProne.NET.Structs">
+    <PackageReference Update="ErrorProne.NET.Structs" Version="0.4.0-beta.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

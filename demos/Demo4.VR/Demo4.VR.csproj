@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX.9000" />
-    <PackageReference Include="nkast.Xna.Framework.Oculus.OvrDX11" />
-    <PackageReference Include="nkast.LibOVR" />    
+    <PackageReference Include="MonoGame.Framework.WindowsDX.9000" Version="3.8.9102" />
+    <PackageReference Include="nkast.Xna.Framework.Oculus.OvrDX11" Version="3.8.9102" />
+    <PackageReference Include="nkast.LibOVR" Version="1.0.0" />    
   </ItemGroup>  
 
   <ItemGroup>
