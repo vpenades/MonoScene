@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>    
-    <PackageReference Include="SharpGLTF.Core" Version="1.0.0-alpha0028" />    
+    <PackageReference Include="SharpGLTF.Core" Version="1.0.0-alpha0029" />    
   </ItemGroup>
 
   <Import Project="..\MonoGameFramework.props" />
